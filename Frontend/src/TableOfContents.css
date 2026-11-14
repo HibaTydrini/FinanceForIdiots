@@ -1,0 +1,297 @@
+/* Table of contents (Cindy). Uses the same red and greys as App.css. */
+
+.toc-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+  margin-top: 40px;
+}
+
+.toc-search {
+  flex: 1 1 260px;
+  padding: 11px 14px;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  background: white;
+  color: #252525;
+}
+
+.toc-search:focus {
+  outline: 2px solid #cf1726;
+  outline-offset: 1px;
+}
+
+.toc-levels {
+  display: inline-flex;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  overflow: hidden;
+  background: white;
+}
+
+.toc-levels button {
+  border: none;
+  background: transparent;
+  padding: 9px 14px;
+  font-size: 13px;
+  color: #555555;
+}
+
+.toc-levels button + button {
+  border-left: 1px solid #dddddd;
+}
+
+.toc-levels button.active {
+  background: #cf1726;
+  color: white;
+}
+
+.toc .chapter-list {
+  margin-top: 20px;
+}
+
+/* chapter row (re-uses .chapter from App.css) */
+.toc-chapter {
+  border-bottom: 1px solid #eeeeee;
+}
+
+.toc-chapter:last-child {
+  border-bottom: none;
+}
+
+.toc-chapter > .chapter {
+  width: 100%;
+  border: none;
+  border-bottom: none;
+  background: white;
+  text-align: left;
+  font-size: 16px;
+  color: #252525;
+}
+
+.toc-chapter > .chapter .toc-chevron {
+  margin-left: auto;
+}
+
+.toc-chapter > .chapter .chapter-status + .toc-chevron {
+  margin-left: 4px;
+}
+
+.toc-chapter > .chapter:hover {
+  background: #fcf3f4;
+}
+
+.toc-chapter > .chapter:focus-visible,
+.toc-topic-head:focus-visible {
+  outline: 2px solid #cf1726;
+  outline-offset: -2px;
+}
+
+.toc-chevron {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border: solid #999999;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  transition: transform 0.2s;
+  margin-left: 4px;
+}
+
+.toc-chapter.open > .chapter .toc-chevron,
+.toc-topic-head[aria-expanded="true"] .toc-chevron {
+  transform: rotate(-135deg);
+}
+
+/* topics */
+.toc-topics {
+  list-style: none;
+  margin: 0;
+  padding: 0 28px 14px 78px;
+}
+
+.toc-topic + .toc-topic {
+  border-top: 1px solid #f0f0f0;
+}
+
+.toc-topic-head {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  color: #252525;
+}
+
+.toc-topic-head:hover strong {
+  color: #cf1726;
+}
+
+.toc-topic-number {
+  flex: none;
+  min-width: 34px;
+  color: #999999;
+  font-size: 14px;
+  padding-top: 1px;
+}
+
+.toc-topic-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.toc-topic-text span {
+  color: #777777;
+  font-size: 14px;
+}
+
+.toc-topic-body {
+  padding: 0 0 20px 48px;
+  line-height: 1.65;
+}
+
+.toc-topic-body p {
+  margin: 8px 0 0;
+}
+
+.toc-example {
+  margin: 16px 0;
+  padding: 14px 18px;
+  background: #f8f8f8;
+  border-left: 3px solid #cf1726;
+}
+
+.toc-example span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #999999;
+}
+
+.toc-example p {
+  margin: 4px 0 0;
+}
+
+.toc-terms {
+  margin: 16px 0;
+}
+
+.toc-terms > span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #999999;
+}
+
+.toc-terms dl {
+  margin: 6px 0 0;
+  display: grid;
+  gap: 8px;
+}
+
+.toc-terms dl > div {
+  display: grid;
+  grid-template-columns: minmax(120px, 180px) 1fr;
+  gap: 4px 16px;
+}
+
+.toc-terms dt {
+  font-weight: 700;
+  color: #cf1726;
+}
+
+.toc-terms dd {
+  margin: 0;
+  color: #444444;
+}
+
+.toc-sources {
+  font-size: 12px;
+  color: #999999;
+  margin-top: 14px !important;
+}
+
+.toc-sources a {
+  color: #888888;
+}
+
+.toc-sources a:hover {
+  color: #cf1726;
+}
+
+.toc-chapter-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.toc-chapter-text span {
+  color: #777777;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.toc-single {
+  padding: 0 28px 10px 78px;
+}
+
+.toc-single .toc-topic-body {
+  padding-left: 0;
+}
+
+.toc-topic-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 20px;
+  margin-top: 16px;
+}
+
+.toc-action {
+  border: 1px solid #cf1726;
+  background: white;
+  color: #cf1726;
+  border-radius: 5px;
+  padding: 7px 14px;
+  font-size: 14px;
+}
+
+.toc-action:hover {
+  background: #cf1726;
+  color: white;
+}
+
+.toc-empty {
+  padding: 23px 28px;
+  margin: 0;
+  color: #999999;
+}
+
+@media (max-width: 700px) {
+  .toc-topics {
+    padding: 0 16px 10px;
+  }
+
+  .toc-topic-body {
+    padding-left: 0;
+  }
+
+  .toc-topic-number {
+    display: none;
+  }
+
+  .toc-terms dl > div {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .toc-single {
+    padding: 0 18px 10px;
+  }
+}

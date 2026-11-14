@@ -1,6 +1,8 @@
 
 import { useState } from "react";
 import "./App.css";
+import TableOfContents from "./TableOfContents";
+import { levelFromKnowledge } from "./learningLevel";
 
 type Page = "onboarding" | "home" | "learning" | "profile" | "coach" | "portfolio";
 
@@ -90,26 +92,11 @@ const features = [
   },
 ];
 
-const chapters = [
-  "Introduction to Investing",
-  "How Financial Markets Work",
-  "Stocks",
-  "Cryptocurrency",
-  "ETFs and Index Funds",
-  "Bonds",
-  "Real Estate and REITs",
-  "Commodities and Gold",
-  "Mutual Funds",
-  "GICs",
-  "Options and Derivatives",
-  "Risk and Diversification",
-  "Portfolio Management",
-  "Canadian Investment Accounts",
-  "Investment Strategies",
-];
 
 function App() {
-  const [page, setPage] = useState<Page>("onboarding");
+  // The opening quiz is skipped for now: the site starts on the home page.
+  // Change "home" back to "onboarding" to show the quiz again.
+  const [page, setPage] = useState<Page>("home");
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [selected, setSelected] = useState("");
@@ -237,17 +224,10 @@ function App() {
               Explore the foundations of investing, one topic at a time.
             </p>
 
-            <div className="chapter-list">
-              {chapters.map((chapter, index) => (
-                <div className="chapter" key={chapter}>
-                  <span className="chapter-number">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <strong>{chapter}</strong>
-                  <span className="chapter-status">Coming soon</span>
-                </div>
-              ))}
-            </div>
+            <TableOfContents
+              initialLevel={levelFromKnowledge(answers[0])}
+              onNavigate={(target) => setPage(target as Page)}
+            />
           </section>
         )}
 
