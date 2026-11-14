@@ -2,11 +2,13 @@
 Flask blueprint for the Table of Contents.
 
 Pages
-  GET  /learn                  personalized table of contents
-  GET  /learn?demo=<name>      preview with a sample profile (see SAMPLE_PROFILES)
+  GET  /learn                  table of contents: every topic, expandable, with sources
+  GET  /learn?level=expert     same, opened at another reading level
+  GET  /learn/plan             personalized plan (for later, when sorting is added)
   GET  /learn/<lesson_id>      a single lesson, explained in detail
 
 JSON API
+  GET  /api/topics?level=...   the table of contents as JSON
   POST /api/toc                body: profile JSON  ->  personalized TOC JSON
   GET  /api/lessons/<id>       full lesson content
 
@@ -19,6 +21,7 @@ from flask import Blueprint, abort, jsonify, render_template, request, session
 
 from .lessons import LESSONS_BY_ID, MODULES_BY_ID
 from .personalize import build_toc, normalize_profile
+from .topics import LEVELS, build_contents
 
 toc_bp = Blueprint("toc", __name__)
 
@@ -50,7 +53,25 @@ def current_profile():
 
 @toc_bp.route("/learn")
 def index():
+    """The table of contents. The level can come from the quiz later (session["level"])."""
+    level = request.args.get("level") or session.get("level", "novice")
+    return render_template(
+        "contents.html",
+        contents=build_contents(level),
+        levels=LEVELS,
+        lesson_titles={lid: data["title"] for lid, data in LESSONS_BY_ID.items()},
+    )
+
+
+@toc_bp.route("/learn/plan")
+def plan():
+    """Personalized plan, kept for later (sorting topics per user)."""
     return render_template("toc.html", toc=build_toc(current_profile()), samples=SAMPLE_PROFILES)
+
+
+@toc_bp.route("/api/topics")
+def api_topics():
+    return jsonify(build_contents(request.args.get("level", "novice")))
 
 
 @toc_bp.route("/learn/<lesson_id>")

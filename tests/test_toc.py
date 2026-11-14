@@ -83,3 +83,47 @@ def test_api(client):
     res = client.post("/api/toc", json={"interests": ["bitcoin"]})
     assert "bitcoin" in res.get_json()["plan"]
     assert client.get("/api/lessons/tfsa").get_json()["title"].startswith("TFSA")
+
+
+# ---------------------------------------------------------------- table of contents (expandable)
+from toc.topics import LEVELS, build_contents, load_topics
+
+
+def test_every_topic_is_complete():
+    data = load_topics()
+    chapters = {c["id"] for c in data["categories"]}
+    ids = [t["id"] for t in data["concepts"]]
+    assert len(ids) == len(set(ids)), "duplicate topic ids"
+    for t in data["concepts"]:
+        assert t["category"] in chapters
+        assert all(t["levels"][lv].strip() for lv in LEVELS)
+        assert t["sources"], f"{t['id']} has no source link"
+        assert all(s["url"].startswith("https://") and s["title"] for s in t["sources"])
+        assert all(lid in {l["id"] for l in LESSONS} for lid in t["lessons"])
+
+
+def test_most_sources_are_national_bank():
+    topics = load_topics()["concepts"]
+    with_nbc = [t for t in topics if any("nbc.ca" in s["url"] for s in t["sources"])]
+    assert len(with_nbc) >= 0.8 * len(topics)
+
+
+def test_basic_topics_are_in_the_table_of_contents():
+    ids = {t["id"] for t in load_topics()["concepts"]}
+    assert {"stocks", "etfs", "mutual_funds", "bonds", "gics", "crypto", "registered_accounts"} <= ids
+
+
+def test_contents_numbering_and_bad_level():
+    c = build_contents("wizard")
+    assert c["level"] == "novice"
+    assert c["chapters"][0]["topics"][0]["number"] == "1.1"
+    assert c["topic_count"] == len(load_topics()["concepts"])
+
+
+def test_contents_page_and_api(client):
+    html = client.get("/learn").get_data(as_text=True)
+    assert html.count('<details class="topic"') == build_contents()["topic_count"]
+    assert "Sources:" in html and "nbc.ca" in html
+    assert client.get("/learn?level=expert").status_code == 200
+    assert client.get("/learn/plan").status_code == 200
+    assert client.get("/api/topics").get_json()["topic_count"] > 30

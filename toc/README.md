@@ -1,7 +1,19 @@
 # Table of Contents (Cindy)
 
-Builds a personalized table of contents from the user's answers to the opening quiz.
-Each entry opens a lesson that explains the concept in detail.
+`/learn` shows the table of contents: 40 topics in 7 chapters. Click a topic to
+expand it: explanation at the chosen level (novice / intermediate / expert), a
+"Try it" idea, an "I've learned this" checkbox, a link to the full lesson when
+there is one, and small source links at the bottom (National Bank first).
+There is a search box and a level switch at the top.
+
+Topics live in `toc/topics.json`. To add a topic, copy one entry and change it.
+
+**AWS S3 (optional):** set `TOC_S3_BUCKET` (and `TOC_S3_PREFIX`) and the app reads
+`topics.json` from S3 instead of the local file (code: `toc/topics.py`). Setup:
+`aws configure`, then `aws s3 mb s3://<bucket>` and
+`aws s3 cp toc/topics.json s3://<bucket>/<prefix>/topics.json`.
+
+The personalized plan (sorting per user) is kept for later at `/learn/plan`.
 
 ## Run it
 
@@ -31,7 +43,10 @@ Each lesson is marked **Core** (everyone), **For you** (matches their answers) o
 
 | File | What it does |
 |---|---|
-| `toc/lessons.py` | All lesson content. Add or edit lessons here. |
+| `toc/topics.json` | All table-of-contents topics, 3 levels, sources. |
+| `toc/topics.py` | Loads topics (local or AWS S3) and builds the table of contents |
+| `templates/contents.html` | The expandable table of contents page |
+| `toc/lessons.py` | Full lesson pages (linked from matching topics). |
 | `toc/personalize.py` | `build_toc(profile)`: quiz answers → personalized TOC |
 | `toc/routes.py` | Pages (`/learn`, `/learn/<id>`) and JSON API |
 | `templates/toc.html`, `templates/lesson.html` | The two pages |

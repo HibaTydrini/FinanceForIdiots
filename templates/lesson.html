@@ -2,7 +2,7 @@
 {% block title %}{{ lesson.title }} · FinanceForIdiots{% endblock %}
 {% block content %}
 <article class="lesson" data-lesson="{{ lesson.id }}">
-  <a class="back" href="{{ url_for('toc.index') }}">← Back to my plan</a>
+  <a class="back" href="{{ url_for('toc.index') }}">← Back to the table of contents</a>
   <p class="eyebrow">{{ module.title }}</p>
   <h1>{{ lesson.title }}</h1>
   <p class="lesson-lede">{{ lesson.summary }}</p>

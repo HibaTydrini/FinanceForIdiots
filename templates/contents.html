@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Table of Contents · FinanceForIdiots{% endblock %}
+{% block content %}
+<section class="contents-hero" data-total="{{ contents.topic_count }}">
+  <p class="eyebrow">Learn to invest</p>
+  <h1>Table of contents</h1>
+  <p class="muted">{{ contents.topic_count }} topics in {{ contents.chapters | length }} chapters. Click a topic to open it. Each one ends with links to its sources.</p>
+  <p class="disclaimer">⚠️ {{ contents.disclaimer }}</p>
+
+  <div class="card progress-card">
+    <p class="label">Progress</p>
+    <p class="progress-count"><span id="done-count">0</span> / {{ contents.topic_count }} topics learned</p>
+    <div class="bar"><div class="bar-fill" id="bar-fill"></div></div>
+  </div>
+</section>
+
+<div class="toolbar contents-toolbar">
+  <input type="search" id="topic-search" class="search" placeholder="Search topics, e.g. ETF, TFSA, dividends" aria-label="Search topics">
+  <div class="toggle" role="group" aria-label="Reading level">
+    {% for lv in levels %}
+    <button class="toggle-btn level-btn{% if lv == contents.level %} active{% endif %}" data-level="{{ lv }}" aria-pressed="{{ 'true' if lv == contents.level else 'false' }}">{{ lv | capitalize }}</button>
+    {% endfor %}
+  </div>
+</div>
+
+<ol class="chapters">
+  {% for ch in contents.chapters %}
+  <li class="chapter card" data-chapter="{{ ch.id }}">
+    <div class="module-head">
+      <span class="module-num">{{ ch.number }}</span>
+      <h2>{{ ch.title }}</h2>
+    </div>
+    <div class="topics">
+      {% for t in ch.topics %}
+      <details class="topic" data-topic="{{ t.id }}" data-search="{{ (t.title ~ ' ' ~ t.summary) | lower }}">
+        <summary>
+          <span class="check" aria-hidden="true"></span>
+          <span class="topic-num">{{ t.number }}</span>
+          <span class="lesson-main">
+            <span class="lesson-title">{{ t.title }}</span>
+            <span class="lesson-summary">{{ t.summary }}</span>
+          </span>
+          <span class="chevron" aria-hidden="true"></span>
+        </summary>
+
+        <div class="topic-body">
+          {% for lv in levels %}
+          <p class="level-text" data-level="{{ lv }}"{% if lv != contents.level %} hidden{% endif %}>
+            <span class="badge level-badge">{{ lv | capitalize }}</span> {{ t.levels[lv] }}
+          </p>
+          {% endfor %}
+
+          {% if t.example %}
+          <div class="callout example"><p class="label">Try it</p><p>{{ t.example }}</p></div>
+          {% endif %}
+
+          <div class="topic-actions">
+            <label class="learned"><input type="checkbox" class="learned-box"> I've learned this</label>
+            {% for lid in t.lessons %}
+            <a class="small" href="{{ url_for('toc.lesson', lesson_id=lid) }}">Full lesson: {{ lesson_titles[lid] }} →</a>
+            {% endfor %}
+          </div>
+
+          {% if t.sources %}
+          <p class="sources">Sources:
+            {% for s in t.sources %}<a href="{{ s.url }}" target="_blank" rel="noopener">{{ s.title }}</a>{% if not loop.last %} · {% endif %}{% endfor %}
+          </p>
+          {% endif %}
+        </div>
+      </details>
+      {% endfor %}
+    </div>
+  </li>
+  {% endfor %}
+</ol>
+<p class="muted small" id="no-results" hidden>No topic matches your search.</p>
+<p class="small">More lessons: <a href="https://www.nbc.ca/en/direct-brokerage/learning-centre/articles.html" target="_blank" rel="noopener">National Bank learning centre ↗</a></p>
+{% endblock %}
+{% block scripts %}<script>FFI.initContents();</script>{% endblock %}

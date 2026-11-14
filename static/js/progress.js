@@ -77,5 +77,66 @@ const FFI = (() => {
     render();
   }
 
-  return { initToc, initLesson };
+  // ---------------------------------------------------------------- table of contents (expandable)
+  function initContents() {
+    const total = Number(document.querySelector(".contents-hero").dataset.total) || 0;
+    const topics = [...document.querySelectorAll(".topic")];
+
+    // Learned checkboxes + progress bar
+    const refresh = () => {
+      const done = getDone();
+      let count = 0;
+      topics.forEach((t) => {
+        const isDone = done.has(t.dataset.topic);
+        t.classList.toggle("done", isDone);
+        t.querySelector(".learned-box").checked = isDone;
+        if (isDone) count += 1;
+      });
+      document.getElementById("done-count").textContent = count;
+      document.getElementById("bar-fill").style.width = total ? `${(count / total) * 100}%` : "0%";
+    };
+    topics.forEach((t) => {
+      t.querySelector(".learned-box").addEventListener("change", (e) => {
+        const done = getDone();
+        e.target.checked ? done.add(t.dataset.topic) : done.delete(t.dataset.topic);
+        setDone(done);
+        refresh();
+      });
+    });
+    refresh();
+
+    // Reading level: show only the chosen level's explanation
+    const LEVEL_KEY = "ffi-level";
+    const setLevel = (level) => {
+      document.querySelectorAll(".level-btn").forEach((b) => {
+        const on = b.dataset.level === level;
+        b.classList.toggle("active", on);
+        b.setAttribute("aria-pressed", on);
+      });
+      document.querySelectorAll(".level-text").forEach((p) => { p.hidden = p.dataset.level !== level; });
+      try { localStorage.setItem(LEVEL_KEY, level); } catch { /* private mode */ }
+    };
+    document.querySelectorAll(".level-btn").forEach((b) => b.addEventListener("click", () => setLevel(b.dataset.level)));
+    let saved = null;
+    try { saved = localStorage.getItem(LEVEL_KEY); } catch { /* private mode */ }
+    if (saved && !new URLSearchParams(location.search).has("level")) setLevel(saved);
+
+    // Search
+    const search = document.getElementById("topic-search");
+    search.addEventListener("input", () => {
+      const q = search.value.trim().toLowerCase();
+      let shown = 0;
+      topics.forEach((t) => {
+        const match = !q || t.dataset.search.includes(q);
+        t.hidden = !match;
+        if (match) shown += 1;
+      });
+      document.querySelectorAll(".chapter").forEach((ch) => {
+        ch.hidden = !ch.querySelector(".topic:not([hidden])");
+      });
+      document.getElementById("no-results").hidden = shown > 0;
+    });
+  }
+
+  return { initToc, initLesson, initContents };
 })();
