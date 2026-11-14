@@ -1,4 +1,4 @@
-// Progress tracking, quiz and "ask AI" behaviour for the Table of Contents.
+// Progress tracking for the Table of Contents.
 // Progress is kept in the browser (localStorage) so no database is needed yet.
 const FFI = (() => {
   const KEY = "ffi-progress";
@@ -75,55 +75,6 @@ const FFI = (() => {
       render();
     });
     render();
-
-    // Quiz: answering correctly also marks the lesson complete.
-    const quiz = document.getElementById("quiz");
-    const answer = Number(quiz.dataset.answer);
-    quiz.querySelectorAll(".option").forEach((opt) => {
-      opt.addEventListener("click", () => {
-        const correct = Number(opt.dataset.index) === answer;
-        quiz.querySelectorAll(".option").forEach((o) => o.classList.remove("wrong"));
-        opt.classList.add(correct ? "right" : "wrong");
-        const fb = quiz.querySelector(".quiz-feedback");
-        fb.hidden = false;
-        fb.classList.toggle("is-right", correct);
-        fb.textContent = correct ? `Correct! ${fb.dataset.explanation}` : "Not quite. Try again.";
-        if (correct) {
-          quiz.querySelectorAll(".option").forEach((o) => (o.disabled = true));
-          const done = getDone(); done.add(id); setDone(done); render();
-        }
-      });
-    });
-
-    // Ask the AI about this concept
-    const form = document.getElementById("ask-form");
-    const input = document.getElementById("ask-input");
-    const out = document.getElementById("ask-answer");
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const question = input.value.trim();
-      if (!question) return;
-      out.hidden = false;
-      out.textContent = "Thinking…";
-      try {
-        const res = await fetch("/api/explain", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ lesson_id: id, question }),
-        });
-        const data = await res.json();
-        out.innerHTML = formatAnswer(data.answer || data.error || "Something went wrong.");
-      } catch {
-        out.textContent = "Couldn't reach the server. Try again.";
-      }
-    });
-  }
-
-  // Escape HTML, then allow **bold** and line breaks.
-  function formatAnswer(text) {
-    const esc = text.replace(/[&<>"']/g, (c) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-    return esc.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\n/g, "<br>");
   }
 
   return { initToc, initLesson };

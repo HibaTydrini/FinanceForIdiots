@@ -1,8 +1,8 @@
+# pylint: disable=line-too-long
 """
 Curriculum for the Table of Contents.
 
-Everything the learner can read lives here. To add a lesson, append a dict to
-LESSONS with a unique `id` and an existing `module`. No other code changes needed.
+To add a lesson, append a dict to LESSONS with a unique `id` and an existing `module`.
 
 Fields
 ------
@@ -15,8 +15,7 @@ summary     one-line description shown in the TOC
 body        list of paragraphs (the detailed explanation)
 example     a concrete, numbers-based example
 key_points  3-4 bullet takeaways
-quiz        one multiple-choice check {question, options, answer (index), explanation}
-tags        used by personalize.py to match the user's profile
+tags        matched against the user's quiz answers in personalize.py
 links       optional [{label, url}] for "go further" (e.g. National Bank)
 """
 
@@ -24,69 +23,56 @@ NBC_HOME = "https://www.nbc.ca"
 NBDB_HOME = "https://nbdb.ca"  # National Bank Direct Brokerage
 
 MODULES = [
-    {"id": "foundations", "title": "Money Foundations",
-     "description": "The habits and ideas that come before you invest a single dollar."},
-    {"id": "basics", "title": "Investing Basics",
-     "description": "What you're actually buying, and why risk and return go together."},
-    {"id": "products", "title": "Investment Products",
-     "description": "ETFs, mutual funds, GICs and bonds explained in plain language."},
-    {"id": "accounts", "title": "Canadian Accounts",
-     "description": "TFSA, RRSP, FHSA, RESP: which tax-sheltered account does what."},
-    {"id": "portfolio", "title": "Building Your Portfolio",
-     "description": "Putting the pieces together into a plan that fits you."},
-    {"id": "analyze", "title": "Understanding Your Portfolio",
-     "description": "How to read what you already own, before we analyze it together."},
-    {"id": "next", "title": "Taking the Next Step",
-     "description": "Opening an account, placing your first order and handling taxes."},
+    {"id": "basics", "title": "Investing 101",
+     "description": "What investing is, and the few ideas everything else builds on."},
+    {"id": "products", "title": "Stocks, ETFs & Mutual Funds",
+     "description": "What you can actually buy, explained in plain language."},
+    {"id": "crypto", "title": "Crypto & Bitcoin",
+     "description": "How crypto works, what makes Bitcoin different, and the real risks."},
+    {"id": "accounts", "title": "TFSA, RRSP & FHSA",
+     "description": "Canada's tax-sheltered accounts and which one fits your goal."},
+    {"id": "taxes", "title": "Taxes",
+     "description": "How investment gains are taxed, and how to pay less legally."},
 ]
 
 LESSONS = [
-    # ------------------------------------------------------------------ foundations
+    # ------------------------------------------------------------------ basics
     {
-        "id": "emergency-fund",
-        "module": "foundations",
-        "title": "Budgeting & the Emergency Fund",
+        "id": "what-is-investing",
+        "module": "basics",
+        "title": "What Is Investing?",
         "level": 1, "minutes": 4,
-        "summary": "Why you need a cash cushion before you invest.",
+        "summary": "Putting your money to work so it grows faster than inflation.",
         "body": [
-            "Investing works best with money you won't need for a while. If an unexpected bill shows up "
-            "and your only savings are in the stock market, you might have to sell at a bad time, "
-            "possibly at a loss.",
-            "An emergency fund is cash kept somewhere safe and easy to access, like a high-interest savings "
-            "account. A common rule of thumb is 3 to 6 months of essential expenses (rent, food, transport, "
-            "bills). Students or people with very stable situations sometimes start smaller.",
-            "A simple budget tells you how much that is. Track what comes in and what goes out for a month, "
-            "then split it into needs, wants and savings. The popular 50/30/20 split is a starting point, "
-            "not a law.",
+            "Investing means buying something today (a piece of a company, a loan to a government, a fund) "
+            "because you expect it to be worth more in the future or to pay you income along the way.",
+            "Why not just save? Because of inflation, the general rise in prices. If prices rise 3% a year "
+            "and your savings earn 0.5%, your money buys a little less every year. Investing aims to grow "
+            "faster than inflation.",
+            "Investing is different from saving: savings are safe and available, investments can go up and "
+            "down. That's why money you'll need soon, like an emergency fund, usually stays in savings, "
+            "and money for long-term goals gets invested.",
         ],
-        "example": "If your rent, groceries, phone and transit cost $1,800/month, a 3-month emergency fund "
-                   "is $5,400. Once you have it, extra savings can go toward investing.",
+        "example": "With 2.5% yearly inflation, $10,000 left in cash buys only about $7,800 worth of today's "
+                   "goods after 10 years. Invested at 6% a year, it would be worth about $17,900.",
         "key_points": [
-            "Build a cash cushion before investing.",
-            "Aim for 3 to 6 months of essential expenses.",
-            "Keep it in a safe, accessible account, not in stocks.",
+            "Investing = buying assets you expect to grow or pay you income.",
+            "Cash slowly loses value to inflation.",
+            "Save for short-term needs, invest for long-term goals.",
         ],
-        "quiz": {
-            "question": "Where should your emergency fund usually be kept?",
-            "options": ["In individual stocks", "In a high-interest savings account",
-                        "In a 5-year locked GIC", "In cryptocurrency"],
-            "answer": 1,
-            "explanation": "An emergency fund needs to be safe and available right away. A savings account fits; "
-                           "stocks and crypto can drop and a locked GIC can't be withdrawn.",
-        },
-        "tags": ["emergency_fund", "short_horizon", "no_portfolio"],
+        "tags": ["core"],
     },
     {
         "id": "compound-interest",
-        "module": "foundations",
-        "title": "Compound Interest",
+        "module": "basics",
+        "title": "Compound Growth",
         "level": 1, "minutes": 4,
         "summary": "How your money earns money on the money it already earned.",
         "body": [
-            "Compound interest means your returns start earning their own returns. In year one you earn on "
-            "what you put in. In year two you earn on what you put in plus last year's gains, and so on.",
-            "The two biggest drivers are time and consistency. Starting earlier often matters more than "
-            "starting with a lot of money, because the growth snowballs over many years.",
+            "Compounding means your returns start earning their own returns. In year one you earn on what "
+            "you put in. In year two you earn on what you put in plus last year's gains, and so on.",
+            "The biggest drivers are time and consistency. Starting early often matters more than starting "
+            "with a lot, because the growth snowballs over many years.",
             "The 'Rule of 72' is a quick shortcut: divide 72 by your yearly return to estimate how many "
             "years it takes your money to double. At 6% per year, that's about 12 years.",
         ],
@@ -94,136 +80,10 @@ LESSONS = [
                    "roughly $100,000. Most of that is growth, not deposits.",
         "key_points": [
             "Returns earn their own returns over time.",
-            "Time in the market is the most powerful ingredient.",
+            "Time is the most powerful ingredient.",
             "Rule of 72: 72 ÷ return % = years to double.",
         ],
-        "quiz": {
-            "question": "Using the Rule of 72, how long does it take money to double at 8% per year?",
-            "options": ["About 6 years", "About 9 years", "About 12 years", "About 18 years"],
-            "answer": 1,
-            "explanation": "72 ÷ 8 = 9 years.",
-        },
-        "tags": ["long_horizon", "retirement", "grow_wealth", "no_portfolio"],
-    },
-    {
-        "id": "inflation",
-        "module": "foundations",
-        "title": "Inflation: Why Cash Loses Value",
-        "level": 1, "minutes": 3,
-        "summary": "Why keeping everything in a chequing account slowly costs you.",
-        "body": [
-            "Inflation is the general rise in prices over time. If inflation is 3%, something that costs "
-            "$100 today will cost about $103 next year.",
-            "Money sitting in an account paying 0.5% interest is losing purchasing power when inflation is "
-            "higher than that. That's why long-term savings are usually invested rather than left in cash.",
-            "The Bank of Canada aims to keep inflation around 2% per year over the long run.",
-        ],
-        "example": "With 2.5% yearly inflation, $10,000 in cash buys only about $7,800 worth of today's "
-                   "goods after 10 years.",
-        "key_points": [
-            "Inflation reduces what your money can buy.",
-            "Cash is safe in dollars but not in purchasing power.",
-            "Investing aims to grow faster than inflation.",
-        ],
-        "quiz": {
-            "question": "Your savings earn 1% and inflation is 3%. What is happening to your purchasing power?",
-            "options": ["Growing by 4%", "Growing by 1%", "Shrinking by about 2%", "Staying the same"],
-            "answer": 2,
-            "explanation": "Your 'real' return is roughly 1% − 3% = −2% per year.",
-        },
-        "tags": ["low_risk", "no_portfolio"],
-    },
-    {
-        "id": "debt-vs-investing",
-        "module": "foundations",
-        "title": "Pay Off Debt or Invest?",
-        "level": 1, "minutes": 3,
-        "summary": "How to decide where your next dollar should go.",
-        "body": [
-            "Paying off a debt is like earning a guaranteed return equal to its interest rate. Paying off a "
-            "credit card at 20% interest is like earning a risk-free 20%, which almost no investment can beat.",
-            "Low-interest debt (for example a student loan at 4 to 6%) is less urgent. Many people invest "
-            "while paying it down slowly, especially if an employer matches retirement contributions.",
-            "A common order: minimum payments on everything, small emergency fund, kill high-interest debt, "
-            "full emergency fund, then invest.",
-        ],
-        "example": "You have $2,000 on a credit card at 20%. Paying it off saves about $400 a year in "
-                   "interest, guaranteed.",
-        "key_points": [
-            "High-interest debt first; it's a guaranteed 'return'.",
-            "Low-interest debt can be paid alongside investing.",
-            "Never miss minimum payments.",
-        ],
-        "quiz": {
-            "question": "Which should usually come first?",
-            "options": ["Investing in stocks", "Paying off a 19.99% credit card",
-                        "Paying off a 3% loan early", "Buying a GIC"],
-            "answer": 1,
-            "explanation": "Paying off 19.99% debt is a guaranteed 19.99% return.",
-        },
-        "tags": ["no_portfolio", "beginner"],
-    },
-
-    # ------------------------------------------------------------------ basics
-    {
-        "id": "stocks",
-        "module": "basics",
-        "title": "What Is a Stock?",
-        "level": 1, "minutes": 4,
-        "summary": "Owning a small piece of a real company.",
-        "body": [
-            "A stock (or share) is a tiny piece of ownership in a company. If a company has 1 million shares "
-            "and you own 100, you own 0.01% of it.",
-            "You can make money in two ways: the share price goes up (a capital gain), or the company pays "
-            "part of its profits to shareholders (a dividend).",
-            "Prices move every day based on company results, the economy and investor mood. Over short "
-            "periods they can swing a lot; over long periods they have historically grown more than most "
-            "other investments.",
-        ],
-        "example": "You buy 10 shares at $50 ($500). A year later they're $55 and you received $10 in "
-                   "dividends. Your total return is $60, or 12%.",
-        "key_points": [
-            "A stock is partial ownership of a company.",
-            "Returns come from price growth and dividends.",
-            "Higher potential return, higher short-term swings.",
-        ],
-        "quiz": {
-            "question": "What is a dividend?",
-            "options": ["A fee you pay to buy stock", "A share of company profits paid to shareholders",
-                        "A type of bond", "A tax on gains"],
-            "answer": 1,
-            "explanation": "Dividends are profits a company chooses to pay out to its shareholders.",
-        },
-        "tags": ["grow_wealth", "high_risk", "income"],
-    },
-    {
-        "id": "bonds",
-        "module": "basics",
-        "title": "What Is a Bond?",
-        "level": 1, "minutes": 4,
-        "summary": "Lending money to a government or company in exchange for interest.",
-        "body": [
-            "A bond is a loan you give to a government or company. They promise to pay you interest "
-            "regularly (the coupon) and return your money at a set date (maturity).",
-            "Bonds are generally less volatile than stocks, which is why they're used to make a portfolio "
-            "steadier. Government of Canada bonds are among the safest.",
-            "Bond prices move opposite to interest rates: when rates rise, existing bonds with lower rates "
-            "become less attractive and their prices fall.",
-        ],
-        "example": "You buy a $1,000 5-year bond paying 4%. You get $40 a year for 5 years, then your "
-                   "$1,000 back.",
-        "key_points": [
-            "A bond is a loan that pays you interest.",
-            "Usually steadier than stocks, with lower expected returns.",
-            "When interest rates go up, bond prices go down.",
-        ],
-        "quiz": {
-            "question": "If interest rates rise, what typically happens to existing bond prices?",
-            "options": ["They rise", "They fall", "Nothing", "They double"],
-            "answer": 1,
-            "explanation": "New bonds pay more, so older lower-rate bonds are worth less.",
-        },
-        "tags": ["low_risk", "income", "short_horizon"],
+        "tags": ["long_horizon", "retirement", "grow_wealth"],
     },
     {
         "id": "risk-and-return",
@@ -234,25 +94,19 @@ LESSONS = [
         "body": [
             "In investing, 'risk' mostly means how much and how often an investment's value swings, and the "
             "chance you lose money when you need it.",
-            "Investments with higher expected returns, like stocks, come with bigger swings. Safer ones, like "
-            "GICs and savings accounts, pay less. There is no free lunch.",
-            "Your risk tolerance is about two things: how much risk you can afford (time horizon, income, "
-            "savings) and how much you can stomach emotionally without panic-selling.",
+            "Investments with higher expected returns, like stocks and crypto, come with bigger swings. "
+            "Safer ones, like GICs and savings accounts, pay less. There is no free lunch.",
+            "Your risk tolerance is about two things: how much risk you can afford (how soon you need the "
+            "money) and how much you can stomach emotionally without panic-selling.",
         ],
         "example": "In 2008 a typical stock index fell close to 40% in a year, then fully recovered within a "
                    "few years. Someone who sold in panic locked in the loss; someone who held did not.",
         "key_points": [
-            "Higher expected return means more volatility.",
+            "Higher expected return means bigger swings.",
             "Risk tolerance = ability + willingness to take risk.",
-            "Time horizon is one of the biggest factors.",
+            "The sooner you need the money, the less risk you should take.",
         ],
-        "quiz": {
-            "question": "Which investment typically has the highest expected long-term return AND the most volatility?",
-            "options": ["Savings account", "GIC", "Government bonds", "Stocks"],
-            "answer": 3,
-            "explanation": "Stocks have historically offered the highest returns with the biggest swings.",
-        },
-        "tags": ["core", "risk"],
+        "tags": ["core"],
     },
     {
         "id": "diversification",
@@ -265,7 +119,7 @@ LESSONS = [
             "sink you. If you own one company and it fails, you lose everything. If you own 500 companies "
             "and one fails, you barely notice.",
             "You can diversify across companies, industries, countries (Canada is only about 3% of the "
-            "world's stock market) and asset types (stocks, bonds, cash).",
+            "world's stock market) and types of investments (stocks, bonds, cash).",
             "Diversification lowers risk without necessarily lowering expected return, which is why it's "
             "often called the only free lunch in investing.",
         ],
@@ -276,105 +130,187 @@ LESSONS = [
             "Diversify across companies, sectors, countries and asset types.",
             "Lowers risk without giving up much return.",
         ],
-        "quiz": {
-            "question": "Which portfolio is MOST diversified?",
-            "options": ["One tech stock", "Five Canadian bank stocks",
-                        "A global ETF with thousands of companies", "One gold bar"],
-            "answer": 2,
-            "explanation": "A global ETF spreads your money across thousands of companies and countries.",
-        },
-        "tags": ["core", "has_portfolio"],
+        "tags": ["core"],
     },
 
     # ------------------------------------------------------------------ products
     {
-        "id": "etfs-and-index-funds",
+        "id": "stocks",
+        "module": "products",
+        "title": "Stocks",
+        "level": 1, "minutes": 5,
+        "summary": "Owning a small piece of a real company.",
+        "body": [
+            "A stock (or share) is a tiny piece of ownership in a company. If a company has 1 million shares "
+            "and you own 100, you own 0.01% of it.",
+            "You make money in two ways: the share price goes up (a capital gain), or the company pays part "
+            "of its profits to shareholders (a dividend).",
+            "Prices move every day based on company results, the economy and investor mood. Over short "
+            "periods they can swing a lot; over long periods stocks have historically grown more than most "
+            "other investments.",
+            "Picking individual stocks is hard, even for professionals. Many people own stocks through ETFs "
+            "or funds instead, so they're not betting on a single company.",
+        ],
+        "example": "You buy 10 shares at $50 ($500). A year later they're $55 and you received $10 in "
+                   "dividends. Your total return is $60, or 12%.",
+        "key_points": [
+            "A stock is partial ownership of a company.",
+            "Returns come from price growth and dividends.",
+            "Higher potential return, bigger short-term swings.",
+        ],
+        "tags": ["core", "stocks", "grow_wealth", "income", "high_risk", "long_horizon"],
+        "links": [{"label": "National Bank Direct Brokerage", "url": NBDB_HOME}],
+    },
+    {
+        "id": "etfs",
         "module": "products",
         "title": "ETFs & Index Funds",
         "level": 1, "minutes": 5,
         "summary": "The simplest way to own the whole market for a low fee.",
         "body": [
-            "An index fund tracks a market index, like the S&P/TSX Composite (big Canadian companies) or the "
-            "S&P 500 (big US companies). Instead of picking winners, you own all of them.",
             "An ETF (exchange-traded fund) is a basket of investments that trades on the stock exchange like "
-            "a single stock. Many ETFs are index funds.",
-            "'All-in-one' or asset-allocation ETFs hold a full diversified portfolio of stocks and bonds in "
-            "one product, rebalanced for you. They're popular with beginners.",
+            "a single stock. Buy one unit and you own a slice of everything inside it.",
+            "Many ETFs are index funds: they track a market index like the S&P/TSX Composite (big Canadian "
+            "companies) or the S&P 500 (big US companies). Instead of picking winners, you own all of them.",
+            "'All-in-one' ETFs hold a complete diversified mix of stocks and bonds in one product and "
+            "rebalance it for you. They're popular with beginners because one purchase is a full portfolio.",
+            "ETFs usually have very low fees (often under 0.25% per year), which leaves more of the return "
+            "for you.",
         ],
-        "example": "With one purchase of an all-in-one ETF, you can own thousands of stocks and bonds from "
-                   "around the world for a yearly fee around 0.2%.",
+        "example": "With one purchase of an all-in-one ETF you can own thousands of stocks and bonds from "
+                   "around the world for a yearly fee around 0.2%, or $2 per $1,000 invested.",
         "key_points": [
-            "Index funds track the whole market instead of picking stocks.",
-            "ETFs trade like stocks and are usually low-cost.",
-            "All-in-one ETFs are a full portfolio in a single product.",
+            "An ETF is a basket of investments that trades like a stock.",
+            "Index ETFs track the whole market instead of picking stocks.",
+            "Low fees and instant diversification.",
         ],
-        "quiz": {
-            "question": "What does an index fund try to do?",
-            "options": ["Beat the market by picking winners", "Match the performance of a market index",
-                        "Guarantee no losses", "Only buy bonds"],
-            "answer": 1,
-            "explanation": "Index funds aim to match an index, not beat it, which keeps costs low.",
-        },
-        "tags": ["grow_wealth", "retirement", "core"],
+        "tags": ["core", "etfs", "grow_wealth", "retirement"],
+        "links": [{"label": "National Bank Direct Brokerage", "url": NBDB_HOME}],
     },
     {
-        "id": "mutual-funds-and-fees",
+        "id": "mutual-funds",
         "module": "products",
-        "title": "Mutual Funds & Fees (MER)",
-        "level": 2, "minutes": 5,
-        "summary": "How small percentages turn into big dollars over time.",
+        "title": "Mutual Funds & Fees",
+        "level": 1, "minutes": 5,
+        "summary": "How funds work, and how small fees turn into big dollars.",
         "body": [
-            "A mutual fund pools money from many investors, and a manager decides what to buy. They're often "
-            "sold at bank branches.",
-            "Every fund charges a yearly fee called the MER (Management Expense Ratio), taken directly out of "
-            "your returns. Canadian mutual funds often charge 1.5 to 2.5%; index ETFs can be under 0.25%.",
-            "A 2% fee sounds small, but over decades it can eat a third or more of your final balance. Always "
-            "check the MER before buying.",
+            "A mutual fund pools money from many investors, and a professional manager decides what to buy. "
+            "They're often sold at bank branches and can be bought in small amounts.",
+            "Every fund charges a yearly fee called the MER (Management Expense Ratio), taken directly out "
+            "of your returns. Canadian mutual funds often charge 1.5 to 2.5%; index ETFs can be under 0.25%.",
+            "A 2% fee sounds small, but over decades it can eat a third or more of your final balance. "
+            "Most actively managed funds also fail to beat their index over the long run. Always check the "
+            "MER before buying.",
         ],
         "example": "$10,000 growing at 6% for 30 years: with a 0.2% fee you end with about $54,000; with a "
                    "2% fee you end with about $32,000.",
         "key_points": [
-            "MER is a yearly fee deducted from your returns.",
-            "Fees compound against you just like returns compound for you.",
-            "Compare MERs before buying any fund.",
+            "A manager picks the investments for you.",
+            "The MER is a yearly fee deducted from your returns.",
+            "Fees compound against you, so compare them.",
         ],
-        "quiz": {
-            "question": "What does MER stand for?",
-            "options": ["Market Exchange Rate", "Management Expense Ratio",
-                        "Minimum Equity Requirement", "Monthly Earnings Return"],
-            "answer": 1,
-            "explanation": "MER is the Management Expense Ratio, the annual cost of owning a fund.",
-        },
-        "tags": ["has_portfolio", "fees"],
+        "tags": ["mutual_funds", "has_portfolio"],
     },
     {
-        "id": "gics",
+        "id": "bonds-and-gics",
         "module": "products",
-        "title": "GICs & Safe Savings",
-        "level": 1, "minutes": 3,
-        "summary": "Guaranteed returns for money you'll need soon.",
+        "title": "Bonds & GICs",
+        "level": 1, "minutes": 4,
+        "summary": "Safer investments for stability and short-term goals.",
         "body": [
-            "A GIC (Guaranteed Investment Certificate) is a Canadian savings product: you lend money to a bank "
-            "for a fixed term (e.g. 1 to 5 years) and get a guaranteed interest rate.",
-            "Your principal is safe, and eligible GICs are protected by CDIC deposit insurance up to set "
-            "limits. The trade-off: lower returns, and many GICs lock your money until maturity.",
-            "GICs are great for goals 1 to 5 years away, like a down payment, where you can't afford a "
-            "market drop.",
+            "A bond is a loan you give to a government or company. They pay you interest regularly and "
+            "return your money at a set date. Bonds are steadier than stocks, which is why they're used to "
+            "calm a portfolio down.",
+            "A GIC (Guaranteed Investment Certificate) is a Canadian product: you lend money to a bank for a "
+            "fixed term (e.g. 1 to 5 years) at a guaranteed rate. Eligible GICs are protected by CDIC "
+            "deposit insurance up to set limits.",
+            "The trade-off is lower returns, and many GICs lock your money until maturity. They fit goals "
+            "1 to 5 years away, like a down payment, where you can't afford a market drop.",
         ],
         "example": "A $10,000 2-year GIC at 3.5% pays about $712 in interest, guaranteed.",
         "key_points": [
-            "Guaranteed rate, principal protected.",
-            "Money is often locked in until maturity.",
-            "Best for short-term goals.",
+            "Bonds and GICs trade growth for stability.",
+            "GICs guarantee your rate and principal.",
+            "Great for money you'll need within a few years.",
         ],
-        "quiz": {
-            "question": "When is a GIC usually a good fit?",
-            "options": ["Saving for retirement in 40 years", "Saving for a down payment in 2 years",
-                        "Day trading", "Your daily spending money"],
-            "answer": 1,
-            "explanation": "GICs fit short-term goals where you can't risk a market drop.",
-        },
-        "tags": ["low_risk", "short_horizon", "house", "emergency_fund"],
+        "tags": ["low_risk", "short_horizon", "house", "income"],
+    },
+
+    # ------------------------------------------------------------------ crypto
+    {
+        "id": "what-is-crypto",
+        "module": "crypto",
+        "title": "What Is Crypto?",
+        "level": 1, "minutes": 5,
+        "summary": "Digital money with no bank in the middle, and why its price swings so much.",
+        "body": [
+            "A cryptocurrency is a digital asset recorded on a blockchain: a shared public ledger kept by "
+            "thousands of computers instead of a bank. Nobody can quietly edit it, and you can send coins "
+            "to anyone without a middleman.",
+            "Unlike a stock, most crypto doesn't own a business or pay profits. Its price depends mostly on "
+            "supply and demand, which is why it can rise or fall 10% or more in a single day.",
+            "There are thousands of coins. Bitcoin and Ethereum are by far the largest; many smaller coins "
+            "have failed or turned out to be scams.",
+        ],
+        "example": "If you hold $1,000 of a small coin and it drops 60% in a bad month, you're left with "
+                   "$400, and it needs to rise 150% just to get back to $1,000.",
+        "key_points": [
+            "Crypto lives on a blockchain, not in a bank.",
+            "It doesn't produce profits, so price is driven by demand.",
+            "Extremely volatile, with many failed coins.",
+        ],
+        "tags": ["crypto", "high_risk"],
+    },
+    {
+        "id": "bitcoin",
+        "module": "crypto",
+        "title": "Bitcoin",
+        "level": 1, "minutes": 5,
+        "summary": "The first and largest cryptocurrency, and why people call it digital gold.",
+        "body": [
+            "Bitcoin was launched in 2009 by an anonymous creator using the name Satoshi Nakamoto. It was "
+            "the first cryptocurrency and is still the largest.",
+            "Only 21 million bitcoin will ever exist. New coins are created at a slowing pace (the 'halving' "
+            "about every 4 years). That fixed supply is why supporters call it 'digital gold'.",
+            "Bitcoin has had huge gains and huge crashes. It fell more than 70% from its 2021 peak during "
+            "2022 before recovering. Anyone buying it should be ready for that kind of drop.",
+            "You don't have to buy a whole bitcoin. You can buy a fraction, like $50 worth.",
+        ],
+        "example": "If one bitcoin costs $100,000, $50 buys you 0.0005 BTC. If the price doubles, your "
+                   "$50 becomes $100; if it falls 70%, it becomes $15.",
+        "key_points": [
+            "First and largest crypto, capped at 21 million coins.",
+            "Can be bought in tiny fractions.",
+            "Big long-term gains, but drops of 70%+ have happened.",
+        ],
+        "tags": ["crypto", "bitcoin", "high_risk"],
+    },
+    {
+        "id": "crypto-safely",
+        "module": "crypto",
+        "title": "Buying Crypto Safely in Canada",
+        "level": 2, "minutes": 5,
+        "summary": "Exchanges, Bitcoin ETFs, wallets, and how to avoid scams.",
+        "body": [
+            "Option 1: a crypto trading platform. Use one registered with Canadian securities regulators "
+            "(you can check through the Canadian Securities Administrators). You own the actual coins.",
+            "Option 2: a crypto ETF. Canada has Bitcoin and Ethereum ETFs that trade on the stock exchange. "
+            "You buy them through a regular brokerage account, and they can go inside a TFSA or RRSP, which "
+            "the coins themselves can't.",
+            "Red flags for scams: guaranteed returns, pressure to act fast, someone online offering to "
+            "'help you trade', or being asked to send crypto to unlock withdrawals.",
+            "A common rule of thumb: keep crypto to a small slice of your investments, an amount you could "
+            "lose without changing your life.",
+        ],
+        "example": "Someone with $5,000 invested might keep $4,750 in a diversified ETF and put $250 (5%) "
+                   "into a Bitcoin ETF inside their TFSA.",
+        "key_points": [
+            "Only use platforms registered in Canada.",
+            "Crypto ETFs can be held in a TFSA or RRSP.",
+            "No legit investment guarantees returns.",
+            "Keep crypto to a small slice.",
+        ],
+        "tags": ["crypto", "bitcoin"],
     },
 
     # ------------------------------------------------------------------ accounts
@@ -385,13 +321,14 @@ LESSONS = [
         "level": 1, "minutes": 5,
         "summary": "Grow investments and withdraw them completely tax-free.",
         "body": [
-            "Despite the name, a TFSA isn't just a savings account; you can hold stocks, ETFs, bonds and GICs "
-            "inside it. Any growth, dividends or interest is never taxed, even when you withdraw.",
+            "Despite the name, a TFSA isn't just a savings account; you can hold stocks, ETFs, bonds, GICs "
+            "and crypto ETFs inside it. Any growth, dividends or interest is never taxed, even when you "
+            "withdraw.",
             "Every Canadian 18+ gets new contribution room each year (the government sets the amount; check "
             "CRA for the current limit), and unused room carries forward forever.",
-            "Withdrawals are allowed any time, and the amount you withdraw is added back to your room the "
-            "next calendar year. Over-contributing triggers a 1% per month penalty, so track your room "
-            "in your CRA My Account.",
+            "You can withdraw any time, and the amount you withdraw is added back to your room the next "
+            "calendar year. Over-contributing triggers a 1% per month penalty, so track your room in your "
+            "CRA My Account.",
         ],
         "example": "You invest $7,000 in an ETF inside your TFSA and it grows to $20,000. You can withdraw "
                    "all $20,000 and pay $0 in tax.",
@@ -400,13 +337,6 @@ LESSONS = [
             "Can hold investments, not just cash.",
             "Unused room carries forward; withdrawals come back next year.",
         ],
-        "quiz": {
-            "question": "What happens to room you withdraw from a TFSA?",
-            "options": ["It's lost forever", "It's added back the next calendar year",
-                        "It's added back immediately", "It becomes RRSP room"],
-            "answer": 1,
-            "explanation": "Withdrawn amounts are re-added to your contribution room on January 1 of the next year.",
-        },
         "tags": ["core", "tfsa", "grow_wealth", "retirement", "house"],
         "links": [{"label": "National Bank: TFSA", "url": NBC_HOME}],
     },
@@ -414,31 +344,24 @@ LESSONS = [
         "id": "rrsp",
         "module": "accounts",
         "title": "RRSP (Registered Retirement Savings Plan)",
-        "level": 2, "minutes": 5,
+        "level": 1, "minutes": 5,
         "summary": "A tax deduction now, taxed later in retirement.",
         "body": [
-            "Contributions to an RRSP reduce your taxable income this year, which can mean a tax refund. "
-            "Investments grow tax-deferred, and you pay tax when you withdraw, ideally in retirement when "
+            "Money you put in an RRSP reduces your taxable income this year, which can mean a tax refund. "
+            "Investments grow tax-free inside, and you pay tax when you withdraw, ideally in retirement when "
             "your income (and tax rate) is lower.",
-            "Your contribution room is 18% of last year's earned income, up to a yearly maximum, and "
-            "unused room carries forward. Your Notice of Assessment shows your room.",
-            "RRSPs shine when you're in a high tax bracket now. If your income is low (e.g. a student), "
-            "a TFSA is often better first.",
+            "Your contribution room is 18% of last year's earned income, up to a yearly maximum, and unused "
+            "room carries forward. Your Notice of Assessment shows your room.",
+            "RRSPs shine when you're in a high tax bracket now. If your income is low (e.g. a student), a "
+            "TFSA is often better first.",
         ],
-        "example": "You earn $70,000 and contribute $5,000. Your taxable income drops to $65,000, which "
-                   "could mean a refund of roughly $1,500 depending on your province.",
+        "example": "You earn $70,000 and contribute $5,000. Your taxable income drops to $65,000, which could "
+                   "mean a refund of roughly $1,500 depending on your province.",
         "key_points": [
             "Contributions are tax-deductible today.",
             "Withdrawals are taxed as income later.",
-            "Best when your current tax rate is higher than in retirement.",
+            "Best when your tax rate now is higher than in retirement.",
         ],
-        "quiz": {
-            "question": "When are RRSP savings taxed?",
-            "options": ["When you contribute", "Every year as they grow",
-                        "When you withdraw", "Never"],
-            "answer": 2,
-            "explanation": "RRSPs are tax-deferred: you pay tax on withdrawals.",
-        },
         "tags": ["rrsp", "retirement", "long_horizon"],
         "links": [{"label": "National Bank: RRSP", "url": NBC_HOME}],
     },
@@ -446,7 +369,7 @@ LESSONS = [
         "id": "fhsa",
         "module": "accounts",
         "title": "FHSA (First Home Savings Account)",
-        "level": 2, "minutes": 4,
+        "level": 1, "minutes": 4,
         "summary": "The best of TFSA and RRSP for your first home.",
         "body": [
             "The FHSA is for first-time home buyers. Contributions are tax-deductible like an RRSP, and "
@@ -463,287 +386,57 @@ LESSONS = [
             "$8,000/year, $40,000 lifetime.",
             "Can roll into your RRSP if you don't buy.",
         ],
-        "quiz": {
-            "question": "What's the lifetime FHSA contribution limit?",
-            "options": ["$8,000", "$20,000", "$40,000", "Unlimited"],
-            "answer": 2,
-            "explanation": "The lifetime limit is $40,000.",
-        },
         "tags": ["fhsa", "house"],
         "links": [{"label": "National Bank: FHSA", "url": NBC_HOME}],
     },
-    {
-        "id": "resp",
-        "module": "accounts",
-        "title": "RESP (Registered Education Savings Plan)",
-        "level": 2, "minutes": 3,
-        "summary": "Saving for a child's education, with free government money.",
-        "body": [
-            "An RESP helps you save for a child's post-secondary education. Investments grow tax-sheltered.",
-            "The government adds the Canada Education Savings Grant (CESG): 20% on the first $2,500 "
-            "contributed per child per year, which is up to $500/year and $7,200 lifetime.",
-            "When the student withdraws for school, the growth and grants are taxed in their hands, usually "
-            "at a very low rate.",
-        ],
-        "example": "Contributing $2,500 a year gets $500 in free grants each year, an instant 20% return.",
-        "key_points": [
-            "Government adds 20% (up to $500/year per child).",
-            "Grows tax-sheltered.",
-            "Taxed in the student's hands at withdrawal.",
-        ],
-        "quiz": {
-            "question": "How much CESG do you get on a $2,500 contribution?",
-            "options": ["$0", "$250", "$500", "$2,500"],
-            "answer": 2,
-            "explanation": "20% of $2,500 = $500.",
-        },
-        "tags": ["resp", "education"],
-    },
 
-    # ------------------------------------------------------------------ portfolio
-    {
-        "id": "asset-allocation",
-        "module": "portfolio",
-        "title": "Asset Allocation",
-        "level": 2, "minutes": 5,
-        "summary": "Choosing your stock/bond mix, the decision that matters most.",
-        "body": [
-            "Asset allocation is how you split your money between asset types, mainly stocks (growth) and "
-            "bonds/cash (stability). It explains most of how your portfolio behaves.",
-            "A longer time horizon and higher risk tolerance usually mean more stocks. A shorter horizon or "
-            "lower tolerance means more bonds and cash.",
-            "Typical examples: conservative 40% stocks / 60% bonds; balanced 60/40; growth 80/20; "
-            "aggressive 100% stocks.",
-        ],
-        "example": "A 25-year-old saving for retirement might choose 90% stocks / 10% bonds. Someone buying "
-                   "a house in 3 years might hold mostly GICs and bonds.",
-        "key_points": [
-            "Your stock/bond split drives most of your results.",
-            "Longer horizon means you can usually hold more stocks.",
-            "Pick a mix you can stick with during crashes.",
-        ],
-        "quiz": {
-            "question": "Who should usually hold MORE stocks?",
-            "options": ["Someone needing the money in 1 year", "Someone investing for 30 years",
-                        "Someone who panics at any loss", "Nobody"],
-            "answer": 1,
-            "explanation": "A long horizon gives time to recover from downturns.",
-        },
-        "tags": ["core", "risk", "has_portfolio"],
-    },
-    {
-        "id": "dollar-cost-averaging",
-        "module": "portfolio",
-        "title": "Dollar-Cost Averaging",
-        "level": 1, "minutes": 3,
-        "summary": "Investing a fixed amount on a schedule so timing doesn't matter.",
-        "body": [
-            "Dollar-cost averaging (DCA) means investing the same amount at regular intervals, for example "
-            "$200 every payday, no matter what the market is doing.",
-            "When prices are low, your fixed amount buys more units; when high, fewer. It removes the stress "
-            "of trying to 'time the market', which even professionals rarely do well.",
-            "Most brokerages let you set up automatic contributions so it happens without thinking.",
-        ],
-        "example": "$100/month: at $10/unit you buy 10 units, at $5 you buy 20, at $10 again you buy 10. "
-                   "You own 40 units for $300, an average cost of $7.50.",
-        "key_points": [
-            "Invest a fixed amount on a regular schedule.",
-            "Removes the need to time the market.",
-            "Automate it.",
-        ],
-        "quiz": {
-            "question": "With DCA, what happens when prices drop?",
-            "options": ["You stop investing", "Your fixed amount buys more units",
-                        "You buy fewer units", "You sell everything"],
-            "answer": 1,
-            "explanation": "The same dollars buy more units at lower prices.",
-        },
-        "tags": ["no_portfolio", "beginner", "grow_wealth", "retirement"],
-    },
-    {
-        "id": "rebalancing",
-        "module": "portfolio",
-        "title": "Rebalancing",
-        "level": 2, "minutes": 4,
-        "summary": "Bringing your portfolio back to your target mix.",
-        "body": [
-            "Over time, your investments grow at different speeds, so your 80/20 portfolio might drift to "
-            "90/10 after a strong year for stocks. That means you're taking more risk than you planned.",
-            "Rebalancing is selling some of what grew and buying what lagged, or directing new money to the "
-            "underweight part, to return to your target.",
-            "Common approaches: rebalance once a year, or whenever an asset drifts more than 5 percentage "
-            "points from target. All-in-one ETFs do it for you automatically.",
-        ],
-        "example": "Target 60/40. After a good year you're at 70/30 on a $10,000 portfolio. Move about "
-                   "$1,000 from stocks to bonds to get back to 60/40.",
-        "key_points": [
-            "Portfolios drift as markets move.",
-            "Rebalancing keeps your risk where you chose.",
-            "Once a year or at a set threshold is enough.",
-        ],
-        "quiz": {
-            "question": "Why rebalance?",
-            "options": ["To maximize trading", "To keep your risk level at your target",
-                        "To avoid all losses", "Because it's required by law"],
-            "answer": 1,
-            "explanation": "Rebalancing keeps your portfolio's risk aligned with your plan.",
-        },
-        "tags": ["has_portfolio"],
-    },
-
-    # ------------------------------------------------------------------ analyze
-    {
-        "id": "reading-your-statement",
-        "module": "analyze",
-        "title": "Reading Your Investment Statement",
-        "level": 2, "minutes": 5,
-        "summary": "What book value, market value and unrealized gains mean.",
-        "body": [
-            "Book value (or cost basis) is what you paid for an investment, including fees. Market value is "
-            "what it's worth today.",
-            "The difference is your unrealized gain or loss: it's only on paper until you sell. Once you "
-            "sell, it becomes realized (and may be taxable outside a TFSA/RRSP).",
-            "Your statement also lists holdings (what you own), asset allocation (stocks vs bonds vs cash), "
-            "contributions, withdrawals, dividends and fees. Gather these before we analyze your portfolio.",
-        ],
-        "example": "You bought an ETF for $5,000 (book value). It's now worth $5,600 (market value). You have "
-                   "a $600 unrealized gain, or 12%.",
-        "key_points": [
-            "Book value = what you paid. Market value = what it's worth now.",
-            "Gains are unrealized until you sell.",
-            "Know your holdings and allocation before analyzing.",
-        ],
-        "quiz": {
-            "question": "You paid $1,000 and it's now worth $900. What do you have?",
-            "options": ["A realized loss of $100", "An unrealized loss of $100",
-                        "A $100 dividend", "A gain"],
-            "answer": 1,
-            "explanation": "It's unrealized because you haven't sold yet.",
-        },
-        "tags": ["has_portfolio"],
-    },
-    {
-        "id": "performance-and-benchmarks",
-        "module": "analyze",
-        "title": "Performance & Benchmarks",
-        "level": 3, "minutes": 5,
-        "summary": "Is your portfolio actually doing well? Compare it fairly.",
-        "body": [
-            "A return number alone doesn't tell you much. 8% sounds great until you learn the market did 15%.",
-            "A benchmark is a comparison point that matches what you hold, like the S&P/TSX Composite for "
-            "Canadian stocks, or a balanced index for a 60/40 portfolio.",
-            "Compare over several years, after fees. If an expensive fund keeps trailing its benchmark, a "
-            "low-cost index fund may be a better choice.",
-        ],
-        "example": "Your Canadian equity fund returned 6% last year after a 2% MER. The TSX returned 9%. "
-                   "The fund underperformed its benchmark by 3%.",
-        "key_points": [
-            "Always compare returns to a fitting benchmark.",
-            "Look at multi-year results after fees.",
-            "Persistent underperformance is a red flag.",
-        ],
-        "quiz": {
-            "question": "What's a fair benchmark for a fund of large Canadian companies?",
-            "options": ["The S&P/TSX Composite", "Gold prices", "Your savings account rate", "Bitcoin"],
-            "answer": 0,
-            "explanation": "The S&P/TSX Composite tracks large Canadian companies.",
-        },
-        "tags": ["has_portfolio", "advanced"],
-    },
-
-    # ------------------------------------------------------------------ next
-    {
-        "id": "opening-an-account",
-        "module": "next",
-        "title": "Opening an Investment Account",
-        "level": 1, "minutes": 4,
-        "summary": "Self-directed brokerage, robo-advisor or advisor: which is for you?",
-        "body": [
-            "Self-directed (online brokerage): you choose and buy investments yourself. Lowest cost, most "
-            "control, requires a bit of knowledge. National Bank Direct Brokerage is one example.",
-            "Robo-advisor: answer a questionnaire, and it builds and rebalances an ETF portfolio for you for "
-            "a small fee. Good middle ground.",
-            "Human advisor: personalized advice and planning, usually at a higher cost. Useful for complex "
-            "situations.",
-            "Whichever you choose, you'll pick the account type (TFSA, RRSP, FHSA, non-registered) when you "
-            "open it.",
-        ],
-        "example": "A beginner comfortable with one all-in-one ETF might open a self-directed TFSA and set up "
-                   "a $200 automatic monthly contribution.",
-        "key_points": [
-            "Self-directed = cheapest, you're in charge.",
-            "Robo-advisor = automated, low-cost help.",
-            "Advisor = personal help, higher cost.",
-        ],
-        "quiz": {
-            "question": "Which option gives you the most control and lowest fees?",
-            "options": ["Human advisor", "Robo-advisor", "Self-directed brokerage", "Mutual fund at a branch"],
-            "answer": 2,
-            "explanation": "With self-directed you choose everything and avoid advisory fees.",
-        },
-        "tags": ["no_portfolio", "core"],
-        "links": [{"label": "National Bank Direct Brokerage", "url": NBDB_HOME},
-                  {"label": "National Bank: Investing", "url": NBC_HOME}],
-    },
-    {
-        "id": "first-order",
-        "module": "next",
-        "title": "Placing Your First Order",
-        "level": 2, "minutes": 4,
-        "summary": "Tickers, market orders vs limit orders, and avoiding rookie mistakes.",
-        "body": [
-            "Every stock and ETF has a ticker symbol (a short code). Double-check you have the right one and "
-            "the right exchange (TSX vs US) before buying.",
-            "A market order buys right away at the current price. A limit order only buys at your price or "
-            "better, which protects you from sudden jumps. Limit orders are generally safer for beginners.",
-            "Buying US-listed investments with Canadian dollars involves currency conversion, which can cost "
-            "1 to 2% each way. Canadian-listed ETFs avoid this.",
-        ],
-        "example": "An ETF trades at $30.10. You place a limit order to buy 20 units at $30.15. It fills at "
-                   "or below $30.15, so you pay at most $603.",
-        "key_points": [
-            "Verify the ticker and exchange.",
-            "Limit orders give you price control.",
-            "Watch for currency conversion costs.",
-        ],
-        "quiz": {
-            "question": "What does a limit order do?",
-            "options": ["Buys immediately at any price", "Buys only at your set price or better",
-                        "Limits how many shares exist", "Sells automatically after a loss"],
-            "answer": 1,
-            "explanation": "A limit order sets the maximum you'll pay (or minimum you'll accept when selling).",
-        },
-        "tags": ["no_portfolio", "grow_wealth"],
-        "links": [{"label": "National Bank Direct Brokerage", "url": NBDB_HOME}],
-    },
+    # ------------------------------------------------------------------ taxes
     {
         "id": "investment-taxes",
-        "module": "next",
-        "title": "Taxes on Investments",
-        "level": 3, "minutes": 5,
-        "summary": "Capital gains, dividends and interest outside registered accounts.",
+        "module": "taxes",
+        "title": "How Investments Are Taxed",
+        "level": 2, "minutes": 5,
+        "summary": "Capital gains, dividends, interest, and crypto.",
         "body": [
             "Inside a TFSA, RRSP or FHSA you generally don't pay tax year-to-year. Outside them (a "
-            "'non-registered' account), different income is taxed differently.",
-            "Capital gains: only 50% of the gain is added to your taxable income. Eligible Canadian dividends "
-            "get a dividend tax credit, lowering their tax. Interest (from GICs, bonds, savings) is fully taxed.",
-            "That's why many people fill their TFSA/RRSP first, and keep track of their cost basis for "
-            "anything held in a non-registered account.",
+            "'non-registered' account), different kinds of income are taxed differently.",
+            "Capital gains: when you sell something for more than you paid, only 50% of the gain is added "
+            "to your taxable income. Eligible Canadian dividends get a dividend tax credit. Interest (from "
+            "GICs, bonds, savings) is fully taxed.",
+            "Crypto counts too. The CRA treats selling crypto, trading one coin for another, or spending it "
+            "as a taxable event. Keep records of what you paid for every coin.",
         ],
-        "example": "You sell for a $2,000 capital gain in a non-registered account. $1,000 is added to your "
-                   "taxable income. In a TFSA, the same gain is never taxed.",
+        "example": "You sell for a $2,000 gain in a non-registered account. $1,000 is added to your taxable "
+                   "income. In a TFSA, the same gain is never taxed.",
         "key_points": [
-            "Use registered accounts first when you can.",
+            "Registered accounts shelter you from tax.",
             "Capital gains: 50% taxable. Interest: 100% taxable.",
-            "Canadian dividends get a tax credit.",
+            "Crypto trades and sales are taxable; keep records.",
         ],
-        "quiz": {
-            "question": "Which is taxed most heavily outside a registered account?",
-            "options": ["Capital gains", "Eligible Canadian dividends", "Interest income", "TFSA withdrawals"],
-            "answer": 2,
-            "explanation": "Interest income is fully taxable at your marginal rate.",
-        },
-        "tags": ["advanced", "income", "has_portfolio"],
+        "tags": ["core", "taxes", "income", "crypto", "has_portfolio"],
+    },
+    {
+        "id": "tfsa-vs-rrsp",
+        "module": "taxes",
+        "title": "TFSA vs RRSP: Which First?",
+        "level": 2, "minutes": 4,
+        "summary": "A simple way to decide where your next dollar goes.",
+        "body": [
+            "Both accounts save you tax; they just do it at different times. An RRSP gives you the tax break "
+            "now, a TFSA gives it to you later when you withdraw.",
+            "Rough rule: if your income is lower now than it will be in retirement (students, early career), "
+            "start with a TFSA. If your income is high now, the RRSP refund is worth more.",
+            "If you're saving for a first home, the FHSA usually comes first, since it gives you both breaks. "
+            "And if your employer matches RRSP contributions, take the match; it's free money.",
+        ],
+        "example": "A student earning $20,000 gets a small refund from an RRSP, so a TFSA makes more sense. "
+                   "Someone earning $100,000 might get back over 40% of an RRSP contribution.",
+        "key_points": [
+            "Low income now → TFSA first.",
+            "High income now → RRSP first.",
+            "Buying a first home → FHSA first. Employer match → always take it.",
+        ],
+        "tags": ["taxes", "tfsa", "rrsp", "fhsa", "retirement", "house"],
     },
 ]
 

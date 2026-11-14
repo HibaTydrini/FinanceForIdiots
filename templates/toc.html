@@ -7,26 +7,19 @@
   <p class="eyebrow">Your personalized table of contents</p>
   <h1>{% if p.name %}Hi {{ p.name }}, here{% else %}Here{% endif %}'s your learning plan</h1>
 
-  <div class="hero-grid">
-    <div class="card style-card">
-      <p class="label">Your investor style</p>
-      <p class="style-name">{{ toc.style.label }}</p>
-      <p class="muted">{{ toc.style.description }}</p>
-    </div>
-    <div class="card progress-card">
-      <p class="label">Progress</p>
-      <p class="progress-count"><span id="done-count">0</span> / {{ toc.plan | length }} lessons</p>
-      <div class="bar"><div class="bar-fill" id="bar-fill"></div></div>
-      <p class="muted">About {{ toc.total_minutes }} minutes of reading in your plan.</p>
-      <a class="btn" id="continue-btn" href="{{ url_for('toc.lesson', lesson_id=toc.start_here) }}">Start here →</a>
-    </div>
+  <div class="card progress-card">
+    <p class="label">Progress</p>
+    <p class="progress-count"><span id="done-count">0</span> / {{ toc.plan | length }} lessons</p>
+    <div class="bar"><div class="bar-fill" id="bar-fill"></div></div>
+    <p class="muted">About {{ toc.total_minutes }} minutes of reading in your plan.</p>
+    <a class="btn" id="continue-btn" href="{{ url_for('toc.lesson', lesson_id=toc.start_here) }}">Start here →</a>
   </div>
 </section>
 
 <p class="demo-bar muted small">
   Preview as:
   {% for key in samples %}<a href="?demo={{ key }}">{{ key }}</a>{% if not loop.last %} · {% endif %}{% endfor %}
-  <span>(sample profiles until the questionnaire is connected)</span>
+  <span>(sample profiles until the opening quiz is connected)</span>
 </p>
 
 <div class="toolbar">

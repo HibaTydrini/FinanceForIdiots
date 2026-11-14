@@ -95,11 +95,10 @@ h2 { font-size: 1.15rem; margin: 0 0 .4em; }
 .badge.optional { background: var(--opt-bg); color: var(--opt); }
 
 /* hero */
-.hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.style-name { font-size: 1.6rem; font-weight: 800; margin: 0 0 .2em; color: var(--accent); }
 .progress-count { font-size: 1.3rem; font-weight: 700; margin: 0 0 .5em; }
 .bar { height: 8px; background: var(--opt-bg); border-radius: 999px; overflow: hidden; }
 .bar-fill { height: 100%; width: 0; background: var(--rec); transition: width .4s; }
+.progress-card { max-width: 480px; }
 .progress-card .btn { margin-top: 6px; }
 
 /* toolbar */
@@ -160,23 +159,6 @@ h2 { font-size: 1.15rem; margin: 0 0 .4em; }
 .takeaways { margin: 0; padding-left: 1.2em; }
 .takeaways li { margin: .3em 0; }
 
-.options { display: grid; gap: 8px; margin: 12px 0; }
-.option {
-  text-align: left; font: inherit; padding: 10px 14px; border-radius: 10px; cursor: pointer;
-  background: var(--bg); border: 1px solid var(--border); color: var(--text);
-}
-.option:hover:not(:disabled) { border-color: var(--accent); }
-.option.right { border-color: var(--good); background: var(--rec-bg); }
-.option.wrong { border-color: var(--bad); }
-.option:disabled { cursor: default; }
-.quiz-feedback { margin: 0; font-weight: 500; color: var(--bad); }
-.quiz-feedback.is-right { color: var(--good); }
-
-.ask textarea {
-  width: 100%; font: inherit; padding: 10px 12px; border-radius: 10px; resize: vertical;
-  border: 1px solid var(--border); background: var(--bg); color: var(--text); margin-bottom: 10px;
-}
-.ask-answer { margin-top: 16px; padding: 14px; border-radius: 10px; background: var(--accent-soft); }
 
 .go-further { margin: 20px 0; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .go-further .label { width: 100%; }
@@ -190,7 +172,7 @@ h2 { font-size: 1.15rem; margin: 0 0 .4em; }
 .pager-link.next { text-align: right; grid-column: 2; }
 
 @media (max-width: 640px) {
-  .hero-grid, .pager { grid-template-columns: 1fr; }
+  .pager { grid-template-columns: 1fr; }
   .pager-link.next { grid-column: 1; }
   .site-header nav a:last-child { display: none; }
   .lesson-meta .badge { display: none; }

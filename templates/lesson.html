@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ lesson.title }} · FinanceForIdiots{% endblock %}
 {% block content %}
-<article class="lesson" data-lesson="{{ lesson.id }}" data-plan="{{ plan | join(',') }}">
+<article class="lesson" data-lesson="{{ lesson.id }}">
   <a class="back" href="{{ url_for('toc.index') }}">← Back to my plan</a>
   <p class="eyebrow">{{ module.title }}</p>
   <h1>{{ lesson.title }}</h1>
@@ -33,26 +33,6 @@
     <ul class="takeaways">
       {% for point in lesson.key_points %}<li>{{ point }}</li>{% endfor %}
     </ul>
-  </section>
-
-  <section class="card quiz" id="quiz" data-answer="{{ lesson.quiz.answer }}">
-    <h2>Quick check</h2>
-    <p>{{ lesson.quiz.question }}</p>
-    <div class="options">
-      {% for opt in lesson.quiz.options %}
-      <button class="option" data-index="{{ loop.index0 }}">{{ opt }}</button>
-      {% endfor %}
-    </div>
-    <p class="quiz-feedback" data-explanation="{{ lesson.quiz.explanation }}" hidden></p>
-  </section>
-
-  <section class="card ask">
-    <h2>Still confused? Ask about this concept</h2>
-    <form id="ask-form">
-      <textarea id="ask-input" rows="3" placeholder="e.g. Can you explain this like I'm 12?"></textarea>
-      <button class="btn" type="submit">Explain it to me</button>
-    </form>
-    <div id="ask-answer" class="ask-answer" hidden></div>
   </section>
 
   {% if lesson.links %}
