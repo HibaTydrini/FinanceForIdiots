@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Your Learning Plan · FinanceForIdiots{% endblock %}
+{% block content %}
+{% set p = toc.profile %}
+
+<section class="hero" data-plan="{{ toc.plan | join(',') }}">
+  <p class="eyebrow">Your personalized table of contents</p>
+  <h1>{% if p.name %}Hi {{ p.name }}, here{% else %}Here{% endif %}'s your learning plan</h1>
+
+  <div class="hero-grid">
+    <div class="card style-card">
+      <p class="label">Your investor style</p>
+      <p class="style-name">{{ toc.style.label }}</p>
+      <p class="muted">{{ toc.style.description }}</p>
+    </div>
+    <div class="card progress-card">
+      <p class="label">Progress</p>
+      <p class="progress-count"><span id="done-count">0</span> / {{ toc.plan | length }} lessons</p>
+      <div class="bar"><div class="bar-fill" id="bar-fill"></div></div>
+      <p class="muted">About {{ toc.total_minutes }} minutes of reading in your plan.</p>
+      <a class="btn" id="continue-btn" href="{{ url_for('toc.lesson', lesson_id=toc.start_here) }}">Start here →</a>
+    </div>
+  </div>
+</section>
+
+<p class="demo-bar muted small">
+  Preview as:
+  {% for key in samples %}<a href="?demo={{ key }}">{{ key }}</a>{% if not loop.last %} · {% endif %}{% endfor %}
+  <span>(sample profiles until the questionnaire is connected)</span>
+</p>
+
+<div class="toolbar">
+  <div class="toggle" role="tablist" aria-label="Which lessons to show">
+    <button class="toggle-btn active" data-filter="plan" role="tab" aria-selected="true">My plan</button>
+    <button class="toggle-btn" data-filter="all" role="tab" aria-selected="false">All lessons</button>
+  </div>
+  <div class="legend">
+    <span class="badge core">Core</span>
+    <span class="badge recommended">For you</span>
+    <span class="badge optional">Optional</span>
+  </div>
+</div>
+
+<ol class="modules">
+  {% for module in toc.modules %}
+  <li class="module card" data-module="{{ module.id }}">
+    <div class="module-head">
+      <span class="module-num">{{ loop.index }}</span>
+      <div>
+        <h2>{{ module.title }}</h2>
+        <p class="muted">{{ module.description }}</p>
+      </div>
+    </div>
+    <ul class="lessons">
+      {% for l in module.lessons %}
+      <li class="lesson-row priority-{{ l.priority }}" data-lesson="{{ l.id }}">
+        <a href="{{ url_for('toc.lesson', lesson_id=l.id) }}">
+          <span class="check" aria-hidden="true"></span>
+          <span class="lesson-main">
+            <span class="lesson-title">{{ l.title }}</span>
+            <span class="lesson-summary">{{ l.summary }}</span>
+            {% if l.reasons %}<span class="lesson-reason">{{ l.reasons[0] }}</span>{% endif %}
+          </span>
+          <span class="lesson-meta">
+            <span class="badge {{ l.priority }}">{{ {'core':'Core','recommended':'For you','optional':'Optional'}[l.priority] }}</span>
+            <span class="muted small">{{ l.minutes }} min</span>
+          </span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </li>
+  {% endfor %}
+</ol>
+{% endblock %}
+{% block scripts %}<script>FFI.initToc();</script>{% endblock %}
