@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ lesson.title }} · FinanceForIdiots{% endblock %}
+{% block content %}
+<article class="lesson" data-lesson="{{ lesson.id }}">
+  <a class="back" href="{{ url_for('toc.index') }}">← Back to the table of contents</a>
+  <p class="eyebrow">{{ module.title }}</p>
+  <h1>{{ lesson.title }}</h1>
+  <p class="lesson-lede">{{ lesson.summary }}</p>
+  <p class="meta">
+    <span class="badge {{ entry.priority }}">{{ {'core':'Core','recommended':'For you','optional':'Optional'}[entry.priority] }}</span>
+    <span>{{ lesson.minutes }} min read</span>
+    <span>{{ ['', 'Beginner', 'Intermediate', 'Advanced'][lesson.level] }}</span>
+  </p>
+
+  {% if entry.reasons %}
+  <div class="callout why">
+    <strong>Why this is in your plan:</strong>
+    {{ entry.reasons | join(' · ') }}
+  </div>
+  {% endif %}
+
+  <section class="lesson-body">
+    {% for para in lesson.body %}<p>{{ para }}</p>{% endfor %}
+  </section>
+
+  <div class="callout example">
+    <p class="label">Example</p>
+    <p>{{ lesson.example }}</p>
+  </div>
+
+  <section class="card">
+    <h2>Key takeaways</h2>
+    <ul class="takeaways">
+      {% for point in lesson.key_points %}<li>{{ point }}</li>{% endfor %}
+    </ul>
+  </section>
+
+  {% if lesson.links %}
+  <section class="go-further">
+    <p class="label">Go further</p>
+    {% for link in lesson.links %}
+    <a class="link-out" href="{{ link.url }}" target="_blank" rel="noopener">{{ link.label }} ↗</a>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  <div class="lesson-footer">
+    <button class="btn btn-secondary" id="complete-btn">Mark as complete</button>
+  </div>
+
+  <nav class="pager">
+    {% if prev %}<a class="card pager-link" href="{{ url_for('toc.lesson', lesson_id=prev.id) }}"><span class="muted small">← Previous</span>{{ prev.title }}</a>{% else %}<span></span>{% endif %}
+    {% if next %}<a class="card pager-link next" href="{{ url_for('toc.lesson', lesson_id=next.id) }}"><span class="muted small">Next →</span>{{ next.title }}</a>{% endif %}
+  </nav>
+</article>
+{% endblock %}
+{% block scripts %}<script>FFI.initLesson();</script>{% endblock %}

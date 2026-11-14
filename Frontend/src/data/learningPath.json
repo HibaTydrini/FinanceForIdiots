@@ -1,0 +1,996 @@
+{
+  "disclaimer": "Educational content only. This is not personalized financial advice.",
+  "chapters": [
+    {
+      "title": "Intro to investing",
+      "single": true,
+      "topics": [
+        {
+          "id": "intro",
+          "title": "Intro to investing",
+          "summary": "What investing is, why it beats cash over time, and the one rule to remember.",
+          "levels": {
+            "novice": "Investing means putting your money into things like companies, loans or funds so it can grow over time. Cash in a savings account grows slowly and loses buying power to inflation, while investments can grow faster but also go up and down. The one rule to remember: only invest money you will not need soon, and keep a small emergency fund in cash first.",
+            "intermediate": "Investing is putting capital into assets (stocks, bonds, funds, real estate) that you expect to grow or pay income. Higher expected returns come with more risk, and time in the market plus compounding does most of the work. Before investing, cover an emergency fund and high-interest debt, then match your investments to your goal and time horizon.",
+            "expert": "Investing allocates capital across assets to earn a return above cash in exchange for bearing risk. Long-run outcomes depend mostly on asset allocation, costs, taxes and behaviour, not on picking the perfect security. Treat expected returns as compensation for systematic risk, never as a guarantee."
+          },
+          "sources": [
+            {
+              "title": "National Bank: How to invest my money?",
+              "url": "https://www.nbc.ca/personal/advice/savings-investment/how-to-invest-money.html"
+            },
+            {
+              "title": "National Bank: Understanding the different types of investments",
+              "url": "https://www.nbc.ca/personal/advice/savings-investment/types-investment-definitions.html"
+            },
+            {
+              "title": "National Bank: How to save when you're young",
+              "url": "https://www.nbc.ca/personal/advice/savings-investment/benefits-of-saving-young.html"
+            }
+          ],
+          "example": "Imagine you put $1,000 under your mattress. In 10 years it is still $1,000, but groceries cost more, so it buys less. If you invest it instead and it grows 6% a year, it becomes about $1,790. Not guaranteed, but that is the idea.",
+          "terms": [
+            {
+              "term": "Inflation",
+              "meaning": "Prices slowly going up over time, so each dollar buys a bit less."
+            },
+            {
+              "term": "Return",
+              "meaning": "How much your investment gained or lost, usually shown in %."
+            },
+            {
+              "term": "Emergency fund",
+              "meaning": "Cash you keep aside for surprises, like 3 to 6 months of expenses."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "How financial markets work",
+      "topics": [
+        {
+          "id": "stocks",
+          "title": "Stocks",
+          "summary": "Owning a small piece of a company.",
+          "levels": {
+            "novice": "A stock is a tiny piece of ownership in a company. If the company does well, the stock price usually goes up. If it does badly, the price can drop.",
+            "intermediate": "Stocks give you a claim on a company's future profits. Returns come from price changes plus dividends. Individual stocks can be very volatile, so most investors hold many of them.",
+            "expert": "Equity value reflects discounted expected future cash flows. Single-stock returns combine market beta, factor exposures (size, value, momentum, quality) and idiosyncratic risk, which diversification can largely remove."
+          },
+          "sources": [
+            {
+              "title": "National Bank: Understanding the different types of stocks",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/understanding-stock-market/about-shares/understanding-types-stocks.html"
+            },
+            {
+              "title": "National Bank: What is the stock market?",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/understanding-stock-market/stock-market-basics/what-is-stock-market.html"
+            }
+          ],
+          "example": "Think of your favourite coffee shop. If it is split into 1,000 equal pieces and you buy 10, you own 1% of it. If the shop gets more popular, your pieces are worth more. If it loses customers, they are worth less.",
+          "terms": [
+            {
+              "term": "Share",
+              "meaning": "One small piece of a company."
+            },
+            {
+              "term": "Ticker",
+              "meaning": "The short code for a stock, like RY for Royal Bank or AAPL for Apple."
+            },
+            {
+              "term": "Dividend",
+              "meaning": "Cash a company pays its shareholders, a bit like a thank-you for owning it."
+            },
+            {
+              "term": "Stock exchange",
+              "meaning": "The marketplace where shares are bought and sold, like the TSX in Toronto."
+            }
+          ]
+        },
+        {
+          "id": "etfs",
+          "title": "ETFs and index funds",
+          "summary": "Buy hundreds of investments in one click.",
+          "levels": {
+            "novice": "An ETF is a basket of many stocks or bonds that you can buy in one go. Instead of picking one company, you own a little bit of hundreds. That makes it simpler and usually less risky.",
+            "intermediate": "ETFs trade on an exchange like a stock. Index ETFs track a market (for example the TSX 60 or S&P 500) at low cost. Check the fees (MER), what index it follows, and how big and liquid it is.",
+            "expert": "Index ETFs give cheap beta exposure. Evaluate tracking difference, MER, bid-ask spread, securities lending, domicile and withholding tax treatment, and whether the fund is physical or synthetic replication."
+          },
+          "sources": [
+            {
+              "title": "National Bank: What is an ETF?",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/understanding-stock-market/etfs/understand-etf.html"
+            },
+            {
+              "title": "National Bank: Index funds vs. ETFs",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/start-self-directed-investment/choosing-investment-account/difference-between-index-fund-and-etf.html"
+            },
+            {
+              "title": "National Bank: 6 things to know about ETFs",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/understanding-stock-market/etfs/things-know-etfs.html"
+            }
+          ],
+          "example": "Instead of buying one apple, you buy a fruit basket with a bit of everything. If the apples go bad, you still have the oranges and bananas. An ETF is that basket, but with stocks or bonds.",
+          "terms": [
+            {
+              "term": "ETF",
+              "meaning": "Exchange-traded fund: a basket of investments you buy in one go."
+            },
+            {
+              "term": "Index",
+              "meaning": "A list that tracks a group of companies, like the S&P 500."
+            },
+            {
+              "term": "MER",
+              "meaning": "The yearly fee a fund charges, shown as a %."
+            }
+          ]
+        },
+        {
+          "id": "bonds",
+          "title": "Bonds",
+          "summary": "Lending money to a government or company for interest.",
+          "levels": {
+            "novice": "A bond is like an IOU. You lend money to a government or company, they pay you interest, and they give your money back at the end. Bonds usually move less than stocks.",
+            "intermediate": "Bonds pay fixed coupons and return principal at maturity. When interest rates go up, existing bond prices go down, and the reverse is also true. They often cushion a portfolio when stocks fall.",
+            "expert": "Bond price sensitivity to rates is measured by duration and convexity. Total return decomposes into yield, roll-down and rate changes. Credit spreads add compensation for default risk."
+          },
+          "sources": [
+            {
+              "title": "National Bank: The ABCs of bonds",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/understanding-stock-market/fixed-income-securities/bonds-how-do-they-work.html"
+            },
+            {
+              "title": "National Bank: Investing in bonds through fixed income ETFs",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/understanding-stock-market/etfs/fixed-income-etfs.html"
+            }
+          ],
+          "example": "Your friend borrows $100 from you and promises to pay you $5 every year, then give your $100 back in 5 years. That is a bond, except the borrower is a government or a big company.",
+          "terms": [
+            {
+              "term": "Coupon",
+              "meaning": "The interest the bond pays you, usually once or twice a year."
+            },
+            {
+              "term": "Maturity",
+              "meaning": "The date you get your money back."
+            },
+            {
+              "term": "Yield",
+              "meaning": "How much the bond earns you per year, shown in %."
+            }
+          ]
+        },
+        {
+          "id": "gics",
+          "title": "GICs",
+          "summary": "Lock your money in, get a guaranteed rate.",
+          "levels": {
+            "novice": "A GIC is a deposit at a bank that pays a fixed interest rate for a set time, like 1 or 5 years. Your money is safe and you know exactly what you will get, but you usually cannot take it out early.",
+            "intermediate": "Non-redeemable GICs pay more but lock your money in; redeemable GICs let you cash out early for a lower rate. Rates follow the Bank of Canada's policy rate. Eligible GICs are protected by CDIC up to set limits.",
+            "expert": "A GIC is a fixed-rate, illiquid deposit; compare its yield with Government of Canada bonds of the same term and with HISAs. Laddering maturities manages reinvestment and liquidity risk."
+          },
+          "sources": [
+            {
+              "title": "National Bank: Guaranteed Investment Certificate (GIC)",
+              "url": "https://www.nbc.ca/personal/savings-investments/gic.html"
+            },
+            {
+              "title": "National Bank: Redeemable GIC",
+              "url": "https://www.nbc.ca/personal/savings-investments/gic/redeemable.html"
+            },
+            {
+              "title": "National Bank: Non-redeemable GIC",
+              "url": "https://www.nbc.ca/personal/savings-investments/gic/non-redeemable.html"
+            }
+          ],
+          "example": "You give the bank $1,000 and agree not to touch it for 2 years. In exchange, the bank promises a fixed rate, for example 4% a year. After 2 years you get your $1,000 plus the interest. No surprises, but your money is locked in.",
+          "terms": [
+            {
+              "term": "Term",
+              "meaning": "How long your money is locked in, like 1, 3 or 5 years."
+            },
+            {
+              "term": "Redeemable",
+              "meaning": "A GIC you can cash out early, usually for a lower rate."
+            },
+            {
+              "term": "CDIC",
+              "meaning": "The federal agency that protects eligible bank deposits up to a limit."
+            }
+          ]
+        },
+        {
+          "id": "reits",
+          "title": "Real estate and REITs",
+          "summary": "Owning buildings without buying a house.",
+          "levels": {
+            "novice": "A REIT is a company that owns buildings like apartments, offices or shopping centres and shares the rent with its investors. Buying a REIT lets you invest in real estate without buying a whole property.",
+            "intermediate": "REITs trade on the stock exchange like shares and usually pay a large part of their income as regular distributions. Their prices are sensitive to interest rates and to the type of property they own (residential, industrial, retail, offices).",
+            "expert": "Analyze REITs with funds from operations (FFO/AFFO), payout ratio, occupancy, lease terms, leverage and net asset value. As long-duration, income-oriented assets, they are rate-sensitive, and distributions can include return of capital with specific tax treatment."
+          },
+          "sources": [
+            {
+              "title": "National Bank: What is a REIT?",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/understanding-stock-market/alternative-investments/what-is-reit.html"
+            },
+            {
+              "title": "National Bank: A simple way to invest in real estate",
+              "url": "https://www.nbc.ca/personal/advice/savings-investment/a-simple-way-to-invest-in-real-estate.html"
+            }
+          ],
+          "example": "Buying an apartment building costs millions. A REIT lets you buy a small piece of many buildings for the price of a share. When tenants pay rent, part of it comes back to you.",
+          "terms": [
+            {
+              "term": "REIT",
+              "meaning": "Real estate investment trust: a company that owns buildings and shares the rent."
+            },
+            {
+              "term": "Distribution",
+              "meaning": "The regular payment a REIT sends to its investors."
+            },
+            {
+              "term": "Occupancy",
+              "meaning": "The share of units that are rented out."
+            }
+          ]
+        },
+        {
+          "id": "crypto",
+          "title": "Crypto",
+          "summary": "Bitcoin and friends: big swings, big risks.",
+          "levels": {
+            "novice": "Crypto like Bitcoin (BTC) and Ether (ETH) are digital currencies. Their prices can rise or fall a lot in a single day. Many people keep crypto to a small part of their money because of this.",
+            "intermediate": "Crypto has no cash flows like dividends, so its price depends on adoption and demand. Volatility is much higher than stocks, and drops of more than 50% have happened several times.",
+            "expert": "Crypto returns are driven by liquidity, flows and sentiment, with high volatility and fat tails. Correlation to equities tends to rise in risk-off periods, which limits diversification benefits when you need them most."
+          },
+          "sources": [
+            {
+              "title": "National Bank: 5 keys to understanding Bitcoin",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/investment-strategies/cryptoccurencies/understanding-bitcoin.html"
+            },
+            {
+              "title": "Government of Canada (FCAC): Crypto assets",
+              "url": "https://www.canada.ca/en/financial-consumer-agency/services/payment/digital-currency.html"
+            }
+          ],
+          "example": "Imagine a digital coin that lives on the internet and is not controlled by a bank. Its price is whatever people are willing to pay. That is why it can jump 10% one day and fall 15% the next.",
+          "terms": [
+            {
+              "term": "Bitcoin (BTC)",
+              "meaning": "The first and largest cryptocurrency."
+            },
+            {
+              "term": "Wallet",
+              "meaning": "An app or device that stores your crypto."
+            },
+            {
+              "term": "Volatility",
+              "meaning": "How wildly a price moves up and down. Crypto has a lot of it."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Mutual funds",
+      "topics": [
+        {
+          "id": "mutual_funds",
+          "title": "What is a mutual fund?",
+          "summary": "A pool of money run by a professional manager.",
+          "levels": {
+            "novice": "A mutual fund collects money from many people and a professional manager invests it in stocks, bonds or both. You own units of the fund. It is an easy way to get a diversified portfolio, but there are yearly fees.",
+            "intermediate": "Mutual funds are bought and sold once a day at the net asset value (NAV), unlike ETFs which trade all day. Many are actively managed, so fees (MER) are often higher than index ETFs. Read the Fund Facts document before buying.",
+            "expert": "Compare active funds against their benchmark after fees, and check tracking error, turnover, series (A, F, etc.) and trailing commissions. Survivorship bias makes average active-fund track records look better than they are."
+          },
+          "sources": [
+            {
+              "title": "National Bank: What are mutual funds?",
+              "url": "https://www.nbc.ca/personal/advice/savings-investment/how-do-mutual-funds-work.html"
+            },
+            {
+              "title": "National Bank: What is a mutual fund?",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/understanding-stock-market/fixed-income-securities/what-is-mutual-fund.html"
+            },
+            {
+              "title": "GetSmarterAboutMoney (OSC): Mutual fund fees",
+              "url": "https://www.getsmarteraboutmoney.ca/learning-path/mutual-funds-segregated-funds/mutual-fund-fees/"
+            }
+          ],
+          "example": "Ten friends each put $100 into one pot, then hire an expert to invest the $1,000 for them. Each friend owns 10% of whatever the pot becomes. A mutual fund is that pot, with thousands of people.",
+          "terms": [
+            {
+              "term": "Fund manager",
+              "meaning": "The professional who decides what the fund buys and sells."
+            },
+            {
+              "term": "Units",
+              "meaning": "Your share of the fund, like slices of a pie."
+            },
+            {
+              "term": "Fund Facts",
+              "meaning": "A short official document that explains a fund's risk, fees and holdings."
+            }
+          ]
+        },
+        {
+          "id": "fees",
+          "title": "Fees: the hidden cost",
+          "summary": "Why a 2% fee matters more than it sounds.",
+          "levels": {
+            "novice": "Funds charge a yearly fee called the MER. Even 1% or 2% a year can take a big bite out of your money after many years.",
+            "intermediate": "Compare the MER of funds that do the same job. Trading commissions and bid-ask spreads also cost money, especially if you trade often.",
+            "expert": "Total cost of ownership includes MER, trading spread, tracking difference, FX conversion and tax drag. Model the fee drag as a reduction in compounded return over the horizon."
+          },
+          "sources": [
+            {
+              "title": "GetSmarterAboutMoney (OSC): Mutual fund fees",
+              "url": "https://www.getsmarteraboutmoney.ca/learning-path/mutual-funds-segregated-funds/mutual-fund-fees/"
+            },
+            {
+              "title": "National Bank: Index funds vs. ETFs",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/start-self-directed-investment/choosing-investment-account/difference-between-index-fund-and-etf.html"
+            }
+          ],
+          "example": "Two friends each invest $10,000 for 25 years and earn the same 6% before fees. One pays 0.25% a year, the other 2%. The cheaper one ends with about $40,500, the other with about $26,700. Same investments, very different results.",
+          "terms": [
+            {
+              "term": "MER",
+              "meaning": "Management expense ratio: the yearly fee of a fund, in %."
+            },
+            {
+              "term": "Commission",
+              "meaning": "A fee you pay when you buy or sell."
+            },
+            {
+              "term": "Fee drag",
+              "meaning": "How fees slowly eat into your growth over the years."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Risk and risk management",
+      "topics": [
+        {
+          "id": "risk_return",
+          "title": "Risk vs. return",
+          "summary": "Bigger possible gains come with bigger possible losses.",
+          "levels": {
+            "novice": "If an investment can make a lot of money, it can usually lose a lot too. Safe investments grow slowly. Your job is to pick a level of risk you can live with.",
+            "intermediate": "Expected return rises with risk. Risk is often measured by volatility and by maximum drawdown (the biggest fall from a peak). A good portfolio matches the risk to your goals and timeline.",
+            "expert": "Use risk-adjusted metrics such as the Sharpe and Sortino ratios, and look at drawdown and tail risk (VaR, CVaR). The efficient frontier shows the best expected return for each level of volatility."
+          },
+          "sources": [
+            {
+              "title": "National Bank: What is financial risk and how to mitigate it?",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/investment-strategies/protecting-portfolio/quality-investing.html"
+            },
+            {
+              "title": "GetSmarterAboutMoney (OSC): Why does risk matter in investing?",
+              "url": "https://www.getsmarteraboutmoney.ca/learning-path/understanding-risk/why-does-risk-matter-in-investing/"
+            },
+            {
+              "title": "National Bank: Classifications of stocks and how they relate to risk",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/understanding-stock-market/about-shares/portfolio-diversification.html"
+            }
+          ],
+          "example": "A savings account is like a bike: slow but safe. Stocks are like a sports car: much faster, but you can crash. The faster you want to go, the more bumps you have to accept.",
+          "terms": [
+            {
+              "term": "Risk",
+              "meaning": "The chance your investment loses value, or does worse than expected."
+            },
+            {
+              "term": "Return",
+              "meaning": "What you gain or lose, in %."
+            },
+            {
+              "term": "Risk tolerance",
+              "meaning": "How much ups and downs you can handle without panicking."
+            }
+          ]
+        },
+        {
+          "id": "volatility",
+          "title": "When markets drop",
+          "summary": "Volatility, crashes, and how not to panic.",
+          "levels": {
+            "novice": "Volatility is how bumpy the ride is. A volatile investment jumps up and down a lot. A drawdown is how far it fell from its highest point before recovering.",
+            "intermediate": "Volatility is the standard deviation of returns, usually shown per year. Maximum drawdown tells you the worst loss you would have felt. Ask yourself if you could hold on through that loss.",
+            "expert": "Volatility clusters (GARCH effects) and is not constant. Drawdown depth and recovery time matter more than volatility for investors who may need to sell, which links to sequence risk."
+          },
+          "sources": [
+            {
+              "title": "National Bank: Market volatility, what should you do?",
+              "url": "https://www.nbc.ca/personal/advice/savings-investment/market-volatility-investments.html"
+            },
+            {
+              "title": "GetSmarterAboutMoney (OSC): How volatility affects your investments",
+              "url": "https://www.getsmarteraboutmoney.ca/learning-path/understanding-risk/how-volatility-affects-your-investments/"
+            }
+          ],
+          "example": "Picture a roller coaster: big drops are scary, but if you stay seated you usually finish the ride. People who jump off at the bottom (sell in a panic) lock in their losses.",
+          "terms": [
+            {
+              "term": "Bullish",
+              "meaning": "Expecting prices to go up. Think of a bull charging with its horns pointing up."
+            },
+            {
+              "term": "Bearish",
+              "meaning": "Expecting prices to go down. Think of a bear swiping its paws downward."
+            },
+            {
+              "term": "Correction",
+              "meaning": "A drop of about 10% from a recent high."
+            },
+            {
+              "term": "Crash",
+              "meaning": "A sudden, very large drop in prices."
+            }
+          ]
+        },
+        {
+          "id": "investor_profile",
+          "title": "Know your risk profile",
+          "summary": "Conservative, balanced or growth: which one are you?",
+          "levels": {
+            "novice": "Your investor profile describes how much risk you are comfortable with and how long you can invest. Banks use profiles like conservative, balanced and growth to suggest a mix of investments.",
+            "intermediate": "A profile combines risk tolerance (how you feel about losses), risk capacity (how much loss you can afford) and time horizon. A conservative profile holds more bonds and cash; a growth profile holds more stocks.",
+            "expert": "Suitability rules (KYC) require matching recommendations to objectives, horizon, knowledge and risk profile. Psychometric questionnaires capture tolerance; capacity depends on balance sheet, income stability and liabilities."
+          },
+          "sources": [
+            {
+              "title": "National Bank: Conservative investor profile",
+              "url": "https://www.nbc.ca/personal/savings-investments/investor-profile/conservative.html"
+            },
+            {
+              "title": "National Bank: Balanced investor profile",
+              "url": "https://www.nbc.ca/personal/savings-investments/investor-profile/balanced.html"
+            },
+            {
+              "title": "National Bank: Growth investor profile",
+              "url": "https://www.nbc.ca/personal/savings-investments/investor-profile/growth.html"
+            }
+          ],
+          "example": "Ask yourself: if my $10,000 dropped to $8,000 in a month, would I sell, wait, or buy more? Your honest answer says a lot about your profile.",
+          "terms": [
+            {
+              "term": "Conservative",
+              "meaning": "Prefers safety; mostly bonds and cash."
+            },
+            {
+              "term": "Balanced",
+              "meaning": "A mix of safety and growth, roughly half stocks, half bonds."
+            },
+            {
+              "term": "Growth",
+              "meaning": "Accepts big ups and downs for more long-term growth; mostly stocks."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Portfolio diversification",
+      "topics": [
+        {
+          "id": "diversification",
+          "title": "Don't put all your eggs in one basket",
+          "summary": "Why spreading your money lowers your risk.",
+          "levels": {
+            "novice": "Diversification means spreading your money across many different investments. If one goes down, the others can help balance it out.",
+            "intermediate": "Diversify across companies, sectors, countries and asset types. What matters is correlation: owning ten tech stocks is less diversified than owning stocks, bonds and different sectors.",
+            "expert": "Portfolio variance depends on the covariance matrix. Diversification removes idiosyncratic risk but not systematic risk, and correlations tend to rise in crises. Consider factor and regime-aware diversification."
+          },
+          "sources": [
+            {
+              "title": "National Bank: Diversification, are you doing it right?",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/investment-strategies/diverifying-portfolio/what-constitutes-good-diversification.html"
+            },
+            {
+              "title": "GetSmarterAboutMoney (OSC): What diversification means for your investments",
+              "url": "https://www.getsmarteraboutmoney.ca/learning-path/understanding-risk/diversification/"
+            }
+          ],
+          "example": "If you only sell umbrellas, you lose money every sunny day. If you sell umbrellas and sunglasses, you make money in any weather. Owning different kinds of investments works the same way.",
+          "terms": [
+            {
+              "term": "Diversification",
+              "meaning": "Spreading your money across many different investments."
+            },
+            {
+              "term": "Concentration",
+              "meaning": "Having too much money in one company or sector."
+            },
+            {
+              "term": "Sector",
+              "meaning": "A group of similar companies, like banks, energy or tech."
+            }
+          ]
+        },
+        {
+          "id": "asset_allocation",
+          "title": "Your mix: stocks, bonds and cash",
+          "summary": "The choice that matters most in your portfolio.",
+          "levels": {
+            "novice": "Asset allocation is deciding what share of your money goes into stocks, bonds and cash. More stocks usually means more growth and more ups and downs.",
+            "intermediate": "Allocation drives most of a portfolio's long-term behaviour. A longer time horizon and higher risk tolerance usually allow more stocks. As a goal gets closer, many people shift toward bonds and cash.",
+            "expert": "Strategic allocation sets long-run weights from capital market assumptions. Tactical tilts, glide paths and risk-parity approaches adjust exposure. Model it with mean-variance or scenario analysis, with constraints."
+          },
+          "sources": [
+            {
+              "title": "National Bank: What is an asset allocation ETF?",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/understanding-stock-market/etfs/what-is-an-asset-allocation-etf.html"
+            },
+            {
+              "title": "National Bank: 8 steps to build a solid investment portfolio",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/start-self-directed-investment/basics-self-directed-investing/building-a-solid-investment-portfolio.html"
+            }
+          ],
+          "example": "Think of a plate: half vegetables, a quarter protein, a quarter carbs. Your portfolio is a plate too, for example 60% stocks, 30% bonds, 10% cash. The mix matters more than any single item.",
+          "terms": [
+            {
+              "term": "Asset class",
+              "meaning": "A type of investment, like stocks, bonds or cash."
+            },
+            {
+              "term": "60/40 portfolio",
+              "meaning": "A classic mix: 60% stocks, 40% bonds."
+            },
+            {
+              "term": "Allocation",
+              "meaning": "How your money is split between asset classes."
+            }
+          ]
+        },
+        {
+          "id": "analyze_portfolio",
+          "title": "Analyze your National Bank portfolio",
+          "summary": "Connect your account to see how diversified you really are.",
+          "levels": {
+            "novice": "If you connect your National Bank account, the Portfolio page shows what you own and how it is spread out: stocks vs. bonds, Canada vs. the US, and which sectors. A good first check: is more than a quarter of your money in one company or one sector? If so, you may be less diversified than you think.",
+            "intermediate": "Once your account is connected, look at your asset allocation, your largest positions, sector and country weights, and your fees. Compare your stock/bond mix with your risk profile and time horizon. Big gaps are a sign to rebalance or diversify.",
+            "expert": "Review concentration (top holdings, sector and country weights), correlation between holdings, fee drag (MER), currency exposure and tax location across TFSA, RRSP and non-registered accounts. Compare realized volatility and drawdowns with your stated risk tolerance."
+          },
+          "sources": [
+            {
+              "title": "National Bank: Diversification, are you doing it right?",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/investment-strategies/diverifying-portfolio/what-constitutes-good-diversification.html"
+            },
+            {
+              "title": "National Bank: 8 steps to build a solid investment portfolio",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/start-self-directed-investment/basics-self-directed-investing/building-a-solid-investment-portfolio.html"
+            }
+          ],
+          "action": {
+            "label": "Go to My Portfolio →",
+            "page": "portfolio"
+          },
+          "example": "Say your account shows 70% in two Canadian bank stocks. Even if banks are solid, that is like having most of your eggs in one basket. Seeing it laid out makes that easy to spot.",
+          "terms": [
+            {
+              "term": "Holdings",
+              "meaning": "Everything you own in your account."
+            },
+            {
+              "term": "Weight",
+              "meaning": "How big one investment is compared to your whole portfolio, in %."
+            },
+            {
+              "term": "Rebalance",
+              "meaning": "Buying and selling to get back to your target mix."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Building an investment strategy",
+      "topics": [
+        {
+          "id": "goals_horizon",
+          "title": "Set your goal and time horizon",
+          "summary": "When you need the money decides how much risk makes sense.",
+          "levels": {
+            "novice": "Your time horizon is how long you can leave your money invested. If you need it soon, you should take less risk. If you have many years, you have more time to recover from drops.",
+            "intermediate": "Short horizons (under 5 years) leave little time to recover from a crash. Long horizons (10+ years) can usually handle more stocks. Match each goal to its own timeline.",
+            "expert": "Horizon interacts with liability timing and human capital. Time diversification is debated: the probability of loss falls with horizon, but the size of possible losses does not."
+          },
+          "sources": [
+            {
+              "title": "National Bank: 8 steps to build a solid investment portfolio",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/start-self-directed-investment/basics-self-directed-investing/building-a-solid-investment-portfolio.html"
+            },
+            {
+              "title": "National Bank: Plan for your retirement",
+              "url": "https://www.nbc.ca/personal/advice/retirement/plan-for-retirement-savings.html"
+            }
+          ],
+          "example": "Money for a trip next summer should stay safe, like in a savings account or GIC. Money for retirement in 30 years can be invested in stocks, because it has time to recover from bad years.",
+          "terms": [
+            {
+              "term": "Time horizon",
+              "meaning": "How long until you need the money."
+            },
+            {
+              "term": "Short term",
+              "meaning": "Usually less than 3 to 5 years."
+            },
+            {
+              "term": "Long term",
+              "meaning": "Usually 10 years or more."
+            }
+          ]
+        },
+        {
+          "id": "compound_growth",
+          "title": "The magic of compound growth",
+          "summary": "Why starting early beats starting big.",
+          "levels": {
+            "novice": "Compounding is when your earnings start earning too. The longer you stay invested, the bigger this snowball gets.",
+            "intermediate": "Compound growth makes time your biggest asset. Reinvesting dividends and starting early matter more than picking the perfect stock. Fees also compound, in the wrong direction.",
+            "expert": "Long-run wealth depends on geometric, not arithmetic, mean return. Volatility drag reduces compounded growth: geometric mean is roughly arithmetic mean minus half the variance."
+          },
+          "sources": [
+            {
+              "title": "National Bank: How to save when you're young",
+              "url": "https://www.nbc.ca/personal/advice/savings-investment/benefits-of-saving-young.html"
+            },
+            {
+              "title": "National Bank: Understanding the Dividend Reinvestment Plan",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/understanding-stock-market/understanding-dividends/dividend-reinvestment-plan.html"
+            }
+          ],
+          "example": "Investing $100 a month from age 20 to 65 at 6% a year grows to about $275,000. Starting at 35 instead, with the same $100, gives about $100,000. Those extra 15 years nearly triple the result.",
+          "terms": [
+            {
+              "term": "Compound growth",
+              "meaning": "Earning returns on your past returns, like a snowball rolling downhill."
+            },
+            {
+              "term": "Reinvest",
+              "meaning": "Putting your gains or dividends back into the investment."
+            },
+            {
+              "term": "Rule of 72",
+              "meaning": "Divide 72 by your yearly return to estimate how many years it takes to double. At 6%, about 12 years."
+            }
+          ]
+        },
+        {
+          "id": "dollar_cost_averaging",
+          "title": "Invest a little every month",
+          "summary": "Dollar-cost averaging: no need to time the market.",
+          "levels": {
+            "novice": "Dollar-cost averaging means investing a fixed amount regularly, like every month. You buy more when prices are low and less when they are high, and you do not have to guess the best moment.",
+            "intermediate": "DCA reduces the regret and timing risk of investing a lump sum at a bad moment. Lump-sum investing wins more often on average, but DCA can help you stay disciplined.",
+            "expert": "Lump-sum is optimal in expectation when expected returns exceed cash, but DCA trades expected return for lower outcome dispersion and behavioural benefits."
+          },
+          "sources": [
+            {
+              "title": "GetSmarterAboutMoney (OSC): Dollar-cost averaging",
+              "url": "https://getsmarteraboutmoney.ca/learning-path/getting-started/dollar-cost-averaging"
+            }
+          ],
+          "example": "You put $100 into an ETF every month. When the price is $20, you get 5 units. When it drops to $10, you get 10 units. You automatically buy more when it is cheap, without trying to guess.",
+          "terms": [
+            {
+              "term": "Dollar-cost averaging",
+              "meaning": "Investing a fixed amount on a regular schedule."
+            },
+            {
+              "term": "Lump sum",
+              "meaning": "Investing all your money at once."
+            },
+            {
+              "term": "Timing the market",
+              "meaning": "Trying to buy at the bottom and sell at the top. Very hard to do."
+            }
+          ]
+        },
+        {
+          "id": "rebalancing",
+          "title": "Rebalancing once a year",
+          "summary": "Keep your mix on track without overthinking it.",
+          "levels": {
+            "novice": "Over time, some investments grow faster than others and your mix drifts. Rebalancing means selling a bit of what grew and buying what fell, to get back to your plan.",
+            "intermediate": "Rebalance on a schedule (for example once a year) or when weights drift past a band (for example 5%). It keeps risk in check and forces you to buy low and sell high.",
+            "expert": "Compare calendar versus threshold rebalancing, accounting for transaction costs and taxes. Rebalancing captures a diversification return when assets are volatile and weakly correlated."
+          },
+          "sources": [
+            {
+              "title": "National Bank: 8 steps to build a solid investment portfolio",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/start-self-directed-investment/basics-self-directed-investing/building-a-solid-investment-portfolio.html"
+            },
+            {
+              "title": "National Bank: What is an asset allocation ETF?",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/understanding-stock-market/etfs/what-is-an-asset-allocation-etf.html"
+            }
+          ],
+          "example": "You aim for 60% stocks and 40% bonds. After a great year, stocks grew to 70%. Rebalancing means selling a little of the stocks and buying bonds to get back to 60/40, so your risk does not creep up.",
+          "terms": [
+            {
+              "term": "Target mix",
+              "meaning": "The split you decided on, like 60/40."
+            },
+            {
+              "term": "Drift",
+              "meaning": "When your mix moves away from your target over time."
+            },
+            {
+              "term": "Rebalance",
+              "meaning": "Selling some winners and buying some laggards to get back to your target."
+            }
+          ]
+        },
+        {
+          "id": "hype_fomo",
+          "title": "Avoid hype and FOMO",
+          "summary": "The emotional mistakes that cost investors the most.",
+          "levels": {
+            "novice": "FOMO is the fear of missing out. When a stock is all over the news, it is tempting to jump in. Often the price has already gone up a lot, and the risk of a drop is higher.",
+            "intermediate": "Common traps are chasing past performance, panic selling, overconfidence and herding. A written plan and limits per position (for example no more than 5% in one stock) help.",
+            "expert": "Behavioural biases (recency, loss aversion, disposition effect) create momentum and reversal patterns. Pre-commitment rules and position sizing frameworks reduce their impact on outcomes."
+          },
+          "sources": [
+            {
+              "title": "National Bank: 9 common investing mistakes to avoid",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/start-self-directed-investment/basics-self-directed-investing/investing-in-the-stock-market-ten-mistakes-to-avoid.html"
+            },
+            {
+              "title": "National Bank: Market volatility, what should you do?",
+              "url": "https://www.nbc.ca/personal/advice/savings-investment/market-volatility-investments.html"
+            }
+          ],
+          "example": "Everyone at school is talking about a coin that went up 300% this month. You feel left out and buy at the top. A week later it drops 50%. That is FOMO in action.",
+          "terms": [
+            {
+              "term": "FOMO",
+              "meaning": "Fear of missing out: buying because everyone else is."
+            },
+            {
+              "term": "Pump and dump",
+              "meaning": "A scam where people hype a stock to sell it to you at a high price."
+            },
+            {
+              "term": "Panic selling",
+              "meaning": "Selling everything during a drop out of fear."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Understanding taxes and accounts",
+      "topics": [
+        {
+          "id": "registered_accounts",
+          "title": "TFSA, RRSP and FHSA",
+          "summary": "Canada's tax-saving accounts, and which one is for what.",
+          "levels": {
+            "novice": "In Canada, some accounts help you pay less tax on investments. A TFSA lets growth be tax-free. An RRSP can lower your taxes today and is meant for retirement. The rules and limits change, so check official sources.",
+            "intermediate": "TFSA: contributions are after-tax, withdrawals are tax-free. RRSP: contributions are deductible, withdrawals are taxed as income. FHSA combines both for a first home. Limits are set by the CRA each year.",
+            "expert": "Account location matters: US dividends are generally subject to withholding tax in a TFSA but not in an RRSP under the tax treaty. Compare marginal tax rates today versus at withdrawal when choosing RRSP versus TFSA."
+          },
+          "sources": [
+            {
+              "title": "National Bank: Registered accounts overview",
+              "url": "https://www.nbc.ca/personal/advice/savings-investment/registered-accounts.html"
+            },
+            {
+              "title": "National Bank: Registered savings plans (TFSA, RRSP, etc.)",
+              "url": "https://www.nbc.ca/personal/help-centre/savings-investment/saving-plans.html"
+            }
+          ],
+          "example": "Think of these accounts as special boxes. Investments inside a TFSA grow tax-free. Putting money in an RRSP lowers your taxes today, and you pay tax when you take it out in retirement. An FHSA helps you save for your first home.",
+          "terms": [
+            {
+              "term": "TFSA",
+              "meaning": "Tax-Free Savings Account: growth and withdrawals are tax-free."
+            },
+            {
+              "term": "RRSP",
+              "meaning": "Registered Retirement Savings Plan: tax deduction now, taxed when withdrawn."
+            },
+            {
+              "term": "FHSA",
+              "meaning": "First Home Savings Account: tax help to buy your first home."
+            },
+            {
+              "term": "Contribution room",
+              "meaning": "How much you are allowed to put in each year."
+            }
+          ]
+        },
+        {
+          "id": "investment_taxes",
+          "title": "How investments are taxed",
+          "summary": "Interest, dividends and capital gains are taxed differently.",
+          "levels": {
+            "novice": "In a regular (non-registered) account, you may pay tax when you earn money from investments. Interest, dividends and profits from selling (capital gains) are each taxed in their own way. Accounts like the TFSA and RRSP can shelter your investments from some of these taxes.",
+            "intermediate": "Interest is taxed like your salary. Eligible Canadian dividends get a dividend tax credit. Only part of a capital gain is taxable, and you only pay it when you sell. Losses can offset gains. Inside a TFSA growth is tax-free; inside an RRSP tax is deferred until withdrawal.",
+            "expert": "Optimize after-tax return through asset location: hold interest-heavy assets in registered accounts, eligible Canadian dividend payers and capital-gain assets in taxable accounts. Consider the capital gains inclusion rate in force, superficial loss rules, foreign withholding taxes and the timing of realization."
+          },
+          "sources": [
+            {
+              "title": "National Bank: Taxes and investment income, what to consider?",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/start-self-directed-investment/understanding-tax-implications/taxes-investment-income-what-consider.html"
+            },
+            {
+              "title": "National Bank: How do capital gains work?",
+              "url": "https://www.nbc.ca/personal/advice/savings-investment/capital-gain-how-it-works.html"
+            }
+          ],
+          "example": "You buy a share for $50 and sell it for $70: that $20 is a capital gain. In a regular account you may pay some tax on it. Inside a TFSA, you would keep the whole $20.",
+          "terms": [
+            {
+              "term": "Capital gain",
+              "meaning": "The profit when you sell something for more than you paid."
+            },
+            {
+              "term": "Capital loss",
+              "meaning": "The loss when you sell for less; it can reduce taxes on gains."
+            },
+            {
+              "term": "Non-registered account",
+              "meaning": "A regular investment account with no special tax break."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Market research and simulation",
+      "topics": [
+        {
+          "id": "market_index",
+          "title": "Market indexes: the market's scoreboard",
+          "summary": "What the TSX and S&P 500 are, and why everyone watches them.",
+          "levels": {
+            "novice": "An index is a list of companies used to measure how 'the market' is doing. The S&P 500 follows 500 big US companies and the TSX follows big Canadian ones. When people say 'the market went up', they usually mean an index went up.",
+            "intermediate": "Indexes are usually weighted by company size (market cap), so the biggest companies move the index the most. Index funds and ETFs copy an index so you can buy the whole market cheaply.",
+            "expert": "Cap-weighted indexes are momentum-tilted and can become concentrated (the top 10 names in the S&P 500 are a large share of it). Compare against equal-weight or factor indexes, and check rebalancing and inclusion rules."
+          },
+          "sources": [
+            {
+              "title": "National Bank: Index basics",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/understanding-stock-market/stock-market-basics/index-basics.html"
+            },
+            {
+              "title": "National Bank: Index funds vs. ETFs",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/start-self-directed-investment/choosing-investment-account/difference-between-index-fund-and-etf.html"
+            }
+          ],
+          "example": "Your class average tells you how the class did, without checking every student. A market index is the class average for the stock market: if the S&P 500 is up 1% today, big US companies did well on average.",
+          "terms": [
+            {
+              "term": "S&P 500",
+              "meaning": "An index of 500 large US companies."
+            },
+            {
+              "term": "S&P/TSX Composite",
+              "meaning": "The main index of Canadian companies."
+            },
+            {
+              "term": "Nasdaq",
+              "meaning": "A US index heavy in tech companies."
+            }
+          ]
+        },
+        {
+          "id": "bull_bear",
+          "title": "Bull and bear markets",
+          "summary": "The long ups and downs of the market.",
+          "levels": {
+            "novice": "A bull market is when prices rise for a long time. A bear market is when prices fall 20% or more from a high. Both are normal parts of investing, and bear markets have always ended eventually in the past, though there is no guarantee.",
+            "intermediate": "Bear markets often come with rising interest rates or recessions. Trying to jump in and out is hard; missing a few of the best days can cut long-term returns a lot.",
+            "expert": "Regime identification is noisy in real time. Drawdown statistics, recovery times and the clustering of best and worst days argue against market timing for most investors."
+          },
+          "sources": [
+            {
+              "title": "National Bank: Bull vs bear market",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/analyzing-economy-stocks/monitoring-controlling-reacting/bull-vs-bear-market-what-difference.html"
+            }
+          ],
+          "example": "A bull attacks by thrusting its horns up, so a 'bull market' is when prices keep climbing. A bear swipes its paws down, so a 'bear market' is when prices fall 20% or more. If your friend is 'bullish on tech', they think tech stocks will rise.",
+          "terms": [
+            {
+              "term": "Bull market",
+              "meaning": "A long period of rising prices."
+            },
+            {
+              "term": "Bear market",
+              "meaning": "A drop of 20% or more from a recent high."
+            },
+            {
+              "term": "Bullish / bearish",
+              "meaning": "Expecting prices to go up / go down."
+            },
+            {
+              "term": "Recession",
+              "meaning": "When the economy shrinks for a while; often comes with bear markets."
+            }
+          ]
+        },
+        {
+          "id": "research",
+          "title": "How to research an investment",
+          "summary": "Five questions to ask before you buy anything.",
+          "levels": {
+            "novice": "Before buying anything, ask five questions: What is it? How does it make money? What could go wrong? What does it cost (fees)? Does it fit my goal and time horizon? If you cannot answer them simply, it is a sign to learn more first.",
+            "intermediate": "For a stock, look at what the company sells, its revenue and profit trend, debt, valuation (for example the P/E ratio) and competitors. For a fund, check what it holds, the index it follows, its fees (MER) and its size. Use official sources such as the company's reports and the fund's Fund Facts document.",
+            "expert": "Combine fundamental analysis (financial statements, cash flows, valuation multiples, competitive position) with the macro context (rates, inflation, sector cycle) and risk sizing. Be aware of confirmation bias and test your thesis against what would prove it wrong."
+          },
+          "sources": [
+            {
+              "title": "National Bank: What is value investing?",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/analyzing-economy-stocks/fundamental-analysis/value-investing.html"
+            },
+            {
+              "title": "National Bank: Market analysis",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/analyzing-economy-stocks/monitoring-controlling-reacting/market-analysis.html"
+            }
+          ],
+          "example": "Before buying a stock, you would ask the same questions as before buying a phone: what does it do, what does it cost, what are the reviews, and do I actually need it? Investing deserves the same care.",
+          "terms": [
+            {
+              "term": "P/E ratio",
+              "meaning": "Price-to-earnings: the share price divided by yearly profit per share. A rough 'is it expensive?' check."
+            },
+            {
+              "term": "Revenue",
+              "meaning": "All the money a company brings in from sales."
+            },
+            {
+              "term": "Profit",
+              "meaning": "What is left after paying all costs."
+            }
+          ]
+        },
+        {
+          "id": "simulation",
+          "title": "Practice with a simulation",
+          "summary": "Test a strategy with fake money before using real money.",
+          "levels": {
+            "novice": "A simulation lets you try an investment idea with pretend money, using real past prices. You can see what would have happened if you had bought an ETF five years ago, or how much a market drop would have hurt. It is a safe way to practise, but the past does not predict the future.",
+            "intermediate": "Use the simulator to compare portfolios (for example 80/20 vs. 40/60 stocks/bonds), see their returns, worst drops and how rebalancing changes results. Focus on the range of outcomes and the worst case, not only the average.",
+            "expert": "Backtests are vulnerable to look-ahead bias, survivorship bias and overfitting. Use out-of-sample periods, include costs and taxes, and stress-test with scenarios (rate shocks, crashes) rather than optimizing on one historical path."
+          },
+          "sources": [
+            {
+              "title": "National Bank: 8 steps to build a solid investment portfolio",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/start-self-directed-investment/basics-self-directed-investing/building-a-solid-investment-portfolio.html"
+            },
+            {
+              "title": "National Bank: 9 common investing mistakes to avoid",
+              "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/start-self-directed-investment/basics-self-directed-investing/investing-in-the-stock-market-ten-mistakes-to-avoid.html"
+            }
+          ],
+          "action": {
+            "label": "Try it in My Portfolio →",
+            "page": "portfolio"
+          },
+          "example": "It is like a flight simulator for investing. You can 'invest' $10,000 of pretend money in an ETF five years ago and see what would have happened, including the scary drops, without risking a cent.",
+          "terms": [
+            {
+              "term": "Simulation",
+              "meaning": "Testing an idea with pretend money."
+            },
+            {
+              "term": "Backtest",
+              "meaning": "Checking how a strategy would have done using past prices."
+            },
+            {
+              "term": "Scenario",
+              "meaning": "A 'what if' test, like 'what if the market drops 30%?'"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
