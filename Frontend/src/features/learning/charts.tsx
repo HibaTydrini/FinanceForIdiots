@@ -5,7 +5,6 @@
 import type { ReactElement } from "react";
 import { C } from "../../shared/chartColors";
 import { Figure, LineChart, Columns, HBars, SplitBars, Donut, Flow, CompareTable, Mosaic } from "./chartParts";
-import { MORE } from "./moreIllustrations";
 
 type Chart = { caption: string; art: ReactElement };
 
@@ -186,7 +185,37 @@ export const CHARTS: Record<string, Chart> = {
     ),
   },
 
-  risk_return: MORE.risk_return,
+  risk_return: {
+    caption: "Illustration. Every return starts on the same base: about 1% for waiting and 2% for inflation. What changes is the risk premium on top.",
+    art: (
+      <Figure
+        title="What a yearly return pays you for (illustration)"
+        legend={[
+          { name: "Time premium", color: C.blue },
+          { name: "Inflation premium", color: C.orange },
+          { name: "Risk premium", color: C.aqua },
+        ]}
+      >
+        <Columns
+          max={7.5}
+          fmt={(n) => `${n}%`}
+          items={[
+            { label: "GIC", risk: 0 },
+            { label: "Government bond", risk: 0.5 },
+            { label: "Company bond", risk: 2 },
+            { label: "Stocks", risk: 4 },
+          ].map((it) => ({
+            label: it.label,
+            parts: [
+              { name: "Time premium", value: 1, color: C.blue },
+              { name: "Inflation premium", value: 2, color: C.orange },
+              ...(it.risk > 0 ? [{ name: "Risk premium", value: it.risk, color: C.aqua }] : []),
+            ],
+          }))}
+        />
+      </Figure>
+    ),
+  },
 
   volatility: {
     caption: "Markets drop and recover. Selling at the bottom locks in the loss; staying invested gave you the recovery.",
