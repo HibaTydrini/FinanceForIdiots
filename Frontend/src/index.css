@@ -21,3 +21,138 @@ input {
 button {
   cursor: pointer;
 }
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+  background-color: #f5efe6;
+}
+
+body {
+  background-color: #f5efe6;
+}
+
+/* National Bank selection page */
+
+.nbc-page {
+  min-height: 100vh;
+  background: #f5efe6;
+  font-family: Arial, sans-serif;
+}
+
+.nbc-header {
+  padding: 24px 7%;
+}
+
+.nbc-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #252525;
+}
+
+.nbc-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #d71920;
+  color: white;
+  font-weight: 800;
+}
+
+.nbc-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 70px 24px;
+}
+
+.nbc-card {
+  background: white;
+  border: 1px solid #e7e0d7;
+  border-radius: 18px;
+  padding: 55px;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.04);
+}
+
+.nbc-eyebrow {
+  color: #d71920;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.nbc-card h1 {
+  font-size: clamp(30px, 4vw, 44px);
+  line-height: 1.15;
+  color: #252525;
+  margin: 20px 0;
+}
+
+.nbc-description {
+  color: #777;
+  font-size: 17px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.nbc-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.nbc-actions button {
+  padding: 17px 20px;
+  border-radius: 9px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.nbc-primary {
+  background: #d71920;
+  color: white;
+  border: none;
+}
+
+.nbc-secondary {
+  background: white;
+  color: #d71920;
+  border: 1px solid #d71920;
+}
+
+.nbc-primary:hover {
+  background: #b9151b;
+}
+
+.nbc-secondary:hover {
+  background: #fff3f3;
+}
+
+@media (max-width: 600px) {
+  .nbc-card {
+    padding: 30px 22px;
+  }
+
+  .nbc-main {
+    padding: 35px 16px;
+  }
+}
+
+.nbc-brand {
+  cursor: pointer;
+}
+
+.nbc-brand:hover {
+  opacity: 0.8;
+}

@@ -1,0 +1,332 @@
+
+.landing {
+  min-height: 100vh;
+  background: #f5efe6;
+  color: #111111;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.landing * {
+  box-sizing: border-box;
+}
+
+/* navigation */
+.landing-nav {
+  height: 100px;
+  padding: 0 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.landing-brand {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 22px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.landing-logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: #dc0b20;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.landing-links,
+.landing-auth {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+}
+
+.landing-links a {
+  color: #111111;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.landing-auth button {
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.landing-login {
+  background: none;
+  border: none;
+  color: #111111;
+}
+
+.landing-signup,
+.landing-primary {
+  background: #dc0b20;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 15px 30px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* beige page background */
+.landing main {
+  display: flow-root;
+  background: #f5efe6;
+  padding-bottom: 45px;
+}
+
+/* hero */
+.landing-hero {
+  min-height: 610px;
+  padding: 65px 5% 75px;
+  display: grid;
+  grid-template-columns: 0.9fr 1.3fr;
+  align-items: center;
+  gap: 35px;
+}
+
+.landing-hero h1 {
+  margin: 0;
+  font-size: clamp(42px, 4.7vw, 78px);
+  line-height: 1.12;
+  letter-spacing: -2.5px;
+  font-weight: 800;
+}
+
+.landing-hero h1 span {
+  display: block;
+  color: #dc0b20;
+  font-style: normal;
+  text-decoration: none;
+}
+
+.landing-hero-text p {
+  max-width: 530px;
+  margin: 35px 0 40px;
+  color: #555555;
+  font-size: 21px;
+  line-height: 1.6;
+}
+
+.landing-buttons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.landing-primary {
+  font-size: 17px;
+}
+
+.landing-secondary {
+  padding: 14px 25px;
+  border: 1px solid #222222;
+  border-radius: 10px;
+  color: #111111;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.landing-chart img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.landing-chart img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* white cards */
+
+.landing-about,
+.landing-how {
+  width: 82%;
+  max-width: 1050px;
+  margin: 24px auto;
+  padding: 30px 40px;
+  border-radius: 22px;
+  border: none;
+  background: #ffffff;
+  box-shadow: 0 5px 24px rgba(0, 0, 0, 0.04);
+}
+
+.landing-how {
+  margin-bottom: 0;
+}
+
+.landing-eyebrow {
+  color: #a00019;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.landing-about h2,
+.landing-how h2 {
+  max-width: 1200px;
+  margin: 15px 0;
+  font-size: clamp(28px, 3vw, 36px);
+  line-height: 1.2;
+  letter-spacing: -1px;
+  color: #111111;
+}
+
+.landing-about p,
+.landing-how p {
+  max-width: 1200px;
+  font-size: 17px;
+  line-height: 1.5;
+  color: #222222;
+}
+
+.landing-how .landing-primary {
+  margin-top: 10px;
+}
+
+/* responsive layout */
+
+@media (max-width: 650px) {
+  .landing-nav {
+    height: auto;
+    padding: 20px 5%;
+    flex-wrap: wrap;
+  }
+
+  .landing-links {
+    display: none;
+  }
+
+  .landing-auth {
+    gap: 12px;
+  }
+
+  .landing-hero {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding-top: 50px;
+  }
+
+  .landing-hero h1 {
+    letter-spacing: -1.5px;
+  }
+
+  .landing-features {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .landing-about,
+  .landing-how {
+    width: 92%;
+    padding: 28px 24px;
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 520px) {
+  .landing-brand {
+    font-size: 17px;
+  }
+
+  .landing-logo {
+    width: 42px;
+    height: 42px;
+  }
+
+  .landing-signup {
+    padding: 11px 16px;
+  }
+
+  .landing-hero-text p {
+    font-size: 17px;
+  }
+
+  .landing-buttons {
+    flex-wrap: wrap;
+  }
+}
+/* fix landing page fullscreen layout */
+
+.landing main {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 0 60px;
+}
+
+.landing-hero {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 65px 5% 75px;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+}
+
+.landing-hero-text {
+  min-width: 0;
+}
+
+.landing-chart {
+  min-width: 0;
+  width: 100%;
+}
+
+.landing-chart img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.landing-about,
+.landing-how {
+  width: 90%;
+  max-width: 1400px;
+  padding: 45px 55px;
+}
+
+@media (max-width: 900px) {
+  .landing-hero {
+    grid-template-columns: 1fr;
+    gap: 35px;
+    padding: 45px 5%;
+  }
+}
+
+@media (max-width: 600px) {
+  .landing-about,
+  .landing-how {
+    width: 92%;
+    padding: 28px 24px;
+  }
+}
+
+/* keep text and chart side by side at every screen size */
+.landing .landing-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(10px, 3vw, 60px);
+}
+
+.landing .landing-hero-text,
+.landing .landing-chart {
+  min-width: 0;
+}
+
+.landing .landing-chart img {
+  width: 100%;
+  height: auto;
+}

@@ -393,3 +393,89 @@ footer {
     flex-direction: column;
   }
 }
+
+/* dashboard layout */
+
+.app {
+  min-height: 100vh;
+  background: #f5efe6;
+}
+
+.header {
+  min-height: 82px;
+  height: auto;
+  padding: 16px 5%;
+  background: #f5efe6;
+  border-bottom: 1px solid #e7e0d7;
+}
+
+.app main {
+  width: 100%;
+  max-width: 1600px;
+  padding: clamp(40px, 5vw, 80px) 5% 90px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  max-width: 1100px;
+  margin: 45px auto 0;
+}
+
+.feature-card {
+  min-height: 340px;
+  padding: 38px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.feature-card .feature-link {
+  margin-top: auto;
+}
+
+.header nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2vw, 30px);
+}
+
+.header nav button {
+  white-space: nowrap;
+}
+
+.header nav .logout-button {
+  background: #cf1726;
+  color: white;
+  padding: 11px 20px;
+  border-radius: 7px;
+  font-weight: 600;
+}
+
+.header nav .logout-button:hover {
+  background: #ae1020;
+  color: white;
+}
+
+@media (max-width: 700px) {
+  .app main {
+    padding: 40px 20px 70px;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card {
+    min-height: 260px;
+  }
+
+  .header {
+    padding: 18px 20px;
+  }
+
+  .header nav {
+    flex-wrap: wrap;
+  }
+}

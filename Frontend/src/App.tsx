@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import "./App.css";
 import TableOfContents from "./TableOfContents";
@@ -8,64 +7,59 @@ import { levelFromKnowledge } from "./learningLevel";
 
 type Page = "onboarding" | "home" | "learning" | "profile" | "coach" | "portfolio";
 
+
 const questions = [
   {
-    title: "How would you describe your investing knowledge?",
+    title: "What is your investment knowledge?",
     options: [
-      "I'm completely new",
-      "I know the basics",
-      "I understand stocks, ETFs, and risk",
-      "I'm experienced",
+      "I'm completely new to investing",
+      "I know a little about investing",
+      "I understand the basics",
+      "I'm experienced with investing",
     ],
   },
   {
-    title: "What is your main investment goal?",
+    title: "What have you invested in?",
     options: [
-      "Grow my wealth",
-      "Save for a major purchase",
+      "I haven't invested yet",
+      "Stocks",
+      "ETFs or mutual funds",
+      "Cryptocurrency",
+      "Bonds or GICs",
+      "A mix of different investments",
+    ],
+  },
+  {
+    title: "Why do you want to invest? What are your specific goals?",
+    options: [
+      "Grow my wealth over time",
+      "Save for a house or major purchase",
       "Prepare for retirement",
-      "Generate additional income",
+      "Generate passive income",
+      "I'm still figuring out my goals",
+    ],
+  },
+  {
+    title: "What is your risk tolerance?",
+    options: [
+      "Low — I prefer stability",
+      "Moderate — I'm comfortable with some risk",
+      "High — I can handle significant market changes",
       "I'm not sure yet",
     ],
   },
   {
-    title: "When do you expect to need your invested money?",
+    title: "What are you looking for from Finance for idiots?",
     options: [
-      "Within 1 year",
-      "In 1–3 years",
-      "In 3–5 years",
-      "In more than 5 years",
-      "I'm not sure",
+      "Learn how investing works",
+      "Understand my investments",
+      "Get personalized financial education",
+      "Understand investment risks",
+      "All of the above",
     ],
   },
-  {
-    title: "How would you react if your investments dropped 20%?",
-    options: [
-      "I would sell",
-      "I would be worried but hold",
-      "I would hold and accept the volatility",
-      "I would review whether to buy more",
-      "I'm not sure",
-    ],
-  },
-  {
-  title: "What do you want Finance for idiots to help you with?",
-  options: [
-    "Learn how investing works",
-    "Understand my portfolio",
-    "Research investment opportunities",
-    "Understand investment risks",
-    "A combination of these",
-  ],
-},
-{
-  title: "Would you like to connect your National Bank investment account?",
-  options: [
-    "Yes, connect my National Bank account",
-    "No, I'll use a demo portfolio",
-  ],
-},
 ];
+
 
 const features = [
   {
@@ -95,14 +89,35 @@ const features = [
 ];
 
 
-function App() {
-  // The opening quiz is skipped for now: the site starts on the home page.
-  // Change "home" back to "onboarding" to show the quiz again.
-  const [page, setPage] = useState<Page>("home");
-  // the pretend National Bank client picked on the Portfolio page (demo), shared with the AI Coach
-  const [demoClient, setDemoClient] = useState<DemoPortfolioData | null>(null);
+type AppProps = {
+  authenticated: boolean;
+  onQuizComplete: () => void;
+  onLogout: () => void;
+  onLogoClick: () => void;
+};
+
+function App({
+    authenticated,
+    onQuizComplete,
+    onLogout,
+    onLogoClick,
+}: AppProps) {
+
+    const [page, setPage] = useState<Page>(() =>
+    authenticated && localStorage.getItem("financeQuizAnswers")
+      ? "home"
+      : "onboarding"
+  );
   const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<string[]>([]);
+  const [answers, setAnswers] = useState<string[]>(() => {
+  const saved = localStorage.getItem("financeQuizAnswers");
+
+  try {
+    return saved ? JSON.parse(saved) as string[] : [];
+  } catch {
+    return [];
+  }
+  });
   const [selected, setSelected] = useState("");
   const [chatInput, setChatInput] = useState("");
   const [chatMessages, setChatMessages] = useState<string[]>([]);
@@ -115,7 +130,9 @@ function App() {
     setAnswers(updated);
 
     if (step === questions.length - 1) {
-      setPage("home");
+      localStorage.setItem("financeQuizAnswers", JSON.stringify(updated));
+
+      onQuizComplete();
     } else {
       setStep(step + 1);
       setSelected(updated[step + 1] || "");
@@ -131,18 +148,20 @@ function App() {
   return (
     <div className="app">
       <header className="header">
-        <button className="logo" onClick={() => setPage("home")}>
+        <button className="logo" onClick={onLogoClick}>
+          
           <span className="logo-icon">F.</span>
           <span>Finance for idiots</span>
         </button>
 
-        {page !== "onboarding" && (
+        {authenticated && page !== "onboarding" && (
           <nav>
             <button onClick={() => setPage("home")}>Home</button>
             <button onClick={() => setPage("learning")}>Learn</button>
             <button onClick={() => setPage("profile")}>Profile</button>
             <button onClick={() => setPage("coach")}>AI Coach</button>
             <button onClick={() => setPage("portfolio")}>Portfolio</button>
+            <button className="logout-button" onClick={onLogout}>Log out</button>
           </nav>
         )}
       </header>
@@ -153,7 +172,7 @@ function App() {
             <p className="eyebrow">LET'S GET TO KNOW YOU</p>
             <div className="progress-label">
               <span>Your investor journey</span>
-              <span>Question {step + 1} of 6</span>
+              Question {step + 1} of {questions.length}
             </div>
             <div className="progress">
               <div style={{ width: `${((step + 1) / questions.length) * 100}%` }} />
@@ -188,7 +207,7 @@ function App() {
                 disabled={!selected}
                 onClick={nextQuestion}
               >
-                {step === questions.length - 1 ? "Get Started" : "Continue"}
+                {step === questions.length - 1 ? "Finish" : "Continue"}
               </button>
             </div>
           </section>
