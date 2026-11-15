@@ -87,7 +87,8 @@ export default function LandingPage({
         </p>
 
         <p>
-            Answer five quick questions about your experience and goals.
+            Answer seven quick questions about your experience and goals,
+            then choose whether to add the optional personalization questions.
             From there, explore lessons, ask questions, and get a better
             understanding of investing at your own pace.
         </p>
