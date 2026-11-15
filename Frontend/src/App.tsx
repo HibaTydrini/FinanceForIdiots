@@ -89,23 +89,23 @@ const features = [
 
 type AppProps = {
   authenticated: boolean;
+  showOnboarding?: boolean;
   onQuizComplete: () => void;
   onLogout: () => void;
   onLogoClick: () => void;
 };
 
 function App({
-    authenticated,
-    onQuizComplete,
-    onLogout,
-    onLogoClick,
+  authenticated,
+  showOnboarding = false,
+  onQuizComplete,
+  onLogout,
+  onLogoClick,
 }: AppProps) {
-
-    const [page, setPage] = useState<Page>(() =>
-    authenticated && localStorage.getItem("financeQuizAnswers")
-      ? "home"
-      : "onboarding"
+  const [page, setPage] = useState<Page>(
+    showOnboarding ? "onboarding" : "home"
   );
+
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<string[]>(() => {
   const saved = localStorage.getItem("financeQuizAnswers");
@@ -121,28 +121,30 @@ function App({
   const [chatMessages, setChatMessages] = useState<string[]>([]);
 
   useEffect(() => {
-  const handleNavigation = () => {
-    const target = window.location.hash.split("/")[1];
+    const handleNavigation = () => {
+      if (showOnboarding) return;
 
-    if (
-      target === "home" ||
-      target === "learning" ||
-      target === "profile" ||
-      target === "coach" ||
-      target === "portfolio"
-    ) {
-      setPage(target);
-    }
-  };
+      const target = window.location.hash.split("/")[1];
 
-  handleNavigation();
+      if (
+        target === "home" ||
+        target === "learning" ||
+        target === "profile" ||
+        target === "coach" ||
+        target === "portfolio"
+      ) {
+        setPage(target);
+      }
+    };
 
-  window.addEventListener("hashchange", handleNavigation);
+    handleNavigation();
 
-  return () => {
-    window.removeEventListener("hashchange", handleNavigation);
-  };
-}, []);
+    window.addEventListener("hashchange", handleNavigation);
+
+    return () => {
+      window.removeEventListener("hashchange", handleNavigation);
+    };
+  }, [showOnboarding]);
 
 function navigatePage(target: Page) {
   window.location.hash = `dashboard/${target}`;
@@ -177,7 +179,7 @@ function navigatePage(target: Page) {
       <header className="header">
         <button className="logo" onClick={onLogoClick}>
           
-          <span className="logo-icon">F.</span>
+          <span className="logo-icon">FI</span>
           <span>Finance for idiots</span>
         </button>
 
@@ -315,7 +317,7 @@ function navigatePage(target: Page) {
 
             <div className="chat-box">
               <div className="coach-intro">
-                <span className="coach-avatar">F.</span>
+                <span className="coach-avatar">FI</span>
                 <div>
                   <strong>Finance for idiots Coach</strong>
                   <p>Hi! What would you like to learn today?</p>
