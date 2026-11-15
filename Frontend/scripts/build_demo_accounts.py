@@ -103,7 +103,8 @@ def build_client(c, prices, assets, actions, fx, macro):
     last_year = today_mix.sum(axis=1).iloc[-253:].pct_change().dropna()
     vol_now = float(last_year.std() * (252 ** 0.5) * 100)
     y2022 = idx[idx.index.year == 2022]
-    ret_2022 = float(y2022.iloc[-1] / idx[idx.index < "2022-01-01"].iloc[-1] - 1) if len(idx[idx.index < "2022-01-01"]) else float(y2022.iloc[-1] / y2022.iloc[0] - 1)
+    # 2022 return only if the account existed in 2022 (None for accounts opened later)
+    ret_2022 = float(y2022.iloc[-1] / y2022.iloc[0] - 1) if len(y2022) else None
 
     def mix(key):
         m = {}
@@ -120,13 +121,13 @@ def build_client(c, prices, assets, actions, fx, macro):
     facts = make_facts(c, rows, mix, vol_now, ret_2022, drawdown, gain_pct, infl)
 
     return {
-        **{k: c[k] for k in ("id", "name", "age", "job", "account", "risk", "horizon", "goal", "preferences")},
+        **{k: c[k] for k in ("id", "name", "age", "job", "experience", "account", "risk", "horizon", "horizonYears", "goal", "background", "preferences")},
         "asOf": end.strftime("%Y-%m-%d"),
         "since": start.strftime("%Y-%m-%d"),
         "totals": {
             "valueCad": round(total_value, 2), "investedCad": round(total_cost, 2),
             "dividendsCad": round(total_divs, 2), "gainPct": round(gain_pct, 1),
-            "volatilityPct": round(vol_now, 1), "volatilitySinceStartPct": round(vol, 1), "return2022Pct": round(ret_2022 * 100, 1),
+            "volatilityPct": round(vol_now, 1), "volatilitySinceStartPct": round(vol, 1), "return2022Pct": None if ret_2022 is None else round(ret_2022 * 100, 1),
             "worstDropPct": round(float(drawdown.min()) * 100, 1),
             "worstDropFrom": peak_day.strftime("%Y-%m-%d"), "worstDropTo": worst_day.strftime("%Y-%m-%d"),
             "canadaInflationPct": round(infl * 100, 1), "inflationThrough": infl_month.strftime("%Y-%m"),
@@ -138,17 +139,28 @@ def build_client(c, prices, assets, actions, fx, macro):
     }
 
 
-RISK_BANDS = {"Low to moderate": (0, 10), "Moderate": (6, 14), "High": (12, 100)}
+RISK_BANDS = {"Low": (0, 7), "Low to moderate": (0, 10), "Moderate": (6, 14), "Moderate to high": (10, 20), "High": (12, 100)}
 
 
 def make_facts(c, rows, mix, vol, ret_2022, drawdown, gain_pct, infl):
     """Plain facts the coach can talk about. Facts, not advice."""
     facts = []
     top = rows[0]
-    if top["weightPct"] >= 25:
+    # one single company or coin (funds already hold many companies, so they don't count)
+    singles = [r for r in rows if r["assetClass"] in ("equity", "crypto")]
+    if singles and singles[0]["weightPct"] >= 25:
+        top = singles[0]
         facts.append({"kind": "concentration", "level": "watch",
-                      "text": f"{top['name']} is {top['weightPct']}% of the account. One company going badly would hurt a lot."})
-    sector = mix("sector")[0]
+                      "text": f"{top['name']} is {top['weightPct']}% of the account. " + ("One coin crashing would hurt a lot." if top["assetClass"] == "crypto" else "One company going badly would hurt a lot.")})
+    for r in rows:
+        if r["assetClass"] == "etf_equity" and "tech" in r["sector"].lower() and r["weightPct"] >= 40:
+            facts.append({"kind": "fund-tilt", "level": "watch",
+                          "text": f"{r['weightPct']}% is in {r['name']}, a fund that holds many companies but leans heavily on big U.S. tech. When tech falls, it falls together."})
+    real = {}
+    for r in rows:  # real sectors only (fund labels like "Broad market" or "Bonds" are not sectors)
+        if r["assetClass"] == "equity":
+            real[r["sector"]] = real.get(r["sector"], 0) + r["weightPct"]
+    sector = max(({"name": k, "pct": round(v, 1)} for k, v in real.items()), key=lambda x: x["pct"], default={"name": "", "pct": 0})
     if sector["pct"] >= 35:
         facts.append({"kind": "sector", "level": "watch",
                       "text": f"{sector['pct']}% is in one sector: {sector['name']}."})
@@ -171,14 +183,36 @@ def make_facts(c, rows, mix, vol, ret_2022, drawdown, gain_pct, infl):
         facts.append({"kind": "risk", "level": "good",
                       "text": f"Over the last year, today's holdings moved about {round(vol)}% a year (volatility), which fits a '{c['risk']}' risk profile."})
     facts.append({"kind": "drop", "level": "info",
-                  "text": f"Its worst drop was {round(float(drawdown.min()) * 100)}% from a high point. In 2022 it returned {round(ret_2022 * 100)}%."})
+                  "text": f"Its worst drop was {round(float(drawdown.min()) * 100)}% from a high point."
+                          + (f" In 2022 it returned {round(ret_2022 * 100)}%." if ret_2022 is not None else "")})
     facts.append({"kind": "inflation", "level": "good" if gain_pct > infl * 100 else "watch",
                   "text": f"Including dividends it is up {round(gain_pct)}%, while prices in Canada rose about {round(infl * 100)}% over the same time."})
+    stocks = sum(r["weightPct"] for r in rows if r["assetClass"] in ("equity", "etf_equity", "crypto"))
+    if c["horizonYears"] <= 3 and stocks > 40:
+        facts.append({"kind": "horizon", "level": "watch",
+                      "text": f"{c['name']} needs this money in about {c['horizon']}, but {round(stocks)}% is in stocks or crypto. In a bad year those can drop 20% or more, with little time to recover."})
+    cad = sum(r["weightPct"] for r in rows if r["currency"] == "CAD")
+    if cad >= 90 and len(rows) >= 4:
+        facts.append({"kind": "home-bias", "level": "info",
+                      "text": f"{round(cad)}% is in Canadian investments. Canada is only a small part of the world's stock market, so many industries and countries are missing."})
+    for r in rows:
+        if r["assetClass"] == "etf_bond" and r["gainPct"] <= -10:
+            facts.append({"kind": "bonds-fell", "level": "watch",
+                          "text": f"{r['name']} is {r['gainPct']}% since it was bought. When interest rates rose in 2022, bond prices fell, especially long-term bonds. 'Safe' does not mean the price can't drop."})
+    if c["account"] == "Non-registered":
+        facts.append({"kind": "tax", "level": "info",
+                      "text": f"This is a regular (non-registered) account, so the ${round(sum(r['dividendsCad'] for r in rows)):,} in dividends and any gains when selling can be taxed. A TFSA or RRSP would shelter them, within the yearly limits."})
+    biggest_single = max((r["weightPct"] for r in singles), default=0)
+    if biggest_single < 25 and sector["pct"] < 35 and len(rows) >= 5:
+        facts.append({"kind": "spread", "level": "good",
+                      "text": f"Well spread out: {len(rows)} investments, mostly funds that each hold many companies." if sector["pct"] == 0
+                      else f"Well spread out: {len(rows)} investments, no single company is more than {round(biggest_single)}% and no sector more than {round(sector['pct'])}% of the account."})
     energy = [r["name"] for r in rows if r["sector"] == "Energy"]
     if energy and any("ESG" in p for p in c["preferences"]):
         facts.append({"kind": "values", "level": "watch",
                       "text": f"{', '.join(energy)} are energy companies. Mateo cares about ESG, so he may want to check their environmental record (sustainability reports, news). The data alone can't tell."})
-    recent = [r for r in rows if r["bought"] >= "2025-01-01" and r["assetClass"] == "equity"]
+    first_buy = min(r["bought"] for r in rows)
+    recent = [r for r in rows if r["bought"] >= "2025-01-01" and r["bought"] > first_buy and r["assetClass"] == "equity"]
     for r in recent:
         facts.append({"kind": "recent-buy", "level": "watch",
                       "text": f"{r['name']} was bought recently ({r['bought']}) and is {r['gainPct']}% since. It is much more volatile than the rest of this account."})
@@ -189,11 +223,12 @@ def agent_context(p):
     """A short text the AI coach gets before the chat starts."""
     t = p["totals"]
     lines = [
-        f"Demo client (pretend person, not a real account): {p['name']}, {p['age']}, {p['job']}.",
+        f"Demo client (pretend person, not a real account): {p['name']}, {p['age']}, {p['job']}. Investing experience: {p['experience']}.",
+        f"Background: {p['background']}",
         f"Account: {p['account']}. Risk profile: {p['risk']}. Horizon: {p['horizon']}. Goal: {p['goal']}.",
         f"Preferences: {'; '.join(p['preferences'])}.",
         f"As of {p['asOf']} (invested since {p['since']}): value ${t['valueCad']:,.0f} CAD, money put in ${t['investedCad']:,.0f}, dividends ${t['dividendsCad']:,.0f}, total gain {t['gainPct']}%.",
-        f"Volatility of today's holdings over the last year {t['volatilityPct']}%/yr, worst drop {t['worstDropPct']}% ({t['worstDropFrom']} to {t['worstDropTo']}), 2022 return {t['return2022Pct']}%.",
+        f"Volatility of today's holdings over the last year {t['volatilityPct']}%/yr, worst drop {t['worstDropPct']}% ({t['worstDropFrom']} to {t['worstDropTo']}), 2022 return {'n/a (opened later)' if t['return2022Pct'] is None else str(t['return2022Pct']) + '%'}.",
         "Holdings: " + "; ".join(f"{h['ticker']} {h['name']} {h['weightPct']}% ({h['gainPct']:+}%)" for h in p["holdings"]) + ".",
         "Mix by type: " + ", ".join(f"{m['name']} {m['pct']}%" for m in p["mix"]["assetClass"]) + ".",
         "Mix by sector: " + ", ".join(f"{m['name']} {m['pct']}%" for m in p["mix"]["sector"]) + ".",
@@ -212,7 +247,7 @@ def main():
         p["agentContext"] = agent_context(p)
         out.append(p)
         t = p["totals"]
-        print(f"{p['name']:7} value ${t['valueCad']:>10,.0f}  in ${t['investedCad']:>10,.0f}  gain {t['gainPct']:>6}%  vol {t['volatilityPct']}%  worst {t['worstDropPct']}%  2022 {t['return2022Pct']}%")
+        print(f"{p['name']:7} value ${t['valueCad']:>10,.0f}  in ${t['investedCad']:>10,.0f}  gain {t['gainPct']:>6}%  vol {t['volatilityPct']}%  worst {t['worstDropPct']}%  2022 {t['return2022Pct']}")
     OUT.write_text(json.dumps({
         "note": "Generated by scripts/build_demo_accounts.py. Pretend clients, real historical prices from the datathon starter dataset. Educational only.",
         "portfolios": out,

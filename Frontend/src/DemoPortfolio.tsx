@@ -80,6 +80,7 @@ export default function DemoPortfolio({ onAskCoach }: Props) {
                     <strong>{c.name}, {c.age}</strong>
                     <span>{c.job}</span>
                     <span className="demo-chips">
+                      <em className={`level-${c.experience.toLowerCase()}`}>{c.experience}</em>
                       <em>{c.account}</em>
                       <em>Risk: {c.risk}</em>
                     </span>
@@ -112,8 +113,9 @@ export default function DemoPortfolio({ onAskCoach }: Props) {
           <p className="eyebrow">NATIONAL BANK · {p.account} (DEMO)</p>
           <h2>Hi {p.name}, here is your portfolio</h2>
           <p className="demo-sub">
-            Goal: {p.goal} · Risk profile: {p.risk} · Horizon: {p.horizon}
+            Goal: {p.goal} · Risk profile: {p.risk} · Horizon: {p.horizon} · Experience: {p.experience}
           </p>
+          <p className="demo-sub demo-background">{p.background}</p>
         </div>
         <button className="secondary" onClick={() => setClientId(null)}>
           Switch client

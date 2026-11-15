@@ -2,23 +2,123 @@
   "note": "Pretend National Bank clients for the demo. Not real people or real accounts. Based on the datathon personas. Shares are in today's (split-adjusted) terms.",
   "clients": [
     {
+      "id": "sofia",
+      "name": "Sofia",
+      "age": 19,
+      "job": "University student, part-time barista",
+      "experience": "Novice",
+      "account": "TFSA",
+      "risk": "Low to moderate",
+      "horizon": "2 years",
+      "horizonYears": 2,
+      "goal": "Save for a semester abroad",
+      "background": "First job. Started investing in 2025 after seeing videos online. Not sure what she owns.",
+      "preferences": [
+        "Wants quick results",
+        "Picked investments from social media",
+        "Gets nervous when prices drop"
+      ],
+      "holdings": [
+        {
+          "ticker": "SHOP.TO",
+          "shares": 6,
+          "bought": "2025-06-02"
+        },
+        {
+          "ticker": "BTC-USD",
+          "shares": 0.004,
+          "bought": "2025-06-02"
+        },
+        {
+          "ticker": "XIU.TO",
+          "shares": 10,
+          "bought": "2025-06-02"
+        }
+      ]
+    },
+    {
+      "id": "jordan",
+      "name": "Jordan",
+      "age": 31,
+      "job": "Nurse",
+      "experience": "Novice",
+      "account": "FHSA",
+      "risk": "Moderate",
+      "horizon": "3 years",
+      "horizonYears": 3,
+      "goal": "Buy a first condo",
+      "background": "Rents with a roommate. Opened an FHSA for the tax break and put it all in two popular U.S. ETFs.",
+      "preferences": [
+        "Wants the down payment to be there in 3 years",
+        "Heard ETFs are safe",
+        "Doesn't check the account often"
+      ],
+      "holdings": [
+        {
+          "ticker": "QQQ",
+          "shares": 12,
+          "bought": "2024-03-01"
+        },
+        {
+          "ticker": "SPY",
+          "shares": 5,
+          "bought": "2024-03-01"
+        }
+      ]
+    },
+    {
       "id": "amira",
       "name": "Amira",
       "age": 26,
       "job": "Software engineer",
+      "experience": "Intermediate",
       "account": "TFSA",
       "risk": "High",
       "horizon": "15+ years",
+      "horizonYears": 15,
       "goal": "Grow her money over the long term",
-      "preferences": ["Loves AI and new tech", "Open to crypto and big swings", "Still wants some diversification, not only tech"],
+      "background": "Single, no kids. Follows tech news and invests on her phone.",
+      "preferences": [
+        "Loves AI and new tech",
+        "Open to crypto and big swings",
+        "Still wants some diversification, not only tech"
+      ],
       "holdings": [
-        { "ticker": "NVDA", "shares": 60, "bought": "2022-01-04" },
-        { "ticker": "SHOP.TO", "shares": 25, "bought": "2022-01-04" },
-        { "ticker": "QQQ", "shares": 8, "bought": "2022-01-04" },
-        { "ticker": "TSLA", "shares": 6, "bought": "2022-03-01" },
-        { "ticker": "BTC-USD", "shares": 0.05, "bought": "2022-01-04" },
-        { "ticker": "ETH-USD", "shares": 0.8, "bought": "2022-01-04" },
-        { "ticker": "XIU.TO", "shares": 30, "bought": "2023-06-01" }
+        {
+          "ticker": "NVDA",
+          "shares": 60,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "SHOP.TO",
+          "shares": 25,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "QQQ",
+          "shares": 8,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "TSLA",
+          "shares": 6,
+          "bought": "2022-03-01"
+        },
+        {
+          "ticker": "BTC-USD",
+          "shares": 0.05,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "ETH-USD",
+          "shares": 0.8,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "XIU.TO",
+          "shares": 30,
+          "bought": "2023-06-01"
+        }
       ]
     },
     {
@@ -26,19 +126,154 @@
       "name": "Mateo",
       "age": 41,
       "job": "Operations manager",
+      "experience": "Intermediate",
       "account": "RRSP",
       "risk": "Moderate",
       "horizon": "8 to 12 years",
+      "horizonYears": 10,
       "goal": "Balanced growth for his family",
-      "preferences": ["Cares a lot about ESG (environment, social, governance)", "Wants to avoid companies with big environmental controversies", "Not interested in very speculative bets"],
+      "background": "Partner and two kids. Wants his money to match his values.",
+      "preferences": [
+        "Cares a lot about ESG (environment, social, governance)",
+        "Wants to avoid companies with big environmental controversies",
+        "Not interested in very speculative bets"
+      ],
       "holdings": [
-        { "ticker": "ESGV", "shares": 40, "bought": "2022-01-04" },
-        { "ticker": "XIU.TO", "shares": 120, "bought": "2022-01-04" },
-        { "ticker": "XBB.TO", "shares": 150, "bought": "2022-01-04" },
-        { "ticker": "FTS.TO", "shares": 40, "bought": "2022-01-04" },
-        { "ticker": "ENB.TO", "shares": 50, "bought": "2022-01-04" },
-        { "ticker": "CNQ.TO", "shares": 80, "bought": "2022-01-04" },
-        { "ticker": "XOM", "shares": 20, "bought": "2022-01-04" }
+        {
+          "ticker": "ESGV",
+          "shares": 40,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "XIU.TO",
+          "shares": 120,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "XBB.TO",
+          "shares": 150,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "FTS.TO",
+          "shares": 40,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "ENB.TO",
+          "shares": 50,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "CNQ.TO",
+          "shares": 80,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "XOM",
+          "shares": 20,
+          "bought": "2022-01-04"
+        }
+      ]
+    },
+    {
+      "id": "priya",
+      "name": "Priya",
+      "age": 47,
+      "job": "Owns a small bakery",
+      "experience": "Intermediate",
+      "account": "Non-registered",
+      "risk": "Moderate",
+      "horizon": "10+ years",
+      "horizonYears": 12,
+      "goal": "Extra income from dividends",
+      "background": "Self-employed, so no company pension. Likes Canadian companies she knows and their dividends.",
+      "preferences": [
+        "Loves getting dividends",
+        "Prefers big Canadian names",
+        "Already used her TFSA room"
+      ],
+      "holdings": [
+        {
+          "ticker": "ENB.TO",
+          "shares": 100,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "FTS.TO",
+          "shares": 60,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "RY.TO",
+          "shares": 25,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "TD.TO",
+          "shares": 40,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "CNQ.TO",
+          "shares": 120,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "MFC.TO",
+          "shares": 150,
+          "bought": "2022-01-04"
+        }
+      ]
+    },
+    {
+      "id": "marc",
+      "name": "Marc",
+      "age": 68,
+      "job": "Retired high school teacher",
+      "experience": "Intermediate",
+      "account": "RRIF",
+      "risk": "Low",
+      "horizon": "Using it now",
+      "horizonYears": 1,
+      "goal": "Steady income in retirement",
+      "background": "Has a teacher's pension. This account tops up his income. Moved to 'safe' bonds when he retired.",
+      "preferences": [
+        "Hates losing money",
+        "Thought bonds could not go down",
+        "Wants a little growth to keep up with prices"
+      ],
+      "holdings": [
+        {
+          "ticker": "XBB.TO",
+          "shares": 600,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "TLT",
+          "shares": 60,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "ZST.TO",
+          "shares": 200,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "JNJ",
+          "shares": 20,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "PG",
+          "shares": 20,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "FTS.TO",
+          "shares": 50,
+          "bought": "2022-01-04"
+        }
       ]
     },
     {
@@ -46,20 +281,109 @@
       "name": "Robert",
       "age": 59,
       "job": "Healthcare professional",
+      "experience": "Expert",
       "account": "RRSP",
       "risk": "Low to moderate",
       "horizon": "3 to 5 years (retirement)",
+      "horizonYears": 4,
       "goal": "Protect his savings while still growing a little",
-      "preferences": ["Likes established companies he understands", "Little interest in crypto", "Sometimes tempted by companies in the news"],
+      "background": "Married, adult children. Follows markets every day and likes to act on news.",
+      "preferences": [
+        "Likes established companies he understands",
+        "Little interest in crypto",
+        "Sometimes tempted by companies in the news"
+      ],
       "holdings": [
-        { "ticker": "RY.TO", "shares": 40, "bought": "2022-01-04" },
-        { "ticker": "TD.TO", "shares": 50, "bought": "2022-01-04" },
-        { "ticker": "JNJ", "shares": 15, "bought": "2022-01-04" },
-        { "ticker": "PG", "shares": 15, "bought": "2022-01-04" },
-        { "ticker": "XBB.TO", "shares": 200, "bought": "2022-01-04" },
-        { "ticker": "ZST.TO", "shares": 120, "bought": "2022-01-04" },
-        { "ticker": "CNR.TO", "shares": 15, "bought": "2022-01-04" },
-        { "ticker": "TSLA", "shares": 25, "bought": "2025-12-17" }
+        {
+          "ticker": "RY.TO",
+          "shares": 40,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "TD.TO",
+          "shares": 50,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "JNJ",
+          "shares": 15,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "PG",
+          "shares": 15,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "XBB.TO",
+          "shares": 200,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "ZST.TO",
+          "shares": 120,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "CNR.TO",
+          "shares": 15,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "TSLA",
+          "shares": 25,
+          "bought": "2025-12-17"
+        }
+      ]
+    },
+    {
+      "id": "kevin",
+      "name": "Kevin",
+      "age": 39,
+      "job": "Data analyst at an insurance company",
+      "experience": "Expert",
+      "account": "TFSA",
+      "risk": "Moderate to high",
+      "horizon": "20 years",
+      "horizonYears": 20,
+      "goal": "Build long-term wealth with a simple plan",
+      "background": "Reads annual reports for fun. Built a mix of index ETFs, bonds and a little gold and bitcoin.",
+      "preferences": [
+        "Prefers low-fee index funds",
+        "Rebalances once a year",
+        "Keeps speculative bets small"
+      ],
+      "holdings": [
+        {
+          "ticker": "SPY",
+          "shares": 20,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "XIU.TO",
+          "shares": 150,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "QQQ",
+          "shares": 5,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "AGG",
+          "shares": 40,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "GLD",
+          "shares": 15,
+          "bought": "2022-01-04"
+        },
+        {
+          "ticker": "BTC-USD",
+          "shares": 0.03,
+          "bought": "2022-01-04"
+        }
       ]
     }
   ]
