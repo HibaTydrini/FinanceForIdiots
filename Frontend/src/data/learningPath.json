@@ -4,6 +4,8 @@
     {
       "title": "Intro to investing",
       "single": true,
+      "video": "videos/why-invest.mp4",
+      "videoCover": "videos/why-invest-cover.jpg",
       "topics": [
         {
           "id": "intro",
