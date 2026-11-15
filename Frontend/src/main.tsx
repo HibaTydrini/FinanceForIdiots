@@ -116,8 +116,10 @@ function Root() {
   if (screen === "landing") {
     return (
       <LandingPage
+        authenticated={authenticated}
         onLogin={() => navigate("login")}
         onSignup={startSignup}
+        onDashboard={() => navigate("dashboard")}
       />
     );
   }

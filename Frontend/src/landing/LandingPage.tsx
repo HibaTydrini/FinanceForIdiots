@@ -2,13 +2,17 @@
 import "./LandingPage.css";
 
 type LandingPageProps = {
+  authenticated: boolean;
   onLogin: () => void;
   onSignup: () => void;
+  onDashboard: () => void;
 };
 
 export default function LandingPage({
+  authenticated,
   onLogin,
   onSignup,
+  onDashboard,
 }: LandingPageProps) {
   return (
     <div className="landing">
@@ -24,12 +28,16 @@ export default function LandingPage({
         </nav>
 
         <div className="landing-auth">
-          <button className="landing-login" onClick={onLogin}>
-            Log in
-          </button>
-          <button className="landing-signup" onClick={onSignup}>
-            Sign up
-          </button>
+          {authenticated ? (
+            <button className="landing-signup" onClick={onDashboard}>
+              Go to dashboard
+            </button>
+          ) : (
+            <>
+              <button className="landing-login" onClick={onLogin}>Log in</button>
+              <button className="landing-signup" onClick={onSignup}>Sign up</button>
+            </>
+          )}
         </div>
       </header>
 
@@ -47,8 +55,8 @@ export default function LandingPage({
             </p>
 
             <div className="landing-buttons">
-              <button className="landing-primary" onClick={onSignup}>
-                Get started →
+              <button className="landing-primary" onClick={authenticated ? onDashboard : onSignup}>
+                {authenticated ? "Go to dashboard →" : "Get started →"}
               </button>
               <a className="landing-secondary" href="#how-it-works">
                 See how it works
@@ -93,8 +101,8 @@ export default function LandingPage({
             understanding of investing at your own pace.
         </p>
 
-        <button className="landing-primary" onClick={onSignup}>
-            Get started →
+        <button className="landing-primary" onClick={authenticated ? onDashboard : onSignup}>
+            {authenticated ? "Go to dashboard →" : "Get started →"}
         </button>
         </section>
       </main>

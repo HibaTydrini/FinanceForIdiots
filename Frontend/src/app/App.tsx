@@ -328,7 +328,7 @@ function navigatePage(target: Page) {
             <p className="eyebrow">OPTIONAL PERSONALIZATION</p>
             <h1>Want a more personalized experience?</h1>
             <p className="subtitle">
-              Answer 10 additional questions to help us understand your financial
+              Answer 12 additional questions to help us understand your financial
               situation and personalize your experience.
             </p>
             <div className="actions personalization-actions">

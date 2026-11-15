@@ -42,6 +42,8 @@ export const optionalQuestions: Question[] = [
   { title: "How comfortable are you with your investments changing in value from day to day?", options: ["Very uncomfortable", "A little uncomfortable", "Generally comfortable", "Very comfortable"] },
   { title: "Would you prefer spreading your money across many investments or concentrating on a few?", options: ["Spread it across many investments", "Mostly spread out, with a few favourites", "A balanced mix", "Concentrate on a few investments", "I'm not sure yet"] },
   { title: "If your financial situation changed, how easily could you reduce or pause your investments?", options: ["I would need to pause immediately", "I could reduce them after adjusting my budget", "I could continue for a few months", "I could continue without affecting essentials", "I'm not sure"] },
+  { title: "How important is it that your investments consider environmental, social and governance (ESG) factors?", options: ["Very important — I want ESG to be a major consideration", "Somewhat important — consider ESG alongside other factors", "Not very important — focus mainly on financial factors", "Not important to me", "I'm not sure what ESG means yet"] },
+  { title: "Which country do you currently live in?", options: ["Canada", "United States", "Another country", "I prefer not to say"] },
 ];
 
 export type OnboardingProfile = {
