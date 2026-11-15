@@ -1,0 +1,666 @@
+{
+  "note": "The Baby Steps path (BabySteps.tsx). Lessons are reused from learningPath.json through their topic ids; nothing is copied. Variant keys are the exact onboarding quiz answers from App.tsx. Links only use URLs that already appear in learningPath.json sources.",
+  "disclaimer": "Baby Steps is educational. It never tells you what to buy or sell.",
+  "steps": [
+    {
+      "id": "what-investing-is",
+      "title": "What investing is",
+      "why": "Before you invest a single dollar, it helps to know what investing is and when you are ready for it.",
+      "topics": ["intro"],
+      "variants": {
+        "I'm completely new to investing": {
+          "lead": "Starting from zero is a great place to start. We will go slowly and explain every new word."
+        },
+        "I know a little about investing": {
+          "lead": "You already know a little. This first step makes sure the base is solid."
+        },
+        "I'm experienced with investing": {
+          "lead": "You have done this before. Pass the quick check on each step to skip ahead."
+        }
+      },
+      "terms": [
+        { "term": "Emergency fund", "meaning": "Cash set aside for surprises, like a car repair or losing your job." },
+        { "term": "High-interest debt", "meaning": "Debt that charges a lot of interest, like a credit card balance." }
+      ],
+      "check": [
+        {
+          "q": "What is the one rule to remember before you invest?",
+          "options": [
+            "Invest everything you have, as fast as you can",
+            "Only invest money you won't need soon, and keep an emergency fund in cash first",
+            "Wait until you are rich"
+          ],
+          "answer": 1,
+          "explain": "Right. Investments go up and down, so money you need soon should stay safe."
+        },
+        {
+          "q": "Why does cash kept under a mattress slowly lose value?",
+          "options": [
+            "Prices rise over time, so the same cash buys less",
+            "The bank takes a fee from it",
+            "It doesn't. Cash never loses value"
+          ],
+          "answer": 0,
+          "explain": "Yes. That slow rise in prices is called inflation."
+        }
+      ],
+      "doIt": [
+        {
+          "id": "ready-emergency",
+          "label": "Emergency fund: I have one, or I know I should build one first",
+          "how": [
+            "An [[emergency fund]] is cash you can reach quickly if something goes wrong.",
+            "It stays in cash, not in investments, so it is there when you need it.",
+            "No fund yet? You can still keep learning here. Just know it comes before investing."
+          ],
+          "link": {
+            "title": "National Bank: How to invest my money?",
+            "url": "https://www.nbc.ca/personal/advice/savings-investment/how-to-invest-money.html"
+          }
+        },
+        {
+          "id": "ready-debt",
+          "label": "High-interest debt: I've dealt with it, or I have a plan for it",
+          "how": [
+            "[[High-interest debt]] often costs more each year than investments can be expected to earn.",
+            "That is why many people deal with it before they start investing.",
+            "This is a readiness check for you, not a test. Tick it when you have thought about it."
+          ]
+        }
+      ],
+      "coachPrompts": [
+        "What is the difference between saving and investing?",
+        "How do I know if I'm ready to start investing?"
+      ]
+    },
+    {
+      "id": "goal-timeline-risk",
+      "title": "Your goal, timeline and risk",
+      "why": "A plan starts with what the money is for, when you need it, and how many ups and downs you can live with.",
+      "topics": ["goals_horizon", "risk_return", "investor_profile"],
+      "variants": {
+        "Save for a house or major purchase": {
+          "lead": "You are saving for a home or a big purchase. That goal has a date, and the date shapes the whole plan."
+        },
+        "Prepare for retirement": {
+          "lead": "Retirement is far away, and that is good news: time is the biggest help an investor has."
+        },
+        "Grow my wealth over time": {
+          "lead": "You want your money to grow over time. Let's turn that into a goal with a number and a date."
+        },
+        "Generate passive income": {
+          "lead": "You want your money to pay you an income one day. Let's give that goal a number and a date."
+        },
+        "I'm still figuring out my goals": {
+          "lead": "No clear goal yet? That's fine. Pick a practice goal here. You can change it any time."
+        }
+      },
+      "terms": [
+        { "term": "Time horizon", "meaning": "How long you can leave your money invested before you need it." }
+      ],
+      "check": [
+        {
+          "q": "What is a time horizon?",
+          "options": [
+            "The best time of day to buy",
+            "How long you can leave your money invested",
+            "How long the stock market is open"
+          ],
+          "answer": 1,
+          "explain": "Exactly. A longer horizon gives your money more time to recover from bad years."
+        },
+        {
+          "q": "You need the money for a trip next summer. What usually fits a goal that close?",
+          "options": [
+            "Take as much risk as possible to grow it fast",
+            "It makes no difference",
+            "Take less risk, because there is little time to recover from a drop"
+          ],
+          "answer": 2,
+          "explain": "Yes. Short-term goals usually call for less risk."
+        },
+        {
+          "q": "Investments that can earn a lot usually...",
+          "options": [
+            "Can also lose a lot",
+            "Are always safe",
+            "Are guaranteed by the bank"
+          ],
+          "answer": 0,
+          "explain": "Right. Risk and return travel together."
+        }
+      ],
+      "doIt": [
+        {
+          "id": "set-goal",
+          "label": "Write your goal card",
+          "how": [
+            "Say what the money is for, in your own words.",
+            "Add the amount you are aiming for and the date you want it by.",
+            "We work out the monthly amount for you. The first number assumes no growth at all, so it is the safe one to plan with."
+          ],
+          "widget": "goal",
+          "planField": "goal",
+          "link": {
+            "title": "National Bank: 8 steps to build a solid investment portfolio",
+            "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/start-self-directed-investment/basics-self-directed-investing/building-a-solid-investment-portfolio.html"
+          }
+        }
+      ],
+      "coachPrompts": [
+        "How does my timeline change how much risk I can take?",
+        "What does my risk tolerance mean in practice?"
+      ]
+    },
+    {
+      "id": "building-blocks",
+      "title": "The building blocks",
+      "why": "Almost every portfolio is built from the same few blocks. Once you know them, fund names stop looking scary.",
+      "topics": ["stocks", "bonds", "etfs"],
+      "variants": {
+        "Low — I prefer stability": {
+          "lead": "You said you prefer stability, so we start with the steadiest block: GICs.",
+          "topicsFirst": ["gics"]
+        },
+        "Cryptocurrency": {
+          "lead": "You have tried crypto. Here are the classic blocks that most long-term portfolios are built from."
+        },
+        "I haven't invested yet": {
+          "lead": "You have not invested yet, so here are the three blocks you will hear about most."
+        }
+      },
+      "terms": [
+        { "term": "MER", "meaning": "Management expense ratio: the fee a fund charges each year, shown as a percentage." },
+        { "term": "Holdings", "meaning": "The list of things a fund owns, like the companies inside an ETF." },
+        { "term": "Fund Facts", "meaning": "A short, plain-language document every fund must publish. ETFs have one called ETF Facts." },
+        { "term": "Risk rating", "meaning": "A scale from low to high that shows how bumpy the fund's past returns have been." }
+      ],
+      "check": [
+        {
+          "q": "What is a stock?",
+          "options": [
+            "A loan you make to a government",
+            "A savings account with a higher rate",
+            "A small piece of ownership in a company"
+          ],
+          "answer": 2,
+          "explain": "Yes. Each piece is called a share."
+        },
+        {
+          "q": "What is a bond?",
+          "options": [
+            "A loan to a government or a company that pays you interest",
+            "A piece of a company",
+            "A type of bank fee"
+          ],
+          "answer": 0,
+          "explain": "Right. Bonds are usually steadier than stocks, with lower returns."
+        },
+        {
+          "q": "What is an ETF?",
+          "options": [
+            "One single company",
+            "A basket that holds many investments at once",
+            "A guaranteed investment"
+          ],
+          "answer": 1,
+          "explain": "Exactly. One ETF can hold hundreds of stocks or bonds."
+        }
+      ],
+      "doIt": [
+        {
+          "id": "fund-fees",
+          "label": "Read a fund page: find the fee (MER)",
+          "how": [
+            "Open any fund or ETF page and look for its [[Fund Facts]] or ETF Facts document.",
+            "Find the [[MER]]. It is a percentage, charged every year.",
+            "You are only practising reading the page. You don't need to buy anything."
+          ],
+          "link": {
+            "title": "National Bank: 6 things to know about ETFs",
+            "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/understanding-stock-market/etfs/things-know-etfs.html"
+          }
+        },
+        {
+          "id": "fund-holdings",
+          "label": "Read a fund page: look at what it holds",
+          "how": [
+            "Find the top [[holdings]] list.",
+            "Ask yourself: is it many companies, or a few? One country, or many?",
+            "A fund with hundreds of holdings spreads your money more than one with ten."
+          ]
+        },
+        {
+          "id": "fund-risk",
+          "label": "Read a fund page: check the risk rating",
+          "how": [
+            "Find the [[risk rating]]. It goes from low to high.",
+            "Compare it with your own comfort with risk from step 2.",
+            "A higher rating means bigger ups and downs along the way."
+          ]
+        }
+      ],
+      "coachPrompts": [
+        "What is the difference between a stock and an ETF?",
+        "Where do I find the MER on a fund page?"
+      ]
+    },
+    {
+      "id": "what-it-costs",
+      "title": "What it costs",
+      "why": "Fees look tiny, but they are taken every year. Over a long time they can eat a big part of your money.",
+      "topics": ["fees", "mutual_funds"],
+      "variants": {
+        "ETFs or mutual funds": {
+          "lead": "You already own funds. This step shows you how to check what they cost you each year."
+        }
+      },
+      "terms": [
+        { "term": "MER", "meaning": "Management expense ratio: the fee a fund charges each year, shown as a percentage." }
+      ],
+      "check": [
+        {
+          "q": "What is the MER?",
+          "options": [
+            "A tax you pay when you sell",
+            "The yearly fee a fund charges, as a percentage",
+            "The minimum amount you must invest"
+          ],
+          "answer": 1,
+          "explain": "Yes. It is taken from the fund every year, whether it goes up or down."
+        },
+        {
+          "q": "Two funds hold the same investments. One charges 0.2% a year, the other 2%. Over 25 years...",
+          "options": [
+            "The difference is too small to notice",
+            "The more expensive fund always earns more",
+            "The cheaper fund leaves you with clearly more money"
+          ],
+          "answer": 2,
+          "explain": "Right. Small yearly fees add up to a big amount over time."
+        }
+      ],
+      "doIt": [
+        {
+          "id": "fee-calculator",
+          "label": "See what fees cost over 25 years",
+          "how": [
+            "Type a monthly amount below.",
+            "Compare the two results: same contributions, same growth before fees, different fee.",
+            "Tick this off once you have seen the gap."
+          ],
+          "widget": "fees",
+          "link": {
+            "title": "GetSmarterAboutMoney (OSC): Mutual fund fees",
+            "url": "https://www.getsmarteraboutmoney.ca/learning-path/mutual-funds-segregated-funds/mutual-fund-fees/"
+          }
+        }
+      ],
+      "coachPrompts": [
+        "Why do some funds charge more than others?",
+        "What fees should I look for before choosing a fund?"
+      ]
+    },
+    {
+      "id": "eggs-in-baskets",
+      "title": "Don't put all your eggs in one basket",
+      "why": "Spreading your money means one bad investment can't sink your whole plan.",
+      "topics": ["diversification", "asset_allocation"],
+      "suggest": "balanced",
+      "variants": {
+        "Low — I prefer stability": {
+          "lead": "You said you prefer stability. Below, the calmer example mix is highlighted for you.",
+          "suggest": "cautious"
+        },
+        "Moderate — I'm comfortable with some risk": {
+          "lead": "You said you are comfortable with some risk. Below, the middle example mix is highlighted for you.",
+          "suggest": "balanced"
+        },
+        "High — I can handle significant market changes": {
+          "lead": "You said you can handle big market changes. Below, the growth example mix is highlighted for you.",
+          "suggest": "growth"
+        },
+        "I'm not sure yet": {
+          "lead": "Not sure about risk yet? We highlighted the middle example mix. Look at all three and see how each one feels.",
+          "suggest": "balanced"
+        }
+      },
+      "terms": [
+        { "term": "Mix", "meaning": "How your money is split between stocks, bonds and cash. Also called asset allocation." }
+      ],
+      "check": [
+        {
+          "q": "What does diversification mean?",
+          "options": [
+            "Spreading your money across many investments",
+            "Putting everything into your favourite company",
+            "Changing banks every year"
+          ],
+          "answer": 0,
+          "explain": "Yes. If one investment does badly, the others can soften the fall."
+        },
+        {
+          "q": "A mix with more stocks usually means...",
+          "options": [
+            "Less growth and fewer ups and downs",
+            "No risk at all",
+            "More growth over time, and bigger ups and downs"
+          ],
+          "answer": 2,
+          "explain": "Right. More stocks means a bumpier ride."
+        }
+      ],
+      "doIt": [
+        {
+          "id": "pick-mix",
+          "label": "Pick an example mix to learn with",
+          "how": [
+            "Look at the three example mixes below. The one that matches your risk answer is highlighted.",
+            "Pick the one you want to learn with and save it to your plan.",
+            "These are examples for learning, not a recommendation. A bank advisor can help you find your real mix."
+          ],
+          "widget": "mix",
+          "planField": "mix",
+          "options": [
+            { "id": "cautious", "name": "Cautious", "stocks": 40, "bonds": 50, "cash": 10, "detail": "Smaller ups and downs, slower growth." },
+            { "id": "balanced", "name": "Balanced", "stocks": 60, "bonds": 30, "cash": 10, "detail": "A middle path between growth and calm." },
+            { "id": "growth", "name": "Growth", "stocks": 80, "bonds": 15, "cash": 5, "detail": "More growth over time, bigger drops along the way." }
+          ],
+          "link": {
+            "title": "National Bank: What is an asset allocation ETF?",
+            "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/understanding-stock-market/etfs/what-is-an-asset-allocation-etf.html"
+          }
+        }
+      ],
+      "coachPrompts": [
+        "How do I know if I'm diversified enough?",
+        "What is the difference between stocks, bonds and cash in a mix?"
+      ]
+    },
+    {
+      "id": "where-it-lives",
+      "title": "Where your investments live",
+      "why": "The account you choose decides how much tax you pay on your growth, so it is worth picking with care.",
+      "topics": ["registered_accounts", "investment_taxes"],
+      "lead": "Many beginners look at the TFSA first, because it is flexible. We put it first for you.",
+      "suggest": "TFSA",
+      "variants": {
+        "Save for a house or major purchase": {
+          "lead": "You are saving for a home or a big purchase, so we put the FHSA first. It was made for a first home.",
+          "suggest": "FHSA"
+        },
+        "Prepare for retirement": {
+          "lead": "You are saving for retirement, so we put the RRSP first. It was made for exactly that.",
+          "suggest": "RRSP"
+        }
+      },
+      "terms": [
+        { "term": "TFSA", "meaning": "Tax-Free Savings Account: your investments grow tax-free and you can take money out any time." },
+        { "term": "RRSP", "meaning": "Registered Retirement Savings Plan: lowers your taxes today; you pay tax when you take money out later." },
+        { "term": "FHSA", "meaning": "First Home Savings Account: helps you save for your first home with tax advantages." },
+        { "term": "Contribution room", "meaning": "The most you are allowed to put into a registered account. The government sets it." },
+        { "term": "SIN", "meaning": "Social Insurance Number: the nine-digit number the government uses to identify you for taxes." }
+      ],
+      "check": [
+        {
+          "q": "What is special about a TFSA?",
+          "options": [
+            "The bank guarantees it will grow",
+            "Growth inside it is tax-free",
+            "You can only use it to buy a home"
+          ],
+          "answer": 1,
+          "explain": "Yes. You pay no tax on the growth or when you take money out."
+        },
+        {
+          "q": "What is contribution room?",
+          "options": [
+            "The most you are allowed to put into the account",
+            "The fee for opening the account",
+            "The least you must invest each month"
+          ],
+          "answer": 0,
+          "explain": "Right. The limits change, so always check official sources like your CRA My Account."
+        },
+        {
+          "q": "Which account was made to help you save for a first home?",
+          "options": [
+            "RRSP",
+            "A chequing account",
+            "FHSA"
+          ],
+          "answer": 2,
+          "explain": "Yes. FHSA stands for First Home Savings Account."
+        }
+      ],
+      "doIt": [
+        {
+          "id": "choose-account",
+          "label": "Choose the account type to start with",
+          "how": [
+            "Read the three cards below. The one that fits your goal is first.",
+            "Pick one and save it to your plan. You can change it later.",
+            "Many people end up with more than one account. This is only where you start."
+          ],
+          "widget": "account",
+          "planField": "account",
+          "link": {
+            "title": "National Bank: Registered accounts overview",
+            "url": "https://www.nbc.ca/personal/advice/savings-investment/registered-accounts.html"
+          }
+        },
+        {
+          "id": "open-account",
+          "label": "Open your account",
+          "later": true,
+          "how": [
+            "Have ready: a government photo ID, your [[SIN]] and your chequing account details.",
+            "The bank will ask about your goal, your timeline, your income and how you feel about risk. That is normal. It is how they get to know you.",
+            "Tell them which account type you chose: [[TFSA]], [[RRSP]] or [[FHSA]].",
+            "Before you add money, check your [[contribution room]] in your CRA My Account.",
+            "What happens next: the account opens empty. Nothing is invested until you add money and choose what to hold."
+          ],
+          "link": {
+            "title": "National Bank: Registered savings plans (TFSA, RRSP, etc.)",
+            "url": "https://www.nbc.ca/personal/help-centre/savings-investment/saving-plans.html"
+          }
+        }
+      ],
+      "coachPrompts": [
+        "What is the difference between a TFSA, an RRSP and an FHSA?",
+        "What do I need to open an investment account?"
+      ]
+    },
+    {
+      "id": "simple-habit",
+      "title": "A simple habit",
+      "why": "A small amount, invested every month without thinking about it, beats waiting for the perfect moment.",
+      "topics": ["compound_growth", "dollar_cost_averaging"],
+      "variants": {
+        "I haven't invested yet": {
+          "lead": "You don't need a big amount to begin. A small monthly habit is how most people start."
+        }
+      },
+      "terms": [
+        { "term": "Pre-authorized contribution", "meaning": "An automatic transfer from your bank account to your investment account, on a day you choose." }
+      ],
+      "check": [
+        {
+          "q": "What is compound growth?",
+          "options": [
+            "A fee the bank charges every year",
+            "When your earnings start earning too",
+            "A type of account"
+          ],
+          "answer": 1,
+          "explain": "Yes. It is like a snowball that gets bigger the longer it rolls."
+        },
+        {
+          "q": "What does investing a fixed amount every month do for you?",
+          "options": [
+            "It guarantees you will never lose money",
+            "It lets you guess the best day to buy",
+            "It means you don't have to guess the best time to buy"
+          ],
+          "answer": 2,
+          "explain": "Right. You buy a little more when prices are low and a little less when they are high."
+        }
+      ],
+      "doIt": [
+        {
+          "id": "set-monthly",
+          "label": "Set your monthly amount and day",
+          "how": [
+            "Choose an amount you can keep up every month, even in a tight month.",
+            "Choose the day. A good one is right after payday, so the money moves before you can spend it.",
+            "Save it to your plan."
+          ],
+          "widget": "monthly",
+          "planField": "monthly",
+          "link": {
+            "title": "GetSmarterAboutMoney (OSC): Dollar-cost averaging",
+            "url": "https://getsmarteraboutmoney.ca/learning-path/getting-started/dollar-cost-averaging"
+          }
+        },
+        {
+          "id": "auto-contribution",
+          "label": "Set up the automatic contribution",
+          "later": true,
+          "how": [
+            "A [[pre-authorized contribution]] moves money from your bank account to your investment account by itself.",
+            "In your online banking, or with an advisor, choose the amount and the day from your plan.",
+            "Check which account the money comes from and which account it goes to.",
+            "You can change the amount, pause it or stop it whenever you need to."
+          ]
+        }
+      ],
+      "coachPrompts": [
+        "How does investing every month work?",
+        "What is a pre-authorized contribution?"
+      ]
+    },
+    {
+      "id": "staying-calm",
+      "title": "Staying calm",
+      "why": "Markets drop sometimes. Deciding now what you will do makes it much easier to stay calm later.",
+      "topics": ["volatility", "hype_fomo"],
+      "moveAfter": { "answer": "Cryptocurrency", "step": "building-blocks" },
+      "variants": {
+        "Cryptocurrency": {
+          "lead": "You have invested in crypto, which can swing a lot. So we moved this step up for you."
+        },
+        "Low — I prefer stability": {
+          "lead": "You prefer stability, so drops may feel extra hard. A rule written in advance really helps."
+        }
+      },
+      "terms": [
+        { "term": "FOMO", "meaning": "Fear of missing out: the urge to buy something because everyone is talking about it." }
+      ],
+      "check": [
+        {
+          "q": "What is volatility?",
+          "options": [
+            "How bumpy the ride is: how much prices go up and down",
+            "A fee for selling",
+            "A promise that prices will rise"
+          ],
+          "answer": 0,
+          "explain": "Yes. Some bumps are a normal part of investing."
+        },
+        {
+          "q": "What happens when someone sells in a panic at the bottom of a drop?",
+          "options": [
+            "They avoid all losses",
+            "Nothing changes",
+            "They lock in their losses"
+          ],
+          "answer": 2,
+          "explain": "Right. Markets have recovered in the past, though there is never a guarantee."
+        },
+        {
+          "q": "Everyone online is excited about one investment. A good first move is to...",
+          "options": [
+            "Buy quickly before it is too late",
+            "Slow down and check it against your plan",
+            "Borrow money to buy more"
+          ],
+          "answer": 1,
+          "explain": "Yes. That rush to join in is [[FOMO]], and your plan is the cure."
+        }
+      ],
+      "doIt": [
+        {
+          "id": "my-rule",
+          "label": "Write a rule for myself",
+          "how": [
+            "Finish the sentence below in your own words.",
+            "Keep it simple, so you can follow it on a bad day.",
+            "We save it to your plan and show it back to you when markets get scary."
+          ],
+          "widget": "rule",
+          "planField": "rule",
+          "link": {
+            "title": "National Bank: Market volatility, what should you do?",
+            "url": "https://www.nbc.ca/personal/advice/savings-investment/market-volatility-investments.html"
+          }
+        }
+      ],
+      "coachPrompts": [
+        "What usually happens after a big market drop?",
+        "How can I avoid buying something just because of hype?"
+      ]
+    },
+    {
+      "id": "practise",
+      "title": "Practise",
+      "why": "Looking at a pretend portfolio is a safe way to use what you learned, with no real money.",
+      "topics": ["simulation"],
+      "lead": "Time to try it out. The demo portfolios use pretend clients and real past prices.",
+      "check": [],
+      "doIt": [
+        {
+          "id": "connect-demo",
+          "label": "Open a demo portfolio",
+          "how": [
+            "Go to My Portfolio and log in as one of the pretend clients.",
+            "Sofia's portfolio is a good one to start with. See how many problems you can spot.",
+            "Look for the things you learned: fees, the mix, how spread out it is, and the worst drop.",
+            "This step ticks itself as soon as you connect a demo client."
+          ],
+          "auto": "demo",
+          "page": "portfolio",
+          "pageLabel": "Open the demo portfolio"
+        }
+      ],
+      "coachPrompts": [
+        "What should I look for when I read a portfolio?",
+        "What does it mean if a portfolio is too concentrated?"
+      ]
+    },
+    {
+      "id": "my-plan",
+      "title": "My plan and what's next",
+      "why": "Everything you chose now lives in one place, with clear next steps to come back to.",
+      "topics": [],
+      "lead": "You made it. Your choices from the earlier steps are saved in My Plan.",
+      "check": [],
+      "doIt": [
+        {
+          "id": "open-plan",
+          "label": "Open My Plan",
+          "how": [
+            "My Plan shows your goal, your account, your monthly amount, your example mix and your rule for yourself.",
+            "Below that is a timeline: what to do this week, this month, every month and every year.",
+            "Come back once a month for a 30-second check-in."
+          ],
+          "page": "plan",
+          "pageLabel": "Go to My Plan"
+        }
+      ],
+      "coachPrompts": [
+        "What should I do next?",
+        "How often should I look at my investments?"
+      ]
+    }
+  ]
+}

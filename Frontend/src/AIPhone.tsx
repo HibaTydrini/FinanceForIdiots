@@ -5,6 +5,7 @@ import { sendChat } from "./api";
 import type { Source } from "./api";
 import { shortUrl, withSourceLinks } from "./chatText";
 import { usePageContext } from "./pageContext";
+import { coachContext, readQuizAnswers, useBabySteps } from "./babyStepsStore";
 
 // Answers come from the same backend as the AI Coach page (backend/app.py: NBC knowledge
 // base + the user's quiz profile). The phone keeps its own conversation.
@@ -31,7 +32,8 @@ export default function AIPhone() {
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const { page, lesson } = usePageContext();
+    const { page, lesson, step } = usePageContext();
+    const { state: babySteps } = useBabySteps();
 
     const bottomRef = useRef<HTMLDivElement>(null);
     const nextId = useRef(2);
@@ -67,7 +69,9 @@ export default function AIPhone() {
 
         try {
             // Send what's on screen so questions like "explain this" make sense.
-            const context = page ? { page, lesson } : undefined;
+            // Baby Steps progress and plan go along too, so "what should I do next?" works.
+            const progress = coachContext(babySteps, readQuizAnswers(), step);
+            const context = page ? { page, lesson, ...progress } : progress;
             const { answer, sources } = await sendChat(question, history, undefined, context);
             const reply: Message = {
                 id: nextId.current++,

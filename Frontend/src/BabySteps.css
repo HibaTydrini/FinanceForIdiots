@@ -1,0 +1,644 @@
+/* Baby Steps roadmap, Do it cards and plan widgets.
+   Same red (#cf1726), greys and card style as App.css and TableOfContents.css. */
+
+.bs .progress-label {
+  margin-top: 30px;
+}
+
+.bs .progress {
+  margin-bottom: 26px;
+}
+
+/* ---------- roadmap ---------- */
+.bs-road {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.bs-step {
+  position: relative;
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+}
+
+.bs-step.current {
+  border-color: #cf1726;
+}
+
+.bs-step.locked {
+  background: #faf8f5;
+}
+
+/* the line that joins the step markers */
+.bs-step + .bs-step::before {
+  content: "";
+  position: absolute;
+  top: -13px;
+  left: 45px;
+  width: 2px;
+  height: 12px;
+  background: #dddddd;
+}
+
+.bs-step-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 26px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  color: #252525;
+  font-size: 16px;
+}
+
+.bs-step-head:hover {
+  background: #fcf3f4;
+}
+
+.bs-step-head:focus-visible,
+.bs-action-head:focus-visible,
+.bs-tick:focus-visible,
+.bs-choice:focus-visible,
+.bs-chip:focus-visible,
+.bs-check .answer:focus-visible {
+  outline: 2px solid #cf1726;
+  outline-offset: 2px;
+}
+
+.bs-step-head[aria-disabled="true"] {
+  cursor: not-allowed;
+  color: #999999;
+}
+
+.bs-step-head[aria-disabled="true"]:hover {
+  background: transparent;
+}
+
+.bs-step.open > .bs-step-head .toc-chevron {
+  transform: rotate(-135deg);
+}
+
+.bs-marker {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 2px solid #dddddd;
+  background: white;
+  color: #999999;
+  font-weight: 700;
+}
+
+.bs-step.current .bs-marker {
+  border-color: #cf1726;
+  background: #cf1726;
+  color: white;
+}
+
+.bs-step.done .bs-marker {
+  border-color: #0f7a52;
+  color: #0f7a52;
+}
+
+.bs-step-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.bs-step-text span {
+  color: #777777;
+  font-size: 14px;
+}
+
+.bs-step.locked .bs-step-text span {
+  color: #aaaaaa;
+}
+
+.bs-status {
+  flex: none;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #999999;
+}
+
+.bs-step.current .bs-status {
+  color: #cf1726;
+}
+
+.bs-step.done .bs-status {
+  color: #0f7a52;
+}
+
+/* ---------- an open step ---------- */
+.bs-body {
+  padding: 4px 26px 26px 84px;
+}
+
+.bs-body h3 {
+  margin: 28px 0 10px;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #cf1726;
+}
+
+.bs-lead {
+  margin: 0 0 10px;
+  padding: 14px 18px;
+  border-left: 4px solid #cf1726;
+  border-radius: 0 6px 6px 0;
+  background: #fcf3f4;
+  font-size: 17px;
+}
+
+.bs-why {
+  margin: 0;
+  color: #444444;
+}
+
+.bs-note {
+  margin: 10px 0;
+  font-size: 13px;
+  color: #777777;
+}
+
+.bs-hint {
+  margin: 10px 0;
+  font-size: 14px;
+  color: #a9121f;
+}
+
+/* lessons: the same rows as the Learning Path, without its indent */
+.lesson-links.toc-topics {
+  padding: 0;
+}
+
+.lesson-links .slides {
+  margin-left: 0;
+}
+
+/* ---------- checkpoint ---------- */
+.bs-passed {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  color: #0f7a52;
+  font-weight: 700;
+}
+
+.bs-questions {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 22px;
+}
+
+.bs-question {
+  margin: 0 0 10px;
+  font-weight: 600;
+}
+
+.bs-options {
+  display: grid;
+  gap: 8px;
+}
+
+.bs-check .answer {
+  padding: 13px 18px;
+  font-size: 15px;
+}
+
+.bs-check .answer.right {
+  border-color: #0f7a52;
+  background: #f0f9f5;
+}
+
+.bs-check .answer.right .radio-dot {
+  border: 5px solid #0f7a52;
+}
+
+.bs-feedback {
+  margin: 10px 0 0;
+  font-size: 14px;
+}
+
+.bs-feedback.right {
+  color: #0f7a52;
+}
+
+.bs-feedback.wrong {
+  color: #a9121f;
+}
+
+/* ---------- Do it cards ---------- */
+.bs-actions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.bs-action {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  background: white;
+}
+
+.bs-action.done {
+  border-color: #b9dccd;
+  background: #f7fcfa;
+}
+
+.bs-tick {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin-top: 1px;
+  padding: 0;
+  border: 2px solid #c9c9c9;
+  border-radius: 5px;
+  background: white;
+  position: relative;
+}
+
+.bs-tick[aria-checked="true"] {
+  border-color: #0f7a52;
+  background: #0f7a52;
+}
+
+.bs-tick[aria-checked="true"]::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 6px;
+  height: 11px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.bs-action-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.bs-action-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  color: #252525;
+}
+
+.bs-action-head strong {
+  flex: 1;
+}
+
+.bs-action-head:hover strong {
+  color: #cf1726;
+}
+
+.bs-action-head[aria-expanded="true"] .toc-chevron {
+  transform: rotate(-135deg);
+}
+
+.bs-how-label {
+  font-size: 13px;
+  color: #cf1726;
+  font-weight: 600;
+}
+
+.bs-how {
+  margin: 12px 0 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 6px;
+  color: #444444;
+  line-height: 1.55;
+}
+
+.bs-action-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 14px;
+}
+
+.bs-action-foot .toc-sources {
+  margin: 0;
+}
+
+/* ---------- widgets inside Do it cards (PlanWidgets.tsx) ---------- */
+.bs-widget {
+  margin-top: 16px;
+  padding: 16px 18px;
+  border-radius: 8px;
+  background: #f8f8f8;
+}
+
+.bs-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.bs-fields label,
+.bs-rule {
+  flex: 1 1 170px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555555;
+}
+
+.bs-widget input,
+.bs-widget select {
+  padding: 11px 12px;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  background: white;
+  color: #252525;
+  font: inherit;
+  font-weight: 400;
+}
+
+.bs-widget input:focus,
+.bs-widget select:focus {
+  outline: 2px solid #cf1726;
+  outline-offset: 1px;
+}
+
+.bs-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.bs-result {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  background: white;
+}
+
+.bs-result.main {
+  border-top: 3px solid #cf1726;
+}
+
+.bs-result.example {
+  border-style: dashed;
+}
+
+.bs-result span {
+  font-size: 13px;
+  color: #777777;
+}
+
+.bs-result strong {
+  font-size: 26px;
+}
+
+.bs-result em {
+  font-size: 12px;
+  font-style: normal;
+  color: #888888;
+  line-height: 1.5;
+}
+
+.bs-save {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.bs-save .primary {
+  padding: 10px 20px;
+}
+
+.bs-saved {
+  color: #0f7a52;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.bs-fee-bars {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.bs-fee-bars li {
+  display: grid;
+  grid-template-columns: 140px 1fr 100px;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.bs-fee-bars strong {
+  text-align: right;
+}
+
+.bs-bar {
+  height: 14px;
+  border-radius: 7px;
+  background: #e9e9e9;
+  overflow: hidden;
+}
+
+.bs-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 7px;
+  background: #cf1726;
+}
+
+.bs-bar i.good {
+  background: #0f7a52;
+}
+
+.bs-bar i.muted {
+  background: #b5b5b5;
+}
+
+.bs-fee-gap {
+  margin: 14px 0 0;
+}
+
+.bs-choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+}
+
+.bs-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid #dedede;
+  border-radius: 8px;
+  background: white;
+  text-align: left;
+  color: #252525;
+}
+
+.bs-choice:hover,
+.bs-choice.selected {
+  border-color: #cf1726;
+  background: #fff8f8;
+}
+
+.bs-choice.selected {
+  box-shadow: inset 0 0 0 1px #cf1726;
+}
+
+.bs-choice span {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #666666;
+}
+
+.bs-badge {
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: #fcf3f4;
+  color: #cf1726;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.bs-mixbar {
+  display: flex;
+  width: 100%;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #e9e9e9;
+}
+
+.bs-mixbar i {
+  display: block;
+  height: 100%;
+}
+
+.bs-mixbar .stocks {
+  background: #cf1726;
+}
+
+.bs-mixbar .bonds {
+  background: #555555;
+}
+
+.bs-mixbar .cash {
+  background: #c9c9c9;
+}
+
+.bs-ideas,
+.bs-prompts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.bs-ideas {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #777777;
+}
+
+.bs-chip {
+  padding: 8px 14px;
+  border: 1px solid #cf1726;
+  border-radius: 18px;
+  background: white;
+  color: #cf1726;
+  font-size: 14px;
+  text-align: left;
+}
+
+.bs-chip:hover {
+  background: #cf1726;
+  color: white;
+}
+
+/* ---------- step complete ---------- */
+.bs-complete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 28px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  background: #f0f9f5;
+  color: #0f7a52;
+}
+
+@media (max-width: 700px) {
+  .bs-step-head {
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .bs-step + .bs-step::before {
+    left: 35px;
+  }
+
+  .bs-status {
+    display: none;
+  }
+
+  .bs-body {
+    padding: 4px 16px 20px;
+  }
+
+  .bs-fee-bars li {
+    grid-template-columns: 1fr auto;
+  }
+
+  .bs-fee-bars .bs-bar {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}

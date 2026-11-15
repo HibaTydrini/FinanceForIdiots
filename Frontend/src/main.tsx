@@ -8,6 +8,7 @@ import App from "./App";
 import AuthPage from "./auth/AuthPage";
 import LandingPage from "./landing/LandingPage";
 import AIPhone from "./AIPhone";
+import { resetBabySteps } from "./babyStepsStore";
 
 type Screen = "landing" | "login" | "signup" | "dashboard";
 
@@ -25,6 +26,8 @@ function getScreen(): Screen {
   return "landing";
 }
 
+// The app's entry file: it renders Root and exports nothing, so fast refresh doesn't apply here.
+// eslint-disable-next-line react-refresh/only-export-components
 function Root() {
   const [authenticated, setAuthenticated] = useState(false);
   const [checking, setChecking] = useState(true);
@@ -86,6 +89,7 @@ function Root() {
 
     if (method === "signup") {
       localStorage.removeItem("financeQuizAnswers");
+      resetBabySteps(); // a new account starts Baby Steps from step 1
       setSignupQuestions(true);
       setQuizComplete(false);
     } else {
@@ -132,6 +136,8 @@ function Root() {
         onQuizComplete={() => {
           setQuizComplete(true);
           setSignupQuestions(false);
+          // New users start on the guided path instead of the home page.
+          window.location.hash = "dashboard/steps";
         }}
         onLogout={handleLogout}
         onLogoClick={() => navigate("landing")}

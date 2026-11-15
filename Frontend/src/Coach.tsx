@@ -4,6 +4,7 @@ import "./Coach.css";
 import { sendChat } from "./api";
 import type { ChatMessage } from "./api";
 import { shortUrl, withSourceLinks } from "./chatText";
+import { coachContext, readQuizAnswers, useBabySteps } from "./babyStepsStore";
 
 type Props = {
   // Kept in App so the conversation survives switching pages.
@@ -13,10 +14,13 @@ type Props = {
   intro?: string;
   // Demo portfolio the coach can talk about, sent with each question.
   portfolio?: object;
+  // A question to put in the box when the coach opens (Baby Steps "Ask the AI Coach" buttons).
+  initialQuestion?: string;
 };
 
-export default function Coach({ messages, setMessages, intro, portfolio }: Props) {
-  const [input, setInput] = useState("");
+export default function Coach({ messages, setMessages, intro, portfolio, initialQuestion }: Props) {
+  const [input, setInput] = useState(initialQuestion ?? "");
+  const { state: babySteps } = useBabySteps();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
@@ -37,7 +41,9 @@ export default function Coach({ messages, setMessages, intro, portfolio }: Props
     setLoading(true);
 
     try {
-      const { answer, sources } = await sendChat(question, history, portfolio);
+      // Baby Steps progress and plan, so "what should I do next?" can be answered.
+      const context = coachContext(babySteps, readQuizAnswers());
+      const { answer, sources } = await sendChat(question, history, portfolio, context);
       setMessages([...history, { role: "user", text: question }, { role: "assistant", text: answer, sources }]);
     } catch {
       // Remove the unanswered question so the history stays in pairs, and give it back for retrying.

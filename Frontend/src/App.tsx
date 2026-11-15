@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import TableOfContents from "./TableOfContents";
 import DemoPortfolio from "./DemoPortfolio";
@@ -8,6 +8,9 @@ import Coach from "./Coach";
 import { saveProfile } from "./api";
 import type { ChatMessage } from "./api";
 import { setCurrentPage } from "./pageContext";
+import BabySteps from "./BabySteps";
+import MyPlan from "./MyPlan";
+import { formatDate, getSteps, markDemoConnected, nextThing, useBabySteps } from "./babyStepsStore";
 
 // What the AI Coach is told about the demo client picked on the Portfolio page.
 function portfolioForCoach(p: DemoPortfolioData) {
@@ -32,12 +35,14 @@ function portfolioForCoach(p: DemoPortfolioData) {
   };
 }
 
-type Page = "onboarding" | "home" | "learning" | "profile" | "coach" | "portfolio";
+type Page = "onboarding" | "home" | "steps" | "plan" | "learning" | "profile" | "coach" | "portfolio";
 
 // Page names as the AI Phone describes them to the coach.
 const PAGE_NAMES: Record<Page, string> = {
   onboarding: "Onboarding quiz",
   home: "Home",
+  steps: "Baby Steps (guided path for beginners)",
+  plan: "My Plan",
   learning: "My Learning Path",
   profile: "My Investor Profile",
   coach: "AI Coach",
@@ -101,30 +106,61 @@ const questions = [
 const features = [
   {
     number: "01",
+    title: "Baby Steps",
+    description: "New to investing? Follow a guided path, one small step at a time.",
+    page: "steps" as Page,
+  },
+  {
+    number: "02",
+    title: "My Plan",
+    description: "Your goal, your monthly habit and what to do next.",
+    page: "plan" as Page,
+  },
+  {
+    number: "03",
     title: "My Learning Path",
     description: "Learn investing step by step, at your own pace.",
     page: "learning" as Page,
   },
   {
-    number: "02",
+    number: "04",
     title: "My Investor Profile",
     description: "Explore your goals, knowledge and comfort with risk.",
     page: "profile" as Page,
   },
   {
-    number: "03",
+    number: "05",
     title: "AI Coach",
     description: "Get explanations and answers to your finance questions.",
     page: "coach" as Page,
   },
   {
-    number: "04",
+    number: "06",
     title: "My Portfolio",
     description: "Understand your investments and explore scenarios.",
     page: "portfolio" as Page,
   },
 ];
 
+
+// The dashboard page named in the address, e.g. "#dashboard/steps".
+function pageFromHash(): Page | null {
+  const target = window.location.hash.split("/")[1];
+
+  if (
+    target === "home" ||
+    target === "steps" ||
+    target === "plan" ||
+    target === "learning" ||
+    target === "profile" ||
+    target === "coach" ||
+    target === "portfolio"
+  ) {
+    return target;
+  }
+
+  return null;
+}
 
 type AppProps = {
   authenticated: boolean;
@@ -142,7 +178,7 @@ function App({
   onLogoClick,
 }: AppProps) {
   const [page, setPage] = useState<Page>(
-    showOnboarding ? "onboarding" : "home"
+    showOnboarding ? "onboarding" : pageFromHash() ?? "home"
   );
   // the pretend National Bank client picked on the Portfolio page (demo), shared with the AI Coach
   const [demoClient, setDemoClient] = useState<DemoPortfolioData | null>(null);
@@ -158,21 +194,21 @@ function App({
   });
   const [selected, setSelected] = useState("");
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  // a question filled in for the AI Coach by a Baby Steps "Ask the AI Coach" button
+  const [coachQuestion, setCoachQuestion] = useState("");
+  const { state: babySteps } = useBabySteps();
+  const babyStepList = useMemo(() => getSteps(answers), [answers]);
+  const next = nextThing(babySteps, babyStepList);
 
   useEffect(() => {
     const handleNavigation = () => {
       if (showOnboarding) return;
 
-      const target = window.location.hash.split("/")[1];
+      const target = pageFromHash();
 
-      if (
-        target === "home" ||
-        target === "learning" ||
-        target === "profile" ||
-        target === "coach" ||
-        target === "portfolio"
-      ) {
+      if (target) {
         setPage(target);
+        if (target !== "coach") setCoachQuestion("");
       }
     };
 
@@ -201,7 +237,15 @@ function App({
 function navigatePage(target: Page) {
   window.location.hash = `dashboard/${target}`;
   setPage(target);
+  if (target !== "coach") setCoachQuestion("");
 }
+
+  // Opens the AI Coach with a question already typed in.
+  function askCoach(question: string) {
+    setCoachQuestion(question);
+    window.location.hash = "dashboard/coach";
+    setPage("coach");
+  }
 
   function nextQuestion() {
     if (!selected) return;
@@ -238,6 +282,8 @@ function navigatePage(target: Page) {
         {authenticated && page !== "onboarding" && (
           <nav>
             <button onClick={() => navigatePage("home")}>Home</button>
+            <button onClick={() => navigatePage("steps")}>Baby Steps</button>
+            <button onClick={() => navigatePage("plan")}>My Plan</button>
             <button onClick={() => navigatePage("learning")}>Learn</button>
             <button onClick={() => navigatePage("profile")}>Profile</button>
             <button onClick={() => navigatePage("coach")}>AI Coach</button>
@@ -296,6 +342,34 @@ function navigatePage(target: Page) {
 
         {page === "home" && (
           <section>
+            <div className="next-step-card">
+              <p className="eyebrow">YOUR NEXT STEP</p>
+              {next.kind === "step" ? (
+                <>
+                  <h2>
+                    Baby Step {next.number} of {next.total}: {next.step.title}
+                  </h2>
+                  <p>{next.action}</p>
+                  <button className="primary" onClick={() => navigatePage("steps")}>
+                    {babySteps.completedSteps.length === 0 && !babySteps.checks[next.step.id]
+                      ? "Start"
+                      : "Continue"}{" "}
+                    →
+                  </button>
+                </>
+              ) : (
+                <>
+                  <h2>
+                    Your next check-in{next.date ? `: ${formatDate(next.date)}` : ""}
+                  </h2>
+                  <p>You finished Baby Steps. A 30-second check-in each month keeps your plan on track.</p>
+                  <button className="primary" onClick={() => navigatePage("plan")}>
+                    Go to my check-in →
+                  </button>
+                </>
+              )}
+            </div>
+
             <p className="eyebrow">YOUR FINANCIAL JOURNEY STARTS HERE</p>
             <h1>Finance made simple.</h1>
             <p className="subtitle">
@@ -317,6 +391,38 @@ function navigatePage(target: Page) {
                 </button>
               ))}
             </div>
+          </section>
+        )}
+
+        {page === "steps" && (
+          <section>
+            <p className="eyebrow">ONE SMALL STEP AT A TIME</p>
+            <h1>Baby Steps</h1>
+            <p className="subtitle">
+              A guided path from your first lesson to a simple long-term
+              investing plan. Learn it, check it, then do it.
+            </p>
+
+            <BabySteps
+              answers={answers}
+              onNavigate={(target) => navigatePage(target as Page)}
+              onAskCoach={askCoach}
+            />
+          </section>
+        )}
+
+        {page === "plan" && (
+          <section>
+            <p className="eyebrow">YOUR LONG-TERM PLAN</p>
+            <h1>My Plan</h1>
+            <p className="subtitle">
+              What you decided in Baby Steps, and what to do next.
+            </p>
+
+            <MyPlan
+              answers={answers}
+              onNavigate={(target) => navigatePage(target as Page)}
+            />
           </section>
         )}
 
@@ -368,6 +474,8 @@ function navigatePage(target: Page) {
             </p>
 
             <Coach
+              key={coachQuestion}
+              initialQuestion={coachQuestion}
               messages={chatMessages}
               setMessages={setChatMessages}
               intro={
@@ -395,6 +503,7 @@ function navigatePage(target: Page) {
             </p>
 
             <DemoPortfolio
+              onConnect={markDemoConnected}
               onAskCoach={(portfolio) => {
                 setDemoClient(portfolio);
                 setPage("coach");
