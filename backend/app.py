@@ -42,13 +42,14 @@ app.add_middleware(  # lets your frontend (different port/domain) call this API
 # ---------- Profile storage (a JSON file is enough for a datathon; swap for DynamoDB later) ----------
 
 class Profile(BaseModel):
+    """The onboarding quiz answers (Frontend/src/App.tsx, `questions`)."""
     user_id: str
-    knowledge: str = ""          # i)   What knowledge do you have about investment
-    invested_in: str = ""        # ii)  What have you invested in already
-    goals: str = ""              # iii) Why do you need to invest
-    age_range: str = ""          # iv)  Age range
-    looking_for: str = ""        # v)   What are you looking for from us
-    nbc_linked: bool = False     # vi)  Linked NBC account (mocked for the demo)
+    knowledge: str = ""          # How would you describe your investing knowledge?
+    goals: str = ""              # What is your main investment goal?
+    time_horizon: str = ""       # When do you expect to need your invested money?
+    risk_reaction: str = ""      # How would you react if your investments dropped 20%?
+    looking_for: str = ""        # What do you want Finance for idiots to help you with?
+    nbc_linked: bool = False     # Connect a National Bank account? (mocked for the demo)
 
 
 def load_profiles() -> dict:
@@ -98,15 +99,16 @@ def search_nbc(question: str) -> list[dict]:
         knowledgeBaseId=KB_ID,
         retrievalQuery={"text": question},
     )
-    passages = []
+    # Several passages often come from the same page: merge them so each page is one numbered source.
+    by_url: dict[str, list[str]] = {}
     for r in resp.get("retrievalResults", [])[:NUM_RESULTS]:
         text = (r.get("content") or {}).get("text")
         if not text:
             continue
         loc = r.get("location", {})
         url = (loc.get("webLocation") or {}).get("url") or (loc.get("s3Location") or {}).get("uri", "")
-        passages.append({"text": text, "url": url})
-    return passages
+        by_url.setdefault(url, []).append(text)
+    return [{"url": url, "text": "\n...\n".join(texts)} for url, texts in by_url.items()]
 
 
 def build_system_prompt(profile: dict, passages: list[dict]) -> str:
@@ -118,15 +120,16 @@ def build_system_prompt(profile: dict, passages: list[dict]) -> str:
     return f"""You are a friendly investing tutor for National Bank of Canada (NBC) clients who are new to investing.
 
 USER PROFILE
-- Investing knowledge: {profile.get('knowledge') or 'unknown'}
-- Already invested in: {profile.get('invested_in') or 'nothing yet'}
-- Goals: {profile.get('goals') or 'unknown'}
-- Age range: {profile.get('age_range') or 'unknown'}
-- Looking for: {profile.get('looking_for') or 'unknown'}
+- Investing knowledge: {profile.get('knowledge') or 'unknown (assume a beginner)'}
+- Main goal: {profile.get('goals') or 'unknown'}
+- Needs the money: {profile.get('time_horizon') or 'unknown'}
+- If investments dropped 20%: {profile.get('risk_reaction') or 'unknown'}
+- Wants help with: {profile.get('looking_for') or 'unknown'}
 
 HOW TO ANSWER
 - Explain at this user's level. For beginners, define every term and use simple, everyday examples.
-- Relate explanations to the user's goals and age range when it helps.
+- Relate explanations to the user's goal, time horizon and comfort with risk when it helps.
+- Keep answers short: a few short paragraphs. Write plain text; simple "- " bullet lists are fine, but no headings, bold or tables.
 - Use ONLY the NBC sources below for facts. Cite them as [Source N].
 - If the sources don't cover the question, say so and suggest what NBC topic they could read about or ask an NBC advisor.
 - This is education, not personal financial advice: never tell the user to buy or sell a specific investment.
