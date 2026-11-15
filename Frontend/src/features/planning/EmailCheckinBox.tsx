@@ -3,7 +3,7 @@
 // sends it with Amazon SES; Amazon EventBridge triggers the weekly run.
 import { useEffect, useState } from "react";
 import { fetchUserAttributes } from "aws-amplify/auth";
-import { getProgress, putProgress, sendCheckin } from "./api";
+import { getProgress, putProgress, sendCheckin } from "../coach/api";
 import { flushProgress } from "./babyStepsStore";
 
 type Status = { kind: "ok" | "error"; text: string } | null;

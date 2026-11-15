@@ -1,9 +1,9 @@
 // "Your AI coach books it in Google Calendar" on My Plan: connect Google Calendar, see what the agent booked.
-// The agent (backend/app.py, run_agent) adds tasks to its own "Finance for idiots" calendar: on its own
+// The agent (backend/app.py, run_agent) adds tasks to its own "Finance For Dummies" calendar: on its own
 // during the weekly check-in, and when the user asks the AI Coach ("plan my week").
 import { useEffect, useState } from "react";
-import { disconnectCalendar, getCalendarStatus, googleConnectUrl } from "./api";
-import type { CalendarStatus } from "./api";
+import { disconnectCalendar, getCalendarStatus, googleConnectUrl } from "../coach/api";
+import type { CalendarStatus } from "../coach/api";
 import { flushProgress } from "./babyStepsStore";
 
 type Props = { onNavigate: (page: string) => void };
@@ -63,7 +63,7 @@ export default function CalendarBox({ onNavigate }: Props) {
     <div className="plan-email">
       <p className="plan-text">
         Connect Google Calendar and your AI coach books time for your next step every week, in a separate
-        "Finance for idiots" calendar. It only sees when you're busy, never what your other events are, and it
+        "Finance For Dummies" calendar. It only sees when you're busy, never what your other events are, and it
         never books anything about buying or selling.
       </p>
 

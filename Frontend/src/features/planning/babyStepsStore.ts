@@ -2,10 +2,11 @@
 // Saved in localStorage under "financeBabySteps" (same idea as "financeQuizAnswers"),
 // so a page reload keeps everything. Used by BabySteps, MyPlan, Home, Coach and the AI Phone.
 import { useSyncExternalStore } from "react";
-import { getProgress, putProgress } from "./api";
-import type { ProgressUpdate } from "./api";
-import data from "./data/babySteps.json";
-import type { TermDef } from "./RichText";
+import { getProgress, putProgress } from "../coach/api";
+import type { ProgressUpdate } from "../coach/api";
+import data from "../../data/babySteps.json";
+import type { TermDef } from "../../shared/RichText";
+import { getActiveUserId, readActiveProfile } from "../onboarding/onboarding";
 
 // ---------- the path (data/babySteps.json) ----------
 
@@ -48,13 +49,7 @@ const ALL_STEPS = data.steps as unknown as Step[];
 
 // The quiz answers saved by the onboarding quiz (App.tsx).
 export function readQuizAnswers(): string[] {
-  try {
-    const saved = localStorage.getItem("financeQuizAnswers");
-    const parsed: unknown = saved ? JSON.parse(saved) : [];
-    return Array.isArray(parsed) ? (parsed as string[]) : [];
-  } catch {
-    return [];
-  }
+  return readActiveProfile()?.requiredAnswers ?? [];
 }
 
 // The steps in this user's order (a step can move earlier, e.g. "Staying calm" for crypto holders).
@@ -224,6 +219,7 @@ function progressPayload(): ProgressUpdate {
 
 let pushTimer: ReturnType<typeof setTimeout> | undefined;
 let pushing = 0;
+let pushedFor: string | null = null; // the account whose progress the server has from this tab
 
 // Saves shortly after the last change, so a burst of clicks is one request.
 function schedulePush() {
@@ -235,9 +231,12 @@ function schedulePush() {
 export async function flushProgress(): Promise<void> {
   clearTimeout(pushTimer);
   pushTimer = undefined;
+  const userId = getActiveUserId();
+  if (!userId) return; // not signed in yet: saved once someone signs in (see the interval below)
   pushing++;
   try {
     await putProgress(progressPayload());
+    pushedFor = userId;
   } catch {
     // backend unreachable: the next change tries again
   } finally {
@@ -247,7 +246,7 @@ export async function flushProgress(): Promise<void> {
 
 // Picks up actions ticked from a check-in email. It only adds ticks, and waits while a local change is unsaved.
 export async function pullProgress(): Promise<void> {
-  if (pushTimer !== undefined || pushing > 0) return;
+  if (pushTimer !== undefined || pushing > 0 || !getActiveUserId()) return;
   try {
     const server = await getProgress();
     const ticked = server?.state?.doneActions;
@@ -354,8 +353,11 @@ export function coachContext(s: BabyState, answers: string[], openStep?: StepInf
 // The start of the "rule for myself" sentence (Baby Step "Staying calm"); plan.rule holds the ending.
 export const RULE_PREFIX = "If my portfolio drops 20%, I will";
 
-// Save what's already in localStorage once, then watch for ticks made from check-in emails.
+// Once someone is signed in, save what's already in localStorage, then watch for ticks made from check-in emails.
 schedulePush();
 setInterval(() => {
-  if (document.visibilityState === "visible") void pullProgress();
+  if (document.visibilityState !== "visible") return;
+  const userId = getActiveUserId();
+  if (userId && userId !== pushedFor && pushTimer === undefined && pushing === 0) void flushProgress();
+  else void pullProgress();
 }, 5000);

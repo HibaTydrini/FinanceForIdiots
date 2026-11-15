@@ -1,0 +1,372 @@
+/* AI coach phone: flat, no dark frame or notch, in the site colors.
+   Change --phone-accent to switch the color. */
+
+.ai-phone {
+    --phone-accent: #cf1726;
+    --phone-accent-dark: #ae1020;
+    --phone-accent-soft: #fcf3f4;
+    --phone-beige: #f5efe6;
+    --phone-line: #e6dfd3;
+    --phone-ink: #252525;
+    --phone-muted: #777777;
+
+    position: fixed;
+    left: 25px;
+    bottom: 20px;
+    z-index: 9999;
+    overflow: visible;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    transition: width 0.4s ease, height 0.4s ease;
+}
+
+.ai-phone.collapsed {
+    width: 125px;
+    height: 235px;
+}
+
+.ai-phone.expanded {
+    width: 290px;
+    height: min(780px, calc(100dvh - 40px));
+}
+
+/* the phone body: one soft rounded shape, no black border */
+
+.ai-phone-frame {
+    width: 100%;
+    height: 100%;
+    border-radius: 36px;
+    background: #ffffff;
+    box-shadow: 0 12px 34px rgba(60, 45, 20, 0.16);
+}
+
+.ai-phone-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 36px;
+    background: #ffffff;
+}
+
+/* small phone */
+
+.ai-phone-preview {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #ffffff;
+    color: var(--phone-ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    font: inherit;
+}
+
+.ai-phone-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    background: var(--phone-accent);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.ai-phone-preview .ai-phone-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    font-size: 19px;
+    margin-bottom: 4px;
+}
+
+.ai-phone-preview h3 {
+    font-size: 14px;
+    margin: 12px 0 4px;
+    color: var(--phone-ink);
+}
+
+.ai-phone-preview p {
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--phone-muted);
+}
+
+.ai-phone-open {
+    background: var(--phone-accent);
+    color: #ffffff;
+    padding: 8px 13px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-top: 14px;
+}
+
+/* expanded chat */
+
+.ai-phone-chat {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.ai-phone-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffffff;
+    padding: 18px 16px 12px;
+    border-bottom: 1px solid var(--phone-line);
+}
+
+.ai-phone-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ai-phone-header-left strong {
+    display: block;
+    font-size: 14px;
+    color: var(--phone-ink);
+}
+
+.ai-phone-header-left small {
+    display: block;
+    font-size: 10px;
+    color: var(--phone-accent);
+    margin-top: 3px;
+}
+
+.ai-phone-close {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    background: var(--phone-accent-soft);
+    color: var(--phone-accent);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.ai-phone-messages {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 13px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    background: var(--phone-beige);
+}
+
+.ai-phone-today {
+    text-align: center;
+    color: var(--phone-muted);
+    font-size: 11px;
+}
+
+.ai-phone-message {
+    display: flex;
+    max-width: 85%;
+}
+
+.ai-phone-message.assistant {
+    align-self: flex-start;
+}
+
+.ai-phone-message.user {
+    align-self: flex-end;
+}
+
+.ai-phone-bubble {
+    padding: 10px 13px;
+    font-size: 12px;
+    line-height: 1.55;
+    border-radius: 16px;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.assistant .ai-phone-bubble {
+    background: #ffffff;
+    color: var(--phone-ink);
+    border-bottom-left-radius: 5px;
+}
+
+.user .ai-phone-bubble {
+    background: var(--phone-accent);
+    color: #ffffff;
+    border-bottom-right-radius: 5px;
+}
+
+.ai-phone-input {
+    display: flex;
+    gap: 8px;
+    padding: 12px;
+    background: #ffffff;
+    border-top: 1px solid var(--phone-line);
+}
+
+.ai-phone-input input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--phone-line);
+    border-radius: 22px;
+    background: var(--phone-beige);
+    color: var(--phone-ink);
+    padding: 11px 14px;
+    font-size: 12px;
+    outline: none;
+}
+
+.ai-phone-input input:focus {
+    border-color: var(--phone-accent);
+}
+
+.ai-phone-input button {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 50%;
+    background: var(--phone-accent);
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.ai-phone-input button:hover:not(:disabled) {
+    background: var(--phone-accent-dark);
+}
+
+.ai-phone-input button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.ai-phone-disclaimer {
+    background: #ffffff;
+    color: var(--phone-muted);
+    text-align: center;
+    font-size: 9px;
+    padding: 0 10px 16px;
+}
+
+/* x button outside the small phone */
+
+.ai-phone-hide {
+    position: absolute;
+    top: -9px;
+    right: -9px;
+    z-index: 100;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: var(--phone-accent);
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* button that brings the phone back */
+
+.ai-phone-restore {
+    position: fixed;
+    left: 25px;
+    bottom: 20px;
+    z-index: 9999;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 16px;
+    background: #cf1726;
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 15px;
+    box-shadow: 0 6px 18px rgba(60, 45, 20, 0.18);
+    cursor: pointer;
+}
+
+.ai-phone-restore:hover {
+    transform: scale(1.06);
+}
+
+@media (max-width: 480px) {
+    .ai-phone,
+    .ai-phone-restore {
+        left: 12px;
+        bottom: 12px;
+    }
+
+    .ai-phone.collapsed {
+        width: 105px;
+        height: 195px;
+    }
+
+    .ai-phone.expanded {
+        width: min(290px, calc(100vw - 24px));
+        height: min(780px, calc(100dvh - 24px));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ai-phone {
+        transition: none;
+    }
+}
+
+/* added with the chatbot connection: NBC sources under answers, errors, and the page the user is on */
+
+.ai-phone-sources {
+    margin: 8px 0 0;
+    padding: 7px 0 0 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 10.5px;
+    line-height: 1.5;
+    white-space: normal;
+}
+
+.ai-phone-sources a {
+    color: var(--phone-accent);
+}
+
+.ai-phone-error {
+    align-self: stretch;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--phone-accent);
+    text-align: center;
+    padding: 0 6px;
+}
+
+/* "Looking at: ETFs · Example" above the input, when a lesson is open */
+
+.ai-phone-context {
+    margin: 0 13px 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--phone-accent-soft);
+    color: var(--phone-accent-dark);
+    font-size: 10.5px;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

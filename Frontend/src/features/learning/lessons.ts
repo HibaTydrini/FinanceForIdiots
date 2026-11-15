@@ -1,5 +1,5 @@
 // Look up a lesson from data/learningPath.json by its topic id.
-import data from "./data/learningPath.json";
+import data from "../../data/learningPath.json";
 import type { Topic } from "./TopicSlides";
 
 const byId = new Map<string, Topic>();

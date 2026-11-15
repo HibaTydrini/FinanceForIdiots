@@ -9,6 +9,7 @@ FastAPI service that answers investing questions using the NBC content in an Ama
 | POST | `/profile` | Save a user's onboarding answers |
 | GET | `/profile/{user_id}` | Read them back |
 | POST | `/chat` | Answer `{ user_id, question, history }` using the NBC knowledge base and the profile; returns `{ answer, sources }` |
+| GET | `/news?limit=6` | Latest market headlines from Finnhub, cached 15 minutes; returns `{ items, updated }`. Needs `FINNHUB_API_KEY` (free at finnhub.io), otherwise 503 and the Home page hides the news section |
 
 Profiles are stored in `profiles.json` (ignored by git). Swap for DynamoDB later.
 
@@ -22,6 +23,7 @@ pip install -r requirements.txt
 export AWS_REGION=us-east-1
 export KB_ID=<knowledge base ID>
 export MODEL_ID=<model ID from Bedrock > Model catalog>
+export FINNHUB_API_KEY=<free key from finnhub.io>   # optional, for /news
 uvicorn app:app --reload --port 8000
 ```
 
@@ -92,20 +94,20 @@ When a user connects Google Calendar (My Plan > "Your AI coach books it in Googl
 - **The weekly check-in, on its own:** before the email is written, it books one time slot for the user's next Baby Steps action (if one isn't booked already), and the email says when.
 - **The AI Coach chat, when asked:** "plan my week", "remind me to open my TFSA on Saturday morning"... It checks when they're busy, books up to 3 tasks and says what it booked.
 
-It writes only to its own "Finance for idiots" calendar (scope `calendar.app.created`) and only sees *when* the user is busy (scope `calendar.freebusy`), never their event details. Tasks must be in the next 14 days, between 07:00 and 21:30. The Google tokens are stored in `progress.json` (ignored by git) and never sent to the browser.
+It writes only to its own "Finance For Dummies" calendar (scope `calendar.app.created`) and only sees *when* the user is busy (scope `calendar.freebusy`), never their event details. Tasks must be in the next 14 days, between 07:00 and 21:30. The Google tokens are stored in `progress.json` (ignored by git) and never sent to the browser.
 
 ### Setup (Google Cloud, about 15 minutes)
 
 1. https://console.cloud.google.com > project picker > **New project** (e.g. `finance-for-idiots`) > Create, and select it.
 2. **APIs & Services > Library**: search **Google Calendar API** > **Enable**.
-3. **Google Auth Platform** (or **APIs & Services > OAuth consent screen**) > Get started. App name `Finance for idiots`, your email as support and contact email, Audience **External**. Create.
+3. **Google Auth Platform** (or **APIs & Services > OAuth consent screen**) > Get started. App name `Finance For Dummies`, your email as support and contact email, Audience **External**. Create.
 4. **Data access** > Add or remove scopes > paste both, one at a time, in "Manually add scopes", then Update and Save:
    `https://www.googleapis.com/auth/calendar.app.created` and `https://www.googleapis.com/auth/calendar.freebusy`
 5. **Audience** > Test users > **Add users**: every Google account you'll demo with (up to 100). Leave the app in **Testing**.
 6. **Clients** (or **Credentials > Create credentials > OAuth client ID**): type **Web application**. Under **Authorized redirect URIs** add exactly `http://localhost:8000/google/callback`. Create, and copy the **Client ID** and **Client secret**.
 7. Put them in `start.ps1` (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`) and restart it.
 
-**Try it:** My Plan > **Connect Google Calendar** > pick your account. Google shows "Google hasn't verified this app": click **Continue** (normal for an app in Testing), tick both boxes, Continue. Then ask the AI Coach "put my next step in my calendar for tomorrow evening", or press "Send a check-in now" in the email box. In Google Calendar the tasks are in the **Finance for idiots** calendar (left panel, under "My calendars").
+**Try it:** My Plan > **Connect Google Calendar** > pick your account. Google shows "Google hasn't verified this app": click **Continue** (normal for an app in Testing), tick both boxes, Continue. Then ask the AI Coach "put my next step in my calendar for tomorrow evening", or press "Send a check-in now" in the email box. In Google Calendar the tasks are in the **Finance For Dummies** calendar (left panel, under "My calendars").
 
 If you host the backend later, add the hosted `https://.../google/callback` as a second redirect URI and set `GOOGLE_REDIRECT_URI` to it.
 

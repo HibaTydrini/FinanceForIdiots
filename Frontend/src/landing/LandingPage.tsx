@@ -2,20 +2,24 @@
 import "./LandingPage.css";
 
 type LandingPageProps = {
+  authenticated: boolean;
   onLogin: () => void;
   onSignup: () => void;
+  onDashboard: () => void;
 };
 
 export default function LandingPage({
+  authenticated,
   onLogin,
   onSignup,
+  onDashboard,
 }: LandingPageProps) {
   return (
     <div className="landing">
       <header className="landing-nav">
         <div className="landing-brand">
-          <div className="landing-logo">FI</div>
-          <span>Finance for idiots</span>
+          <div className="landing-logo">FD</div>
+          <span>Finance For Dummies</span>
         </div>
 
         <nav className="landing-links">
@@ -24,12 +28,16 @@ export default function LandingPage({
         </nav>
 
         <div className="landing-auth">
-          <button className="landing-login" onClick={onLogin}>
-            Log in
-          </button>
-          <button className="landing-signup" onClick={onSignup}>
-            Sign up
-          </button>
+          {authenticated ? (
+            <button className="landing-signup" onClick={onDashboard}>
+              Go to dashboard
+            </button>
+          ) : (
+            <>
+              <button className="landing-login" onClick={onLogin}>Log in</button>
+              <button className="landing-signup" onClick={onSignup}>Sign up</button>
+            </>
+          )}
         </div>
       </header>
 
@@ -47,8 +55,8 @@ export default function LandingPage({
             </p>
 
             <div className="landing-buttons">
-              <button className="landing-primary" onClick={onSignup}>
-                Get started →
+              <button className="landing-primary" onClick={authenticated ? onDashboard : onSignup}>
+                {authenticated ? "Go to dashboard →" : "Get started →"}
               </button>
               <a className="landing-secondary" href="#how-it-works">
                 See how it works
@@ -69,7 +77,7 @@ export default function LandingPage({
           <h2>Because apparently, we're supposed to just know this stuff.</h2>
           <p>
             Stocks, ETFs, risk tolerance… everyone talks about them like
-            they're common knowledge. We built Finance for idiots to make
+            they're common knowledge. We built Finance For Dummies to make
             investing easier to understand, whether you're completely new
             or already getting started.
           </p>
@@ -87,13 +95,14 @@ export default function LandingPage({
         </p>
 
         <p>
-            Answer five quick questions about your experience and goals.
+            Answer seven quick questions about your experience and goals,
+            then choose whether to add the optional personalization questions.
             From there, explore lessons, ask questions, and get a better
             understanding of investing at your own pace.
         </p>
 
-        <button className="landing-primary" onClick={onSignup}>
-            Get started →
+        <button className="landing-primary" onClick={authenticated ? onDashboard : onSignup}>
+            {authenticated ? "Go to dashboard →" : "Get started →"}
         </button>
         </section>
       </main>

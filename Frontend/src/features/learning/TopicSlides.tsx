@@ -11,11 +11,11 @@
 import { useEffect, useState } from "react";
 import type { KeyboardEvent, ReactNode } from "react";
 import type { Level } from "./learningLevel";
-import { clearCurrentLesson, setCurrentLesson } from "./pageContext";
-import Icon from "./Icon";
+import { clearCurrentLesson, setCurrentLesson } from "../../app/pageContext";
+import Icon from "../../shared/Icon";
 import { CHARTS } from "./charts";
 import { SCENES } from "./scenes";
-import RichText from "./RichText";
+import RichText from "../../shared/RichText";
 
 export type Source = { title: string; url: string };
 export type Topic = {

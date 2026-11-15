@@ -3,7 +3,7 @@
 // Because the slides are the real TopicSlides, the AI Phone's "explain this" keeps working.
 import { useState } from "react";
 import "./TableOfContents.css";
-import Icon from "./Icon";
+import Icon from "../../shared/Icon";
 import TopicSlides from "./TopicSlides";
 import { topicById } from "./lessons";
 import type { Level } from "./learningLevel";

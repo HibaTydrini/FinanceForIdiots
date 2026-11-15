@@ -14,6 +14,7 @@ Endpoints
   GET  /google/status/{id}   connected? + the tasks the agent booked
   POST /google/disconnect/{id}
   GET  /activity/{id}        what the coach did, and why (the Home page feed)
+  GET  /news           latest market headlines from Finnhub (cached 15 min)
   The AI Coach (/chat) and the weekly check-in use a Bedrock agent that can add tasks to Google Calendar.
 
 Run locally
@@ -21,6 +22,7 @@ Run locally
   export AWS_REGION=us-east-1
   export KB_ID=<your knowledge base ID>
   export MODEL_ID=<model ID copied from Bedrock > Model catalog>
+  export FINNHUB_API_KEY=<free key from finnhub.io>   # optional, for /news
   uvicorn app:app --reload --port 8000
 """
 
@@ -30,6 +32,8 @@ import json
 import os
 import re
 import secrets
+import threading
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -39,10 +43,10 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import boto3
-from fastapi import FastAPI, Header, HTTPException
+from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, RedirectResponse
-from pydantic import BaseModel
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from pydantic import BaseModel, Field
 
 REGION = os.environ.get("AWS_REGION", "us-east-1")
 KB_ID = os.environ["KB_ID"]
@@ -73,6 +77,12 @@ app.add_middleware(  # lets your frontend (different port/domain) call this API
 )
 
 
+@app.exception_handler(Exception)
+async def show_error(request: Request, exc: Exception):
+    """Return the real error (e.g. expired AWS credentials, wrong model ID) instead of a bare 500."""
+    return JSONResponse(status_code=500, content={"detail": f"{type(exc).__name__}: {exc}"})
+
+
 # ---------- Profile storage (a JSON file is enough for a datathon; swap for DynamoDB later) ----------
 
 class Profile(BaseModel):
@@ -81,8 +91,13 @@ class Profile(BaseModel):
     knowledge: str = ""          # What is your investment knowledge?
     invested_in: str = ""        # What have you invested in?
     goals: str = ""              # Why do you want to invest? What are your specific goals?
-    risk_tolerance: str = ""     # What is your risk tolerance?
-    looking_for: str = ""        # What are you looking for from Finance for idiots?
+    loss_reaction: str = ""
+    financial_capacity: str = ""
+    preliminary_risk: str = ""
+    monthly_budget: str = ""
+    looking_for: str = ""        # What are you looking for from Finance For Dummies?
+    optional_answers: list[str] = Field(default_factory=list)
+    demo_client_id: str = ""
 
 
 def load_profiles() -> dict:
@@ -109,6 +124,57 @@ def get_profile(user_id: str):
     if profile is None:
         raise HTTPException(404, "Profile not found")
     return profile
+
+
+# ---------- Market news (Finnhub) ----------
+# Headlines for the Home page. Finnhub's free tier allows 60 calls/minute; caching for
+# NEWS_TTL seconds means every visitor shares one call. We only show headline + link and
+# send readers to the original article (no full text is copied).
+
+FINNHUB_API_KEY = os.environ.get("FINNHUB_API_KEY", "")
+NEWS_TTL = 15 * 60
+_news_cache: dict = {"at": 0.0, "items": []}
+_news_lock = threading.Lock()
+
+
+def fetch_finnhub_news() -> list[dict]:
+    url = "https://finnhub.io/api/v1/news?" + urllib.parse.urlencode(
+        {"category": "general", "token": FINNHUB_API_KEY}
+    )
+    with urllib.request.urlopen(url, timeout=10) as resp:
+        raw = json.loads(resp.read().decode("utf-8"))
+    items = []
+    for a in raw if isinstance(raw, list) else []:
+        if not a.get("headline") or not str(a.get("url", "")).startswith("http"):
+            continue
+        items.append({
+            "id": a.get("id"),
+            "headline": a["headline"],
+            "summary": a.get("summary", ""),
+            "source": a.get("source", ""),
+            "url": a["url"],
+            "image": a.get("image") or None,
+            "datetime": a.get("datetime"),  # Unix seconds
+        })
+    items.sort(key=lambda a: a["datetime"] or 0, reverse=True)
+    return items
+
+
+@app.get("/news")
+def news(limit: int = 6):
+    if not FINNHUB_API_KEY:
+        raise HTTPException(503, "News is off: set FINNHUB_API_KEY on the backend.")
+    limit = max(1, min(limit, 30))
+    with _news_lock:
+        if time.time() - _news_cache["at"] > NEWS_TTL:
+            try:
+                _news_cache["items"] = fetch_finnhub_news()
+                _news_cache["at"] = time.time()
+            except Exception as exc:
+                # Finnhub down or rate-limited: keep showing the last headlines we had.
+                if not _news_cache["items"]:
+                    raise HTTPException(502, f"Could not load news: {exc}") from exc
+        return {"items": _news_cache["items"][:limit], "updated": int(_news_cache["at"])}
 
 
 # ---------- Chat ----------
@@ -245,7 +311,7 @@ def build_system_prompt(
         lesson = current_lesson(context)
         screen_section = f"""
 ON SCREEN
-The user is on the "{context['page']}" page of the Finance for idiots website."""
+The user is on the "{context['page']}" page of the Finance For Dummies website."""
         if lesson:
             screen_section += f"""
 They are reading the lesson "{lesson.get('topic', '')}", slide "{lesson.get('slide', '')}", which says:
@@ -273,8 +339,12 @@ USER PROFILE
 - Investing knowledge: {profile.get('knowledge') or 'unknown (assume a beginner)'}
 - Has invested in: {profile.get('invested_in') or 'unknown'}
 - Goals: {profile.get('goals') or 'unknown'}
-- Risk tolerance: {profile.get('risk_tolerance') or 'unknown'}
+- Reaction to a sudden 20% loss: {profile.get('loss_reaction') or 'unknown'}
+- Financial capacity for losses: {profile.get('financial_capacity') or 'unknown'}
+- Preliminary educational risk estimate: {profile.get('preliminary_risk') or 'unknown'}
+- Comfortable monthly amount: {profile.get('monthly_budget') or 'unknown'}
 - Wants help with: {profile.get('looking_for') or 'unknown'}
+- Optional personalization responses: {json.dumps(profile.get('optional_answers') or [], ensure_ascii=False)}
 {portfolio_section}{screen_section}{steps_section}
 HOW TO ANSWER
 - Explain at this user's level. For beginners, define every term and use simple, everyday examples.
@@ -443,12 +513,12 @@ def action_label(doc: dict, action_id: str) -> str:
 
 
 # ---------- Google Calendar (OAuth) ----------
-# The agent only writes to its own "Finance for idiots" calendar (scope calendar.app.created),
+# The agent only writes to its own "Finance For Dummies" calendar (scope calendar.app.created),
 # and only reads when the user is busy (scope calendar.freebusy), never their event details.
 
 GOOGLE_SCOPES = "https://www.googleapis.com/auth/calendar.app.created https://www.googleapis.com/auth/calendar.freebusy"
 GOOGLE_API = "https://www.googleapis.com/calendar/v3"
-CALENDAR_NAME = "Finance for idiots"
+CALENDAR_NAME = "Finance For Dummies"
 
 
 def google_ready() -> None:
@@ -511,7 +581,7 @@ def user_zone(doc: dict) -> ZoneInfo:
 
 
 def app_calendar(user_id: str, token: str, recreate: bool = False) -> str:
-    """The id of the "Finance for idiots" calendar, created the first time."""
+    """The id of the "Finance For Dummies" calendar, created the first time."""
     progress = load_progress()
     doc = progress[user_id]
     google = doc.get("google") or {}
@@ -519,7 +589,7 @@ def app_calendar(user_id: str, token: str, recreate: bool = False) -> str:
         return google["calendar_id"]
     created = http_json("POST", f"{GOOGLE_API}/calendars", {
         "summary": CALENDAR_NAME,
-        "description": "Tasks from your Finance for idiots plan, added by its AI coach.",
+        "description": "Tasks from your Finance For Dummies plan, added by its AI coach.",
         "timeZone": str(user_zone(doc)),
     }, token)
     google["calendar_id"] = created["id"]
@@ -576,7 +646,7 @@ def google_callback(code: str = "", state: str = "", error: str = ""):
         "connected": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }
     add_activity(doc, "settings", "Connected to your Google Calendar",
-                 'It can now book time for your steps in a separate "Finance for idiots" calendar.', "asked")
+                 'It can now book time for your steps in a separate "Finance For Dummies" calendar.', "asked")
     save_progress(progress)
     return RedirectResponse(plan_url)
 
@@ -619,7 +689,7 @@ AGENT_TOOLS = {"tools": [
     }},
     {"toolSpec": {
         "name": "list_planned_tasks",
-        "description": "Upcoming tasks already in the user's Finance for idiots calendar. Check it before adding a task, so nothing is booked twice.",
+        "description": "Upcoming tasks already in the user's Finance For Dummies calendar. Check it before adding a task, so nothing is booked twice.",
         "inputSchema": {"json": {"type": "object", "properties": {}}},
     }},
     {"toolSpec": {
@@ -632,7 +702,7 @@ AGENT_TOOLS = {"tools": [
     }},
     {"toolSpec": {
         "name": "add_task",
-        "description": "Add one task to the user's Finance for idiots calendar, with a reminder 30 minutes before.",
+        "description": "Add one task to the user's Finance For Dummies calendar, with a reminder 30 minutes before.",
         "inputSchema": {"json": {"type": "object", "properties": {
             "title": {"type": "string", "description": "Short, starts with a verb, e.g. 'Open your TFSA'"},
             "start": {"type": "string", "description": "Local start time, YYYY-MM-DDTHH:MM, within the next 14 days, between 07:00 and 21:30"},
@@ -941,7 +1011,7 @@ def email_bodies(
         calendar_box = f'<p style="margin:0 0 16px">{escape(calendar_line)}{link}</p>'
     html = f"""<!doctype html><html><body style="margin:0;padding:24px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;color:#1a1f2b;line-height:1.5">
 <div style="max-width:520px;margin:0 auto">
-<p style="font-size:13px;color:#5b6472;margin:0 0 12px">Finance for idiots · weekly check-in</p>
+<p style="font-size:13px;color:#5b6472;margin:0 0 12px">Finance For Dummies · weekly check-in</p>
 <p style="margin:0 0 8px">Hi! 👋</p>
 <p style="margin:0">{escape(nudge)}</p>
 {next_box}

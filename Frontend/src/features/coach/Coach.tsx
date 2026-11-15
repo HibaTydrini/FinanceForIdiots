@@ -4,7 +4,7 @@ import "./Coach.css";
 import { sendChat } from "./api";
 import type { ChatMessage } from "./api";
 import { shortUrl, withSourceLinks } from "./chatText";
-import { coachContext, readQuizAnswers, useBabySteps } from "./babyStepsStore";
+import { coachContext, readQuizAnswers, useBabySteps } from "../planning/babyStepsStore";
 
 type Props = {
   // Kept in App so the conversation survives switching pages.
@@ -61,7 +61,7 @@ export default function Coach({ messages, setMessages, intro, portfolio, initial
         <div className="coach-intro">
           <span className="coach-avatar">F.</span>
           <div>
-            <strong>Finance for idiots Coach</strong>
+            <strong>Finance For Dummies Coach</strong>
             <p>{intro ?? "Hi! What would you like to learn today? My answers come from National Bank's website."}</p>
           </div>
         </div>

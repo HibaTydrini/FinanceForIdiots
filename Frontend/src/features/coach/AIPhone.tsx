@@ -4,8 +4,10 @@ import "./AIPhone.css";
 import { sendChat } from "./api";
 import type { Source } from "./api";
 import { shortUrl, withSourceLinks } from "./chatText";
-import { usePageContext } from "./pageContext";
-import { coachContext, readQuizAnswers, useBabySteps } from "./babyStepsStore";
+import { usePageContext } from "../../app/pageContext";
+import { coachContext, readQuizAnswers, useBabySteps } from "../planning/babyStepsStore";
+import { readActiveProfile } from "../onboarding/onboarding";
+import { demoPortfolioForCoach, findDemoPortfolio } from "../portfolio/demoPortfolioContext";
 
 // Answers come from the same backend as the AI Coach page (backend/app.py: NBC knowledge
 // base + the user's quiz profile). The phone keeps its own conversation.
@@ -20,7 +22,7 @@ type Message = {
 const welcomeMessage: Message = {
     id: 1,
     role: "assistant",
-    text: "Hey! 👋 I'm your Finance for idiots AI coach. Ask me anything about investing, wherever you are on the site. My answers come from National Bank's website.",
+    text: "Hi! I'm your Finance For Dummies AI coach. Ask me anything about investing, wherever you are on the site. My answers come from National Bank's website.",
 };
 
 export default function AIPhone() {
@@ -72,7 +74,13 @@ export default function AIPhone() {
             // Baby Steps progress and plan go along too, so "what should I do next?" works.
             const progress = coachContext(babySteps, readQuizAnswers(), step);
             const context = page ? { page, lesson, ...progress } : progress;
-            const { answer, sources } = await sendChat(question, history, undefined, context);
+            const demo = findDemoPortfolio(readActiveProfile()?.demoClientId);
+            const { answer, sources } = await sendChat(
+                question,
+                history,
+                demo ? demoPortfolioForCoach(demo) : undefined,
+                context,
+            );
             const reply: Message = {
                 id: nextId.current++,
                 role: "assistant",
@@ -100,7 +108,7 @@ export default function AIPhone() {
                 onClick={() => setVisible(true)}
                 aria-label="Show AI coach"
             >
-                💬
+                FD
             </button>
         );
     }
@@ -120,8 +128,6 @@ export default function AIPhone() {
 
             <div className="ai-phone-frame">
                 <div className="ai-phone-screen">
-                    <div className="ai-phone-island" />
-
                     {!expanded ? (
                         <button
                             type="button"
@@ -129,7 +135,7 @@ export default function AIPhone() {
                             onClick={() => setExpanded(true)}
                             aria-label="Open AI chat"
                         >
-                            <div className="ai-phone-avatar">FI</div>
+                            <div className="ai-phone-avatar">FD</div>
                             <h3>Finance AI</h3>
                             <p>Your personal investment coach</p>
                             <span className="ai-phone-open">Tap to chat ↗</span>
@@ -138,7 +144,7 @@ export default function AIPhone() {
                         <div className="ai-phone-chat">
                             <div className="ai-phone-header">
                                 <div className="ai-phone-header-left">
-                                    <div className="ai-phone-avatar">FI</div>
+                                    <div className="ai-phone-avatar">FD</div>
                                     <div>
                                         <strong>Finance AI</strong>
                                         <small>● Answers from NBC</small>
@@ -234,7 +240,6 @@ export default function AIPhone() {
                         </div>
                     )}
 
-                    <div className="ai-phone-home" />
                 </div>
             </div>
         </div>

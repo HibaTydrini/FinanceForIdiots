@@ -1,10 +1,10 @@
 // The 30-second monthly check-in on My Plan: two questions, then the next check-in date is saved.
 // If the market is worrying the user, their own "rule for myself" is shown back to them.
 import { useState } from "react";
-import LessonLinks from "./LessonLinks";
+import LessonLinks from "../learning/LessonLinks";
 import { RULE_PREFIX, completeCheckIn, formatDate, todayISO } from "./babyStepsStore";
 import type { Plan } from "./babyStepsStore";
-import type { Level } from "./learningLevel";
+import type { Level } from "../learning/learningLevel";
 
 type Props = {
   plan: Plan;

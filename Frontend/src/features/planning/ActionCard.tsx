@@ -2,8 +2,8 @@
 // Used by Baby Steps and by the to-do lists on My Plan.
 import { useState } from "react";
 import type { ReactNode } from "react";
-import RichText from "./RichText";
-import type { TermDef } from "./RichText";
+import RichText from "../../shared/RichText";
+import type { TermDef } from "../../shared/RichText";
 import type { Action } from "./babyStepsStore";
 
 type Props = {

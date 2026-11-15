@@ -2,7 +2,7 @@
 // ticks, decisions not to act), with the reason, and whether it acted on its own or because you asked.
 import { useEffect, useState } from "react";
 import { getActivity } from "./api";
-import Icon from "./Icon";
+import Icon from "../../shared/Icon";
 import type { Activity } from "./api";
 import "./ActivityFeed.css";
 
