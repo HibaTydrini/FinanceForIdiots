@@ -48,7 +48,7 @@ class Profile(BaseModel):
     invested_in: str = ""        # What have you invested in?
     goals: str = ""              # Why do you want to invest? What are your specific goals?
     risk_tolerance: str = ""     # What is your risk tolerance?
-    looking_for: str = ""        # What are you looking for from Finance for idiots?
+    looking_for: str = ""        # What are you looking for from Finance For Dummies?
 
 
 def load_profiles() -> dict:
@@ -211,7 +211,7 @@ def build_system_prompt(
         lesson = current_lesson(context)
         screen_section = f"""
 ON SCREEN
-The user is on the "{context['page']}" page of the Finance for idiots website."""
+The user is on the "{context['page']}" page of the Finance For Dummies website."""
         if lesson:
             screen_section += f"""
 They are reading the lesson "{lesson.get('topic', '')}", slide "{lesson.get('slide', '')}", which says:

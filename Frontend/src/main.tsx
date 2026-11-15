@@ -142,8 +142,8 @@ function Root() {
       <div className="nbc-page">
         <header className="nbc-header">
           <div className="nbc-brand" onClick={handleLogout}>
-            <span className="nbc-logo">FI</span>
-            <span>Finance for idiots</span>
+            <span className="nbc-logo">FD</span>
+            <span>Finance For Dummies</span>
           </div>
         </header>
 
@@ -155,7 +155,7 @@ function Root() {
 
             <p className="nbc-description">
               Would you like to connect your investments or explore
-              Finance for idiots using a demo portfolio?
+              Finance For Dummies using a demo portfolio?
             </p>
 
             <div className="nbc-actions">

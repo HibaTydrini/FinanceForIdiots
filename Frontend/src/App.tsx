@@ -98,7 +98,7 @@ const questions = [
     ],
   },
   {
-    title: "What are you looking for from Finance for idiots?",
+    title: "What are you looking for from Finance For Dummies?",
     options: [
       "Learn how investing works",
       "Understand my investments",
@@ -284,8 +284,8 @@ function navigatePage(target: Page) {
       <header className="header">
         <button className="logo" onClick={onLogoClick}>
           
-          <span className="logo-icon">FI</span>
-          <span>Finance for idiots</span>
+          <span className="logo-icon">FD</span>
+          <span>Finance For Dummies</span>
         </button>
 
         {authenticated && page !== "onboarding" && (
@@ -547,7 +547,7 @@ function navigatePage(target: Page) {
       </main>
 
       <footer>
-        <span>Finance for idiots</span>
+        <span>Finance For Dummies</span>
         <span>Financial education made accessible.</span>
       </footer>
     </div>

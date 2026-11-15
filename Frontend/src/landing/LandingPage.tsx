@@ -14,8 +14,8 @@ export default function LandingPage({
     <div className="landing">
       <header className="landing-nav">
         <div className="landing-brand">
-          <div className="landing-logo">FI</div>
-          <span>Finance for idiots</span>
+          <div className="landing-logo">FD</div>
+          <span>Finance For Dummies</span>
         </div>
 
         <nav className="landing-links">
@@ -69,7 +69,7 @@ export default function LandingPage({
           <h2>Because apparently, we're supposed to just know this stuff.</h2>
           <p>
             Stocks, ETFs, risk tolerance… everyone talks about them like
-            they're common knowledge. We built Finance for idiots to make
+            they're common knowledge. We built Finance For Dummies to make
             investing easier to understand, whether you're completely new
             or already getting started.
           </p>

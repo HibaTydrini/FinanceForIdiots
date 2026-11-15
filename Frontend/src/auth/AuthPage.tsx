@@ -143,8 +143,8 @@ export default function AuthPage({
           onClick={onHome}
           className="auth-home-button"
         >
-          <span className="auth-logo">FI</span>
-          <strong>Finance for idiots</strong>
+          <span className="auth-logo">FD</span>
+          <strong>Finance For Dummies</strong>
         </button>
       </header>
 
@@ -337,7 +337,7 @@ export default function AuthPage({
       </main>
 
       <footer className="auth-footer">
-        Finance for idiots · Financial education made accessible.
+        Finance For Dummies · Financial education made accessible.
       </footer>
     </div>
   );
