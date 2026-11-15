@@ -6,7 +6,7 @@
 import { useState } from "react";
 import data from "./data/demoPortfolios.json";
 import { C } from "./chartColors";
-import { Figure, LineChart } from "./chartParts";
+import PortfolioChart from "./PortfolioChart";
 import "./DemoPortfolio.css";
 
 export type DemoPortfolioData = (typeof data.portfolios)[number];
@@ -30,7 +30,6 @@ const CLASS_COLORS: Record<string, string> = {
 const LEVEL_LABEL: Record<string, string> = { watch: "Worth a look", good: "Looking good", info: "Good to know" };
 
 const money = (n: number) => `$${Math.round(n).toLocaleString("en-CA")}`;
-const shortMoney = (n: number) => (n >= 1000 ? `$${Math.round(n / 1000)}k` : `$${Math.round(n)}`);
 const pct = (n: number) => `${n > 0 ? "+" : ""}${n}%`;
 
 type Props = {
@@ -102,8 +101,6 @@ export default function DemoPortfolio({ onAskCoach }: Props) {
 
   const t = p.totals;
   const gainCad = t.valueCad + t.dividendsCad - t.investedCad;
-  const top = Math.max(...p.history.map((h) => h.value));
-  const yMax = Math.ceil(top / 4 / 5000) * 5000 * 4; // 4 even steps of $5k, $10k...
   const facts = [...p.facts].sort((a, b) => order(a.level) - order(b.level));
 
   return (
@@ -129,24 +126,7 @@ export default function DemoPortfolio({ onAskCoach }: Props) {
         <Stat label="Worst drop" value={`${t.worstDropPct}%`} note={`${p.totals.worstDropFrom.slice(0, 7)} to ${p.totals.worstDropTo.slice(0, 7)}`} />
       </div>
 
-      <Figure
-        title="Your account over time (CAD)"
-        legend={[
-          { name: "Worth", color: C.blue },
-          { name: "Money put in", color: C.grey },
-        ]}
-      >
-        <LineChart
-          series={[
-            { name: "Worth", color: C.blue, values: p.history.map((h) => h.value), area: true },
-            { name: "Money put in", color: C.grey, values: p.history.map((h) => h.invested), dashed: true },
-          ]}
-          xLabels={p.history.map((h) => monthLabel(h.month))}
-          yMax={yMax}
-          fmt={shortMoney}
-          height={210}
-        />
-      </Figure>
+      <PortfolioChart daily={p.daily} />
 
       <div className="demo-grid">
         <section className="demo-card">
@@ -253,11 +233,6 @@ function Stat({ label, value, note, good }: { label: string; value: string; note
 
 function order(level: string) {
   return level === "watch" ? 0 : level === "good" ? 1 : 2;
-}
-
-function monthLabel(m: string) {
-  const [y, mo] = m.split("-");
-  return mo === "01" ? y : `${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][+mo - 1]} ${y.slice(2)}`;
 }
 
 function shortSector(s: string) {
