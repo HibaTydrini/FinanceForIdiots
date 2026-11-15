@@ -880,3 +880,205 @@
   margin: 10px 0 0;
   font-size: 11.5px;
 }
+
+/* ---------- What stands out (StandsOut.tsx) ---------- */
+.so {
+  --so-watch: #d9531e;
+  --so-watch-bg: #fdf1ec;
+  --so-good: #0f8a5f;
+  --so-good-bg: #eaf7f1;
+  --so-info: #4a5a70;
+  --so-info-bg: #eef2f7;
+}
+
+.so-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin-bottom: 16px;
+}
+
+.so-head h3 {
+  margin: 0;
+}
+
+.so-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.so-filters button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border: 1px solid #e2e2e2;
+  border-radius: 20px;
+  background: white;
+  color: #555555;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.so-filters button span {
+  min-width: 18px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: #f0f0f0;
+  font-size: 11px;
+  text-align: center;
+}
+
+.so-filters button:hover {
+  border-color: #bbbbbb;
+}
+
+.so-filters button.active {
+  border-color: #252525;
+  background: #252525;
+  color: white;
+}
+
+.so-filters button.active span {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.so-filters button.watch.active { border-color: var(--so-watch); background: var(--so-watch); }
+.so-filters button.good.active { border-color: var(--so-good); background: var(--so-good); }
+.so-filters button.info.active { border-color: var(--so-info); background: var(--so-info); }
+
+.so-filters button:focus-visible {
+  outline: 2px solid #cf1726;
+  outline-offset: 2px;
+}
+
+.so-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.so-item {
+  --tone: var(--so-info);
+  --tone-bg: var(--so-info-bg);
+  display: flex;
+  gap: 14px;
+  padding: 16px 0;
+  border-top: 1px solid #f0f0f0;
+}
+
+.so-item:first-child {
+  border-top: none;
+  padding-top: 4px;
+}
+
+.so-item.watch { --tone: var(--so-watch); --tone-bg: var(--so-watch-bg); }
+.so-item.good { --tone: var(--so-good); --tone-bg: var(--so-good-bg); }
+
+.so-icon {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--tone-bg);
+  color: var(--tone);
+}
+
+.so-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.so-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 0 0 4px;
+}
+
+.so-title strong {
+  font-size: 15px;
+  color: #252525;
+}
+
+.so-level {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--tone);
+}
+
+.so-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #444444;
+}
+
+.so-text strong {
+  color: #252525;
+}
+
+/* a thin bar: how much of the whole account this is */
+.so-share {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #777777;
+}
+
+.so-share-bar {
+  flex: 1;
+  max-width: 220px;
+  height: 6px;
+  border-radius: 3px;
+  background: #eeeeee;
+  overflow: hidden;
+}
+
+.so-share-bar div {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--tone);
+}
+
+.so-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-top: 10px;
+}
+
+.so-actions button {
+  padding: 0;
+  border: none;
+  background: none;
+  color: #cf1726;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.so-actions button:hover {
+  text-decoration: underline;
+}
+
+/* "Ask the coach" sits at the right edge of the row */
+.so-actions .so-ask {
+  margin-left: auto;
+}
+
+.so-actions button:focus-visible {
+  outline: 2px solid #cf1726;
+  outline-offset: 2px;
+}

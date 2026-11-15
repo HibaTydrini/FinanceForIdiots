@@ -9,6 +9,8 @@ import data from "../../data/demoPortfolios.json";
 import { C } from "../../shared/chartColors";
 import PortfolioChart from "./PortfolioChart";
 import NextIdeas from "./NextIdeas";
+import StandsOut from "./StandsOut";
+import { askPhone } from "../coach/askPhone";
 import { demoInsights, fetchCoachInsights } from "./coachInsights";
 import type { CoachInsights } from "./coachInsights";
 import type { DemoPortfolioData } from "./demoPortfolioContext";
@@ -44,14 +46,13 @@ const CLASS_COLORS: Record<string, string> = {
 
 };
 
-const LEVEL_LABEL: Record<string, string> = { watch: "Worth a look", good: "Looking good", info: "Good to know" };
-
 const money = (n: number) => `$${Math.round(n).toLocaleString("en-CA")}`;
 
 const pct = (n: number) => `${n > 0 ? "+" : ""}${n}%`;
 
 type Props = {
   onAskCoach?: (p: DemoPortfolioData) => void;
+  onOpenLesson?: (topicId: string) => void;
   onConnect?: (clientId: string) => void;
   onSelectClient?: (p: DemoPortfolioData) => void;
   selectionOnly?: boolean;
@@ -61,6 +62,7 @@ type Props = {
 
 export default function DemoPortfolio({
   onAskCoach,
+  onOpenLesson,
   onConnect,
   onSelectClient,
   selectionOnly = false,
@@ -252,37 +254,17 @@ export default function DemoPortfolio({
 
       <div className="demo-grid">
 
-        <section className="demo-card">
-
-          <h3>What stands out</h3>
-
-          <ul className="demo-facts">
-
-            {facts.map((f) => (
-
-              <li key={f.kind + f.text} className={f.level}>
-
-                <span className="demo-level">{LEVEL_LABEL[f.level]}</span>
-
-                {f.text}
-
-              </li>
-
-            ))}
-
-          </ul>
-
+        <StandsOut
+          facts={facts}
+          onAsk={askPhone}
+          onOpenLesson={onOpenLesson}
+        >
           {onAskCoach && (
-
             <button className="primary demo-ask" onClick={() => onAskCoach(p)}>
-
               Ask the AI Coach about my portfolio
-
             </button>
-
           )}
-
-        </section>
+        </StandsOut>
 
         <div className="demo-side">
           <section className="demo-card">

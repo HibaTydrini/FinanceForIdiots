@@ -637,6 +637,7 @@ function navigatePage(target: Page | string) {
                 setDemoClient(portfolio);
                 setPage("coach");
               }}
+              onOpenLesson={(id) => navigatePage(`learning/${id}`)}
             />
 
             <p className="disclaimer">

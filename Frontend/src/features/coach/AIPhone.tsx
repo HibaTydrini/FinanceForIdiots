@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import "./AIPhone.css";
 import { sendChat } from "./api";
+import { ASK_EVENT } from "./askPhone";
 import type { Source } from "./api";
 import { shortUrl, withSourceLinks } from "./chatText";
 import { usePageContext } from "../../app/pageContext";
@@ -49,8 +50,8 @@ export default function AIPhone() {
         }
     }, [messages, expanded, loading, error]);
 
-    async function sendMessage() {
-        const question = input.trim();
+    async function sendMessage(text?: string) {
+        const question = (text ?? input).trim();
 
         if (!question || loading) return;
 
@@ -65,7 +66,7 @@ export default function AIPhone() {
         };
 
         setMessages((old) => [...old, newMessage]);
-        setInput("");
+        if (text === undefined) setInput("");
         setError("");
         setLoading(true);
 
@@ -80,6 +81,7 @@ export default function AIPhone() {
                 history,
                 demo ? demoPortfolioForCoach(demo) : undefined,
                 context,
+                true, // brief: the phone screen is small
             );
             const reply: Message = {
                 id: nextId.current++,
@@ -98,6 +100,23 @@ export default function AIPhone() {
             setLoading(false);
         }
     }
+
+    // askPhone(): open the phone and send the question. The ref keeps the listener on the latest sendMessage.
+    const sendRef = useRef(sendMessage);
+    useEffect(() => {
+        sendRef.current = sendMessage;
+    });
+    useEffect(() => {
+        const onAsk = (e: Event) => {
+            const question = (e as CustomEvent<string>).detail;
+            if (!question) return;
+            setVisible(true);
+            setExpanded(true);
+            void sendRef.current(question);
+        };
+        window.addEventListener(ASK_EVENT, onAsk);
+        return () => window.removeEventListener(ASK_EVENT, onAsk);
+    }, []);
 
     // When hidden, display only the restore button
     if (!visible) {

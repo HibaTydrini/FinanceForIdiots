@@ -146,6 +146,7 @@ export async function sendChat(
   history: ChatMessage[],
   portfolio?: object,
   context?: ChatContext,
+  brief = false, // short answers for the small AI Phone
 ): Promise<{ answer: string; sources: Source[]; tasks?: CalendarTask[] }> {
   const res = await fetch(`${API_URL}/chat`, {
     method: "POST",
@@ -156,6 +157,7 @@ export async function sendChat(
       history: history.map(({ role, text }) => ({ role, text })),
       portfolio: portfolio ?? null,
       context: context ?? null,
+      brief,
     }),
   });
   if (!res.ok) throw new Error(`Chat failed (${res.status})`);
