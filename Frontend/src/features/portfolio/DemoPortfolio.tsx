@@ -4,16 +4,15 @@
 // Nothing here is a real person or a real bank connection.
 
 import { useEffect, useState } from "react";
-import data from "./data/demoPortfolios.json";
+import data from "../../data/demoPortfolios.json";
 
-import { C } from "./chartColors";
+import { C } from "../../shared/chartColors";
 import PortfolioChart from "./PortfolioChart";
 import NextIdeas from "./NextIdeas";
 import { demoInsights, fetchCoachInsights } from "./coachInsights";
 import type { CoachInsights } from "./coachInsights";
+import type { DemoPortfolioData } from "./demoPortfolioContext";
 import "./DemoPortfolio.css";
-
-export type DemoPortfolioData = (typeof data.portfolios)[number];
 
 const PORTFOLIOS = data.portfolios;
 
@@ -66,9 +65,7 @@ export default function DemoPortfolio({
   selectionOnly = false,
   initialClientId = null,
 }: Props) {
-  const [clientId, setClientId] = useState<string | null>(
-    initialClientId ?? localStorage.getItem("financeDemoClientId")
-  );
+  const [clientId, setClientId] = useState<string | null>(initialClientId);
   const [connecting, setConnecting] = useState(false);
   const [showContext, setShowContext] = useState(false);
   // the AI Coach's own "What stands out" and ideas, once the chatbot answers (see coachInsights.ts)
@@ -88,7 +85,6 @@ export default function DemoPortfolio({
     const selectedPortfolio = PORTFOLIOS.find((p) => p.id === id);
     if (!selectedPortfolio) return;
 
-    localStorage.setItem("financeDemoClientId", id);
     onSelectClient?.(selectedPortfolio);
     if (selectionOnly) return;
 

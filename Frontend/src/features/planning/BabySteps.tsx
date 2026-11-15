@@ -8,16 +8,16 @@
 import { useEffect, useMemo, useState } from "react";
 import "./BabySteps.css";
 import ActionCard from "./ActionCard";
-import Icon from "./Icon";
-import LessonLinks from "./LessonLinks";
+import Icon from "../../shared/Icon";
+import LessonLinks from "../learning/LessonLinks";
 import PlanWidget from "./PlanWidgets";
-import RichText from "./RichText";
+import RichText from "../../shared/RichText";
 import { checkPassed, getSteps, isExpert, passCheck, personalize, setActionDone, useBabySteps } from "./babyStepsStore";
 import type { Action, BabyState, Step } from "./babyStepsStore";
-import { levelFromKnowledge } from "./learningLevel";
-import type { Level } from "./learningLevel";
-import { clearCurrentStep, setCurrentStep } from "./pageContext";
-import data from "./data/babySteps.json";
+import { levelFromKnowledge } from "../learning/learningLevel";
+import type { Level } from "../learning/learningLevel";
+import { clearCurrentStep, setCurrentStep } from "../../app/pageContext";
+import data from "../../data/babySteps.json";
 
 type Props = {
   answers: string[]; // onboarding quiz answers (App.tsx)

@@ -8,7 +8,7 @@
 // If the chatbot is off, slow or returns something unexpected, the page keeps the demo text,
 // so the page never breaks. Write all text to the user as "you/your".
 
-import ideasData from "./data/demoIdeas.json";
+import ideasData from "../../data/demoIdeas.json";
 
 export type FactLevel = "watch" | "good" | "info";
 

@@ -7,11 +7,11 @@
 // Click a chapter to open it, then click a topic to see its slides (TopicSlides.tsx).
 
 import { useMemo, useState } from "react";
-import data from "./data/learningPath.json";
+import data from "../../data/learningPath.json";
 import "./TableOfContents.css";
 import type { Level } from "./learningLevel";
 import TopicSlides from "./TopicSlides";
-import Icon from "./Icon";
+import Icon from "../../shared/Icon";
 import type { Topic } from "./TopicSlides";
 
 type Chapter = { title: string; single?: boolean; topics: Topic[] };

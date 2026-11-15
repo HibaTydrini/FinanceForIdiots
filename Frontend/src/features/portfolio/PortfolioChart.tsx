@@ -4,7 +4,7 @@
 // Data is one point per trading day (closing prices), from scripts/build_demo_accounts.py.
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { C } from "./chartColors";
+import { C } from "../../shared/chartColors";
 
 export type DailyHistory = { date: string[]; value: number[]; invested: number[] };
 

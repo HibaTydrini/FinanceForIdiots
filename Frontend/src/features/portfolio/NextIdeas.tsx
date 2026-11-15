@@ -4,7 +4,7 @@
 // The ideas come in as a prop (see coachInsights.ts): hardcoded demo ideas today, the AI Coach's later.
 
 import { useState } from "react";
-import { C } from "./chartColors";
+import { C } from "../../shared/chartColors";
 import type { CoachInsights } from "./coachInsights";
 
 // slice colours in a fixed order (checked for colour-blind separation); dark text on the light ones

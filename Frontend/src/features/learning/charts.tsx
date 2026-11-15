@@ -3,7 +3,7 @@
 // Charts marked "Illustration" use made-up but realistic shapes, not real prices.
 
 import type { ReactElement } from "react";
-import { C } from "./chartColors";
+import { C } from "../../shared/chartColors";
 import { Figure, LineChart, Columns, HBars, SplitBars, Donut, Flow, CompareTable, Mosaic } from "./chartParts";
 import { MORE } from "./moreIllustrations";
 

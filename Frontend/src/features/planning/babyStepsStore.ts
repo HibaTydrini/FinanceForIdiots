@@ -2,8 +2,9 @@
 // Saved in localStorage under "financeBabySteps" (same idea as "financeQuizAnswers"),
 // so a page reload keeps everything. Used by BabySteps, MyPlan, Home, Coach and the AI Phone.
 import { useSyncExternalStore } from "react";
-import data from "./data/babySteps.json";
-import type { TermDef } from "./RichText";
+import data from "../../data/babySteps.json";
+import type { TermDef } from "../../shared/RichText";
+import { readActiveProfile } from "../onboarding/onboarding";
 
 // ---------- the path (data/babySteps.json) ----------
 
@@ -46,13 +47,7 @@ const ALL_STEPS = data.steps as unknown as Step[];
 
 // The quiz answers saved by the onboarding quiz (App.tsx).
 export function readQuizAnswers(): string[] {
-  try {
-    const saved = localStorage.getItem("financeQuizAnswers");
-    const parsed: unknown = saved ? JSON.parse(saved) : [];
-    return Array.isArray(parsed) ? (parsed as string[]) : [];
-  } catch {
-    return [];
-  }
+  return readActiveProfile()?.requiredAnswers ?? [];
 }
 
 // The steps in this user's order (a step can move earlier, e.g. "Staying calm" for crypto holders).

@@ -4,8 +4,10 @@ import "./AIPhone.css";
 import { sendChat } from "./api";
 import type { Source } from "./api";
 import { shortUrl, withSourceLinks } from "./chatText";
-import { usePageContext } from "./pageContext";
-import { coachContext, readQuizAnswers, useBabySteps } from "./babyStepsStore";
+import { usePageContext } from "../../app/pageContext";
+import { coachContext, readQuizAnswers, useBabySteps } from "../planning/babyStepsStore";
+import { readActiveProfile } from "../onboarding/onboarding";
+import { demoPortfolioForCoach, findDemoPortfolio } from "../portfolio/demoPortfolioContext";
 
 // Answers come from the same backend as the AI Coach page (backend/app.py: NBC knowledge
 // base + the user's quiz profile). The phone keeps its own conversation.
@@ -72,7 +74,13 @@ export default function AIPhone() {
             // Baby Steps progress and plan go along too, so "what should I do next?" works.
             const progress = coachContext(babySteps, readQuizAnswers(), step);
             const context = page ? { page, lesson, ...progress } : progress;
-            const { answer, sources } = await sendChat(question, history, undefined, context);
+            const demo = findDemoPortfolio(readActiveProfile()?.demoClientId);
+            const { answer, sources } = await sendChat(
+                question,
+                history,
+                demo ? demoPortfolioForCoach(demo) : undefined,
+                context,
+            );
             const reply: Message = {
                 id: nextId.current++,
                 role: "assistant",

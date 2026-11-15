@@ -3,12 +3,13 @@ import ReactDOM from "react-dom/client";
 import { getCurrentUser, signOut } from "aws-amplify/auth";
 import "./aws-config";
 import "./index.css";
-import "./App.css";
-import App from "./App";
+import "./app/App.css";
+import App from "./app/App";
 import AuthPage from "./auth/AuthPage";
 import LandingPage from "./landing/LandingPage";
-import AIPhone from "./AIPhone";
-import { resetBabySteps } from "./babyStepsStore";
+import AIPhone from "./features/coach/AIPhone";
+import { resetBabySteps } from "./features/planning/babyStepsStore";
+import { claimPendingProfile, clearPendingProfile, setActiveUser } from "./features/onboarding/onboarding";
 
 type Screen = "landing" | "login" | "signup" | "dashboard";
 
@@ -30,8 +31,11 @@ function getScreen(): Screen {
 // eslint-disable-next-line react-refresh/only-export-components
 function Root() {
   const [authenticated, setAuthenticated] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   const [checking, setChecking] = useState(true);
-  const [signupQuestions, setSignupQuestions] = useState(false);
+  const [signupQuestions, setSignupQuestions] = useState(
+    () => getScreen() === "signup" && sessionStorage.getItem("ffd:signup-auth-ready") !== "yes"
+  );
 
   const [screen, setScreen] = useState<Screen>(getScreen);
 
@@ -55,8 +59,8 @@ function Root() {
   }
 
   function startSignup() {
-    localStorage.removeItem("financeQuizAnswers");
-    localStorage.removeItem("financeDemoClientId");
+    clearPendingProfile();
+    sessionStorage.removeItem("ffd:signup-auth-ready");
     resetBabySteps();
     setSignupQuestions(true);
     navigate("signup");
@@ -64,7 +68,11 @@ function Root() {
 
   useEffect(() => {
     getCurrentUser()
-      .then(() => setAuthenticated(true))
+      .then((user) => {
+        setAuthenticated(true);
+        setUserId(user.userId);
+        setActiveUser(user.userId);
+      })
       .catch(() => setAuthenticated(false))
       .finally(() => setChecking(false));
   }, []);
@@ -74,6 +82,8 @@ function Root() {
       await signOut();
 
       setAuthenticated(false);
+      setUserId(null);
+      setActiveUser(null);
       setSignupQuestions(false);
       sessionStorage.removeItem("financeNbcChoice");
       setNbcComplete(true);
@@ -84,7 +94,12 @@ function Root() {
     }
   }
 
-  function handleAuthenticated() {
+  async function handleAuthenticated(method: "login" | "signup") {
+    const user = await getCurrentUser();
+    setUserId(user.userId);
+    setActiveUser(user.userId);
+    if (method === "signup") claimPendingProfile(user.userId);
+    sessionStorage.removeItem("ffd:signup-auth-ready");
     setAuthenticated(true);
 
     setSignupQuestions(false);
@@ -115,10 +130,12 @@ function Root() {
         showOnboarding={true}
         onQuizComplete={() => {}}
         onDemoClientSelected={() => {
+          sessionStorage.setItem("ffd:signup-auth-ready", "yes");
           setSignupQuestions(false);
         }}
         onLogout={handleLogout}
         onLogoClick={() => navigate("landing")}
+        userId={null}
       />
     );
   }
@@ -195,6 +212,7 @@ function Root() {
         onQuizComplete={() => {}}
         onLogout={handleLogout}
         onLogoClick={() => navigate("landing")}
+        userId={userId}
       />
       <AIPhone />
     </>

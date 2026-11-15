@@ -1,41 +1,31 @@
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
-import TableOfContents from "./TableOfContents";
-import DemoPortfolio, { type DemoPortfolioData } from "./DemoPortfolio";
-import { levelFromKnowledge } from "./learningLevel";
-import Coach from "./Coach";
-import { saveProfile } from "./api";
-import type { ChatMessage } from "./api";
+import TableOfContents from "../features/learning/TableOfContents";
+import DemoPortfolio from "../features/portfolio/DemoPortfolio";
+import { demoPortfolioForCoach, findDemoPortfolio, type DemoPortfolioData } from "../features/portfolio/demoPortfolioContext";
+import { levelFromKnowledge } from "../features/learning/learningLevel";
+import Coach from "../features/coach/Coach";
+import { saveProfile } from "../features/coach/api";
+import type { ChatMessage } from "../features/coach/api";
 import { setCurrentPage } from "./pageContext";
-import BabySteps from "./BabySteps";
-import MyPlan from "./MyPlan";
-import { formatDate, getSteps, markDemoConnected, nextThing, useBabySteps } from "./babyStepsStore";
-
-// What the AI Coach is told about the demo client picked on the Portfolio page.
-function portfolioForCoach(p: DemoPortfolioData) {
-  return {
-    name: p.name,
-    account: p.account,
-    risk: p.risk,
-    horizon: p.horizon,
-    goal: p.goal,
-    valueCad: p.totals.valueCad,
-    investedCad: p.totals.investedCad,
-    gainPct: p.totals.gainPct,
-    worstDropPct: p.totals.worstDropPct,
-    holdings: p.holdings.map((h) => ({
-      ticker: h.ticker,
-      name: h.name,
-      type: h.assetClass,
-      sector: h.sector,
-      weightPct: h.weightPct,
-      gainPct: h.gainPct,
-    })),
-  };
-}
+import BabySteps from "../features/planning/BabySteps";
+import MyPlan from "../features/planning/MyPlan";
+import { formatDate, getSteps, markDemoConnected, nextThing, useBabySteps } from "../features/planning/babyStepsStore";
+import {
+  emptyProfile,
+  estimatePreliminaryRisk,
+  optionalQuestions,
+  readPendingProfile,
+  readUserProfile,
+  requiredQuestions,
+  savePendingProfile,
+  saveUserProfile,
+  type OnboardingProfile,
+} from "../features/onboarding/onboarding";
 
 type Page =
   | "onboarding"
+  | "personalization"
   | "demo-selection"
   | "home"
   | "steps"
@@ -47,6 +37,7 @@ type Page =
 
 const PAGE_NAMES: Record<Page, string> = {
   onboarding: "Onboarding quiz",
+  personalization: "Optional personalization questions",
   "demo-selection": "Choose Demo Account",
   home: "Home",
   steps: "Baby Steps (guided path for beginners)",
@@ -56,59 +47,6 @@ const PAGE_NAMES: Record<Page, string> = {
   coach: "AI Coach",
   portfolio: "My Portfolio (demo portfolios)",
 };
-
-const questions = [
-  {
-    title: "What is your investment knowledge?",
-    options: [
-      "I'm completely new to investing",
-      "I know a little about investing",
-      "I understand the basics",
-      "I'm experienced with investing",
-    ],
-  },
-  {
-    title: "What have you invested in?",
-    options: [
-      "I haven't invested yet",
-      "Stocks",
-      "ETFs or mutual funds",
-      "Cryptocurrency",
-      "Bonds or GICs",
-      "A mix of different investments",
-    ],
-  },
-  {
-    title: "Why do you want to invest? What are your specific goals?",
-    options: [
-      "Grow my wealth over time",
-      "Save for a house or major purchase",
-      "Prepare for retirement",
-      "Generate passive income",
-      "I'm still figuring out my goals",
-    ],
-  },
-  {
-    title: "What is your risk tolerance?",
-    options: [
-      "Low — I prefer stability",
-      "Moderate — I'm comfortable with some risk",
-      "High — I can handle significant market changes",
-      "I'm not sure yet",
-    ],
-  },
-  {
-    title: "What are you looking for from Finance For Dummies?",
-    options: [
-      "Learn how investing works",
-      "Understand my investments",
-      "Get personalized financial education",
-      "Understand investment risks",
-      "All of the above",
-    ],
-  },
-];
-
 
 const features = [
   {
@@ -176,6 +114,7 @@ type AppProps = {
   onDemoClientSelected?: () => void;
   onLogout: () => void;
   onLogoClick: () => void;
+  userId?: string | null;
 };
 
 function App({
@@ -185,23 +124,24 @@ function App({
   onDemoClientSelected,
   onLogout,
   onLogoClick,
+  userId = null,
 }: AppProps) {
+  const storedProfile = showOnboarding
+    ? readPendingProfile()
+    : userId ? readUserProfile(userId) : null;
   const [page, setPage] = useState<Page>(
     showOnboarding ? "onboarding" : pageFromHash() ?? "home"
   );
   // the pretend National Bank client picked on the Portfolio page (demo), shared with the AI Coach
-  const [demoClient, setDemoClient] = useState<DemoPortfolioData | null>(null);
+  const [profile, setProfile] = useState<OnboardingProfile>(storedProfile ?? emptyProfile());
+  const [demoClient, setDemoClient] = useState<DemoPortfolioData | null>(() => findDemoPortfolio(storedProfile?.demoClientId));
   const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<string[]>(() => {
-  const saved = localStorage.getItem("financeQuizAnswers");
-
-  try {
-    return saved ? JSON.parse(saved) as string[] : [];
-  } catch {
-    return [];
-  }
-  });
+  const answers = profile.requiredAnswers;
   const [selected, setSelected] = useState("");
+  const [optionalStep, setOptionalStep] = useState(0);
+  const [optionalSelected, setOptionalSelected] = useState("");
+  const [optionalStarted, setOptionalStarted] = useState(false);
+  const [personalizationReturn, setPersonalizationReturn] = useState<"demo-selection" | "profile">("demo-selection");
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   // a question filled in for the AI Coach by a Baby Steps "Ask the AI Coach" button
   const [coachQuestion, setCoachQuestion] = useState("");
@@ -234,9 +174,9 @@ function App({
   // Runs after the quiz and on every visit, so profiles from before the backend existed are sent too.
   // The site still works if the backend is down; the coach just won't know the profile.
   useEffect(() => {
-    if (answers.length < questions.length) return;
-    saveProfile(answers).catch((err) => console.warn("Could not save profile:", err));
-  }, [answers]);
+    if (!authenticated || !userId || answers.length < requiredQuestions.length) return;
+    saveProfile(profile).catch((err) => console.warn("Could not save profile:", err));
+  }, [answers.length, authenticated, profile, userId]);
 
   // Tell the AI Phone which page is open (pageContext.ts).
   useEffect(() => {
@@ -261,15 +201,38 @@ function navigatePage(target: Page) {
 
     const updated = [...answers];
     updated[step] = selected;
-    setAnswers(updated);
+    const updatedProfile = {
+      ...profile,
+      requiredAnswers: updated,
+      preliminaryRisk: estimatePreliminaryRisk(updated),
+      monthlyBudget: updated[5] ?? "",
+    };
+    setProfile(updatedProfile);
+    savePendingProfile(updatedProfile);
 
-    if (step === questions.length - 1) {
-      localStorage.setItem("financeQuizAnswers", JSON.stringify(updated));
-
-      setPage("demo-selection");
+    if (step === requiredQuestions.length - 1) {
+      setPage("personalization");
     } else {
       setStep(step + 1);
       setSelected(updated[step + 1] || "");
+    }
+  }
+
+  function saveOptionalAnswer() {
+    if (!optionalSelected) return;
+    const updatedAnswers = [...profile.optionalAnswers];
+    updatedAnswers[optionalStep] = optionalSelected;
+    const updatedProfile = { ...profile, optionalAnswers: updatedAnswers, optionalSkipped: false };
+    setProfile(updatedProfile);
+
+    if (optionalStep === optionalQuestions.length - 1) {
+      if (userId) saveUserProfile(userId, updatedProfile); else savePendingProfile(updatedProfile);
+      setPage(personalizationReturn);
+      setOptionalStep(0);
+      setOptionalSelected("");
+    } else {
+      setOptionalStep(optionalStep + 1);
+      setOptionalSelected(updatedAnswers[optionalStep + 1] ?? "");
     }
   }
 
@@ -288,7 +251,7 @@ function navigatePage(target: Page) {
           <span>Finance For Dummies</span>
         </button>
 
-        {authenticated && page !== "onboarding" && (
+        {authenticated && page !== "onboarding" && page !== "personalization" && (
           <nav>
             <button onClick={() => navigatePage("home")}>Home</button>
             <button onClick={() => navigatePage("steps")}>Baby Steps</button>
@@ -308,19 +271,19 @@ function navigatePage(target: Page) {
             <p className="eyebrow">LET'S GET TO KNOW YOU</p>
             <div className="progress-label">
               <span>Your investor journey</span>
-              Question {step + 1} of {questions.length}
+              Question {step + 1} of {requiredQuestions.length}
             </div>
             <div className="progress">
-              <div style={{ width: `${((step + 1) / questions.length) * 100}%` }} />
+              <div style={{ width: `${((step + 1) / requiredQuestions.length) * 100}%` }} />
             </div>
 
-            <h1>{questions[step].title}</h1>
+            <h1>{requiredQuestions[step].title}</h1>
             <p className="subtitle">
               Your answer will help us personalize your learning experience.
             </p>
 
             <div className="answers">
-              {questions[step].options.map((option) => (
+              {requiredQuestions[step].options.map((option) => (
                 <button
                   key={option}
                   className={`answer ${selected === option ? "selected" : ""}`}
@@ -343,7 +306,63 @@ function navigatePage(target: Page) {
                 disabled={!selected}
                 onClick={nextQuestion}
               >
-                {step === questions.length - 1 ? "Finish" : "Continue"}
+                {step === requiredQuestions.length - 1 ? "Finish" : "Continue"}
+              </button>
+            </div>
+          </section>
+        )}
+
+        {page === "personalization" && !optionalStarted && (
+          <section className="onboarding personalization-choice">
+            <p className="eyebrow">OPTIONAL PERSONALIZATION</p>
+            <h1>Want a more personalized experience?</h1>
+            <p className="subtitle">
+              Answer 10 additional questions to help us understand your financial
+              situation and personalize your experience.
+            </p>
+            <div className="actions personalization-actions">
+              <button className="primary" onClick={() => setOptionalStarted(true)}>
+                Personalize my experience
+              </button>
+              <button className="secondary" onClick={() => {
+                const updated = { ...profile, optionalSkipped: true };
+                setProfile(updated);
+                if (userId) saveUserProfile(userId, updated); else savePendingProfile(updated);
+                setPage(personalizationReturn);
+              }}>
+                Skip for now
+              </button>
+            </div>
+          </section>
+        )}
+
+        {page === "personalization" && optionalStarted && (
+          <section className="onboarding">
+            <p className="eyebrow">OPTIONAL PERSONALIZATION</p>
+            <div className="progress-label">
+              <span>A little more about you</span>
+              Question {optionalStep + 1} of {optionalQuestions.length}
+            </div>
+            <div className="progress">
+              <div style={{ width: `${((optionalStep + 1) / optionalQuestions.length) * 100}%` }} />
+            </div>
+            <h1>{optionalQuestions[optionalStep].title}</h1>
+            <p className="subtitle">Choose the answer that feels closest to your situation.</p>
+            <div className="answers">
+              {optionalQuestions[optionalStep].options.map((option) => (
+                <button key={option} className={`answer ${optionalSelected === option ? "selected" : ""}`} onClick={() => setOptionalSelected(option)}>
+                  <span className="radio-dot" />{option}
+                </button>
+              ))}
+            </div>
+            <div className="actions">
+              {optionalStep > 0 && <button className="secondary" onClick={() => {
+                const previous = optionalStep - 1;
+                setOptionalStep(previous);
+                setOptionalSelected(profile.optionalAnswers[previous] ?? "");
+              }}>Back</button>}
+              <button className="primary" disabled={!optionalSelected} onClick={saveOptionalAnswer}>
+                {optionalStep === optionalQuestions.length - 1 ? "Finish personalization" : "Continue"}
               </button>
             </div>
           </section>
@@ -360,7 +379,11 @@ function navigatePage(target: Page) {
 
             <DemoPortfolio
               selectionOnly
-              onSelectClient={() => {
+              onSelectClient={(portfolio) => {
+                const updated = { ...profile, demoClientId: portfolio.id };
+                setProfile(updated);
+                savePendingProfile(updated);
+                setDemoClient(portfolio);
                 onQuizComplete();
                 onDemoClientSelected?.();
               }}
@@ -478,13 +501,37 @@ function navigatePage(target: Page) {
             </p>
 
             <div className="profile-list">
-              {questions.map((question, index) => (
+              {requiredQuestions.map((question, index) => (
                 <div className="profile-item" key={question.title}>
                   <p className="profile-question">{question.title}</p>
                   <strong>{answers[index] || "Not answered"}</strong>
                 </div>
               ))}
+              <div className="profile-item risk-estimate">
+                <p className="profile-question">Preliminary risk profile estimate</p>
+                <strong>{profile.preliminaryRisk}</strong>
+                <small>Based on both your reaction to a loss and your capacity to afford one. This is educational and is not professional financial advice.</small>
+              </div>
             </div>
+
+            <h2>Optional personalization</h2>
+            {profile.optionalAnswers.length === optionalQuestions.length ? (
+              <div className="profile-list">
+                {optionalQuestions.map((question, index) => (
+                  <div className="profile-item" key={question.title}>
+                    <p className="profile-question">{question.title}</p>
+                    <strong>{profile.optionalAnswers[index]}</strong>
+                  </div>
+                ))}
+              </div>
+            ) : <p className="subtitle">You can answer these questions whenever you're ready.</p>}
+            <button className="primary" onClick={() => {
+              setPersonalizationReturn("profile");
+              setOptionalStarted(true);
+              setOptionalStep(0);
+              setOptionalSelected(profile.optionalAnswers[0] ?? "");
+              setPage("personalization");
+            }}>{profile.optionalAnswers.length ? "Update personalization" : "Personalize my experience"}</button>
 
             <p className="disclaimer">
               This profile is educational and is not a formal investment
@@ -511,7 +558,7 @@ function navigatePage(target: Page) {
                   ? `Hi ${demoClient.name}! I can see your demo ${demoClient.account} portfolio. Ask me anything about it, like "Am I too concentrated?"`
                   : undefined
               }
-              portfolio={demoClient ? portfolioForCoach(demoClient) : undefined}
+              portfolio={demoClient ? demoPortfolioForCoach(demoClient) : undefined}
             />
 
             <p className="disclaimer">
@@ -531,6 +578,7 @@ function navigatePage(target: Page) {
             </p>
 
             <DemoPortfolio
+              initialClientId={profile.demoClientId}
               onConnect={markDemoConnected}
               onAskCoach={(portfolio) => {
                 setDemoClient(portfolio);

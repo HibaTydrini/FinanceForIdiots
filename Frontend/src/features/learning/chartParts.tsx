@@ -4,7 +4,7 @@
 // a legend when there are 2+ series. Hover any mark to see its value.
 
 import type { ReactNode } from "react";
-import { C } from "./chartColors";
+import { C } from "../../shared/chartColors";
 
 
 export type Series = { name: string; color: string; values: number[]; area?: boolean; dashed?: boolean };

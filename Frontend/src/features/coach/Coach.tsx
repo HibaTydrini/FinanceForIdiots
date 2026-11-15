@@ -4,7 +4,7 @@ import "./Coach.css";
 import { sendChat } from "./api";
 import type { ChatMessage } from "./api";
 import { shortUrl, withSourceLinks } from "./chatText";
-import { coachContext, readQuizAnswers, useBabySteps } from "./babyStepsStore";
+import { coachContext, readQuizAnswers, useBabySteps } from "../planning/babyStepsStore";
 
 type Props = {
   // Kept in App so the conversation survives switching pages.

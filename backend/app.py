@@ -21,7 +21,7 @@ from pathlib import Path
 import boto3
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 REGION = os.environ.get("AWS_REGION", "us-east-1")
 KB_ID = os.environ["KB_ID"]
@@ -47,8 +47,13 @@ class Profile(BaseModel):
     knowledge: str = ""          # What is your investment knowledge?
     invested_in: str = ""        # What have you invested in?
     goals: str = ""              # Why do you want to invest? What are your specific goals?
-    risk_tolerance: str = ""     # What is your risk tolerance?
+    loss_reaction: str = ""
+    financial_capacity: str = ""
+    preliminary_risk: str = ""
+    monthly_budget: str = ""
     looking_for: str = ""        # What are you looking for from Finance For Dummies?
+    optional_answers: list[str] = Field(default_factory=list)
+    demo_client_id: str = ""
 
 
 def load_profiles() -> dict:
@@ -239,8 +244,12 @@ USER PROFILE
 - Investing knowledge: {profile.get('knowledge') or 'unknown (assume a beginner)'}
 - Has invested in: {profile.get('invested_in') or 'unknown'}
 - Goals: {profile.get('goals') or 'unknown'}
-- Risk tolerance: {profile.get('risk_tolerance') or 'unknown'}
+- Reaction to a sudden 20% loss: {profile.get('loss_reaction') or 'unknown'}
+- Financial capacity for losses: {profile.get('financial_capacity') or 'unknown'}
+- Preliminary educational risk estimate: {profile.get('preliminary_risk') or 'unknown'}
+- Comfortable monthly amount: {profile.get('monthly_budget') or 'unknown'}
 - Wants help with: {profile.get('looking_for') or 'unknown'}
+- Optional personalization responses: {json.dumps(profile.get('optional_answers') or [], ensure_ascii=False)}
 {portfolio_section}{screen_section}{steps_section}
 HOW TO ANSWER
 - Explain at this user's level. For beginners, define every term and use simple, everyday examples.

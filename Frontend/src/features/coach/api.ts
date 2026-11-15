@@ -2,8 +2,9 @@
 // Set VITE_API_URL in Frontend/.env to point at a deployed backend; defaults to the local one.
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
-import type { Plan, StepInfo } from "./babyStepsStore";
-import type { Lesson } from "./pageContext";
+import type { Plan, StepInfo } from "../planning/babyStepsStore";
+import type { Lesson } from "../../app/pageContext";
+import { getActiveUserId, type OnboardingProfile } from "../onboarding/onboarding";
 
 export type Source = { n: number; url: string };
 export type ChatMessage = { role: "user" | "assistant"; text: string; sources?: Source[] };
@@ -11,20 +12,12 @@ export type ChatMessage = { role: "user" | "assistant"; text: string; sources?: 
 // A random ID per browser, so the backend can find this user's profile.
 // There are no accounts yet; clearing site data starts a new user.
 export function getUserId(): string {
-  const key = "ffi-user-id";
-  try {
-    const existing = localStorage.getItem(key);
-    if (existing) return existing;
-    const id = crypto.randomUUID();
-    localStorage.setItem(key, id);
-    return id;
-  } catch {
-    return "anonymous"; // storage blocked (private mode): chat still works, without a saved profile
-  }
+  return getActiveUserId() ?? "anonymous";
 }
 
 // Onboarding answers, in the order of `questions` in App.tsx.
-export async function saveProfile(answers: string[]): Promise<void> {
+export async function saveProfile(profile: OnboardingProfile): Promise<void> {
+  const answers = profile.requiredAnswers;
   const res = await fetch(`${API_URL}/profile`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -33,8 +26,13 @@ export async function saveProfile(answers: string[]): Promise<void> {
       knowledge: answers[0] ?? "",
       invested_in: answers[1] ?? "",
       goals: answers[2] ?? "",
-      risk_tolerance: answers[3] ?? "",
-      looking_for: answers[4] ?? "",
+      loss_reaction: answers[3] ?? "",
+      financial_capacity: answers[4] ?? "",
+      preliminary_risk: profile.preliminaryRisk,
+      monthly_budget: profile.monthlyBudget,
+      looking_for: answers[6] ?? "",
+      optional_answers: profile.optionalAnswers,
+      demo_client_id: profile.demoClientId ?? "",
     }),
   });
   if (!res.ok) throw new Error(`Saving profile failed (${res.status})`);
