@@ -92,16 +92,20 @@ class ChatRequest(BaseModel):
 
 def search_nbc(question: str) -> list[dict]:
     """Step 2a: find the most relevant NBC passages in the knowledge base."""
+    # No retrievalConfiguration: this is a managed knowledge base, which rejects
+    # vectorSearchConfiguration. Use its default search and keep the top results here.
     resp = kb_client.retrieve(
         knowledgeBaseId=KB_ID,
         retrievalQuery={"text": question},
-        retrievalConfiguration={"vectorSearchConfiguration": {"numberOfResults": NUM_RESULTS}},
     )
     passages = []
-    for r in resp.get("retrievalResults", []):
+    for r in resp.get("retrievalResults", [])[:NUM_RESULTS]:
+        text = (r.get("content") or {}).get("text")
+        if not text:
+            continue
         loc = r.get("location", {})
         url = (loc.get("webLocation") or {}).get("url") or (loc.get("s3Location") or {}).get("uri", "")
-        passages.append({"text": r["content"]["text"], "url": url})
+        passages.append({"text": text, "url": url})
     return passages
 
 
@@ -148,9 +152,14 @@ def chat(req: ChatRequest):
         modelId=MODEL_ID,
         system=[{"text": build_system_prompt(profile, passages)}],
         messages=messages,
-        inferenceConfig={"maxTokens": 800, "temperature": 0.3},
+        # No temperature: some newer Claude models reject sampling parameters.
+        inferenceConfig={"maxTokens": 1500},
     )
-    answer = resp["output"]["message"]["content"][0]["text"]
+    # Models with built-in thinking return a reasoning block before the text,
+    # so take the text blocks instead of assuming the first block is the answer.
+    answer = "".join(
+        block["text"] for block in resp["output"]["message"]["content"] if "text" in block
+    )
 
     return {
         "answer": answer,
