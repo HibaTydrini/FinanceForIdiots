@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import TableOfContents from "./TableOfContents";
 import { levelFromKnowledge } from "./learningLevel";
@@ -120,6 +120,35 @@ function App({
   const [chatInput, setChatInput] = useState("");
   const [chatMessages, setChatMessages] = useState<string[]>([]);
 
+  useEffect(() => {
+  const handleNavigation = () => {
+    const target = window.location.hash.split("/")[1];
+
+    if (
+      target === "home" ||
+      target === "learning" ||
+      target === "profile" ||
+      target === "coach" ||
+      target === "portfolio"
+    ) {
+      setPage(target);
+    }
+  };
+
+  handleNavigation();
+
+  window.addEventListener("hashchange", handleNavigation);
+
+  return () => {
+    window.removeEventListener("hashchange", handleNavigation);
+  };
+}, []);
+
+function navigatePage(target: Page) {
+  window.location.hash = `dashboard/${target}`;
+  setPage(target);
+}
+
   function nextQuestion() {
     if (!selected) return;
 
@@ -154,11 +183,11 @@ function App({
 
         {authenticated && page !== "onboarding" && (
           <nav>
-            <button onClick={() => setPage("home")}>Home</button>
-            <button onClick={() => setPage("learning")}>Learn</button>
-            <button onClick={() => setPage("profile")}>Profile</button>
-            <button onClick={() => setPage("coach")}>AI Coach</button>
-            <button onClick={() => setPage("portfolio")}>Portfolio</button>
+            <button onClick={() => navigatePage("home")}>Home</button>
+            <button onClick={() => navigatePage("learning")}>Learn</button>
+            <button onClick={() => navigatePage("profile")}>Profile</button>
+            <button onClick={() => navigatePage("coach")}>AI Coach</button>
+            <button onClick={() => navigatePage("portfolio")}>Portfolio</button>
             <button className="logout-button" onClick={onLogout}>Log out</button>
           </nav>
         )}
@@ -225,7 +254,7 @@ function App({
                 <button
                   key={feature.number}
                   className="feature-card"
-                  onClick={() => setPage(feature.page)}
+                  onClick={() => navigatePage(feature.page)}
                 >
                   <span className="feature-number">{feature.number}</span>
                   <h2>{feature.title}</h2>
@@ -247,7 +276,7 @@ function App({
 
             <TableOfContents
               initialLevel={levelFromKnowledge(answers[0])}
-              onNavigate={(target) => setPage(target as Page)}
+              onNavigate={(target) => navigatePage(target as Page)}
             />
           </section>
         )}
