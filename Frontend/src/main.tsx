@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { getCurrentUser, signOut } from "aws-amplify/auth";
@@ -13,12 +12,12 @@ function Root() {
   const [authenticated, setAuthenticated] = useState(false);
   const [checking, setChecking] = useState(true);
 
-  const [screen, setScreen] = useState<"landing" | "login" | "signup">(
-    "landing"
-  );
+  const [screen, setScreen] = useState<
+    "landing" | "login" | "signup" | "dashboard"
+  >("landing");
 
   const [quizComplete, setQuizComplete] = useState(
-    () => sessionStorage.getItem("financeQuizAnswers") !== null
+    () => localStorage.getItem("financeQuizAnswers") !== null
   );
 
   const [nbcComplete, setNbcComplete] = useState(
@@ -38,9 +37,6 @@ function Root() {
       setAuthenticated(false);
       setScreen("landing");
 
-      sessionStorage.removeItem("financeQuizAnswers");
-      setQuizComplete(false);
-
       sessionStorage.removeItem("financeNbcChoice");
       setNbcComplete(false);
     } catch (error) {
@@ -53,8 +49,7 @@ function Root() {
   }
 
   // Public homepage
-  if (!authenticated && screen === "landing") {
-    return (
+  if (screen === "landing") {    return (
       <LandingPage
         onLogin={() => setScreen("login")}
         onSignup={() => setScreen("signup")}
@@ -63,7 +58,7 @@ function Root() {
   }
 
   // Cognito login/signup
-  if (!authenticated) {
+  if (!authenticated && screen !== "dashboard") {
     return (
       <AuthPage
           key={screen}
@@ -71,46 +66,55 @@ function Root() {
           onHome={() => setScreen("landing")}
           onAuthenticated={() => {
             setAuthenticated(true);
+            setQuizComplete(true);
+            setNbcComplete(true);
+            setScreen("dashboard");
           }}
         />
     );
   }
 
   // Quiz after authentication
-  if (!quizComplete) {
+  if (!quizComplete && !authenticated) {
     return (
       <App
         authenticated={authenticated}
         onQuizComplete={() => setQuizComplete(true)}
+        onLogout={handleLogout}
+        onLogoClick={() => setScreen("landing")}
       />
     );
   }
 
+
   // National Bank or demo selection
   if (!nbcComplete) {
     return (
-      <div className="app">
-        <header className="header">
-          <div className="logo">
-            <span className="logo-icon">FI</span>
+      <div className="nbc-page">
+        <header className="nbc-header">
+          <div
+            className="nbc-brand"
+            onClick={handleLogout}
+          >
+            <span className="nbc-logo">FI</span>
             <span>Finance for idiots</span>
           </div>
         </header>
 
-        <main>
-          <section className="onboarding">
-            <p className="eyebrow">ONE LAST STEP</p>
+        <main className="nbc-main">
+          <section className="nbc-card">
+            <p className="nbc-eyebrow">ONE LAST STEP</p>
 
             <h1>Connect your National Bank investment account</h1>
 
-            <p className="subtitle">
+            <p className="nbc-description">
               Would you like to connect your investments or explore
               Finance for idiots using a demo portfolio?
             </p>
 
-            <div className="answers">
+            <div className="nbc-actions">
               <button
-                className="answer"
+                className="nbc-primary"
                 onClick={() => {
                   alert("National Bank account connection is coming soon.");
                 }}
@@ -119,7 +123,7 @@ function Root() {
               </button>
 
               <button
-                className="answer"
+                className="nbc-secondary"
                 onClick={() => {
                   sessionStorage.setItem("financeNbcChoice", "demo");
                   setNbcComplete(true);
@@ -134,19 +138,18 @@ function Root() {
     );
   }
 
+
+  
   // Dashboard
   return (
-    <>
-      <div style={{ textAlign: "right", padding: "12px 7%" }}>
-        <button onClick={handleLogout}>Log out</button>
-      </div>
-
-      <App
-        authenticated={authenticated}
-        onQuizComplete={() => setQuizComplete(true)}
-      />
-    </>
+    <App
+      authenticated={authenticated}
+      onQuizComplete={() => setQuizComplete(true)}
+      onLogout={handleLogout}
+      onLogoClick={() => setScreen("landing")}
+    />
   );
+
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

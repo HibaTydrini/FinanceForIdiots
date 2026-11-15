@@ -175,7 +175,7 @@
 
 .landing-about h2,
 .landing-how h2 {
-  max-width: 850px;
+  max-width: 1200px;
   margin: 15px 0;
   font-size: clamp(28px, 3vw, 36px);
   line-height: 1.2;
@@ -185,7 +185,7 @@
 
 .landing-about p,
 .landing-how p {
-  max-width: 850px;
+  max-width: 1200px;
   font-size: 17px;
   line-height: 1.5;
   color: #222222;
@@ -197,7 +197,7 @@
 
 /* responsive layout */
 
-@media (max-width: 900px) {
+@media (max-width: 650px) {
   .landing-nav {
     height: auto;
     padding: 20px 5%;
@@ -257,4 +257,76 @@
   .landing-buttons {
     flex-wrap: wrap;
   }
+}
+/* fix landing page fullscreen layout */
+
+.landing main {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 0 60px;
+}
+
+.landing-hero {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 65px 5% 75px;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+}
+
+.landing-hero-text {
+  min-width: 0;
+}
+
+.landing-chart {
+  min-width: 0;
+  width: 100%;
+}
+
+.landing-chart img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.landing-about,
+.landing-how {
+  width: 90%;
+  max-width: 1400px;
+  padding: 45px 55px;
+}
+
+@media (max-width: 900px) {
+  .landing-hero {
+    grid-template-columns: 1fr;
+    gap: 35px;
+    padding: 45px 5%;
+  }
+}
+
+@media (max-width: 600px) {
+  .landing-about,
+  .landing-how {
+    width: 92%;
+    padding: 28px 24px;
+  }
+}
+
+/* keep text and chart side by side at every screen size */
+.landing .landing-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(10px, 3vw, 60px);
+}
+
+.landing .landing-hero-text,
+.landing .landing-chart {
+  min-width: 0;
+}
+
+.landing .landing-chart img {
+  width: 100%;
+  height: auto;
 }

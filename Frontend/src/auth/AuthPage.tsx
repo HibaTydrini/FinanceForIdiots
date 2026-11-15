@@ -1,16 +1,13 @@
-
 import { useState } from "react";
 import {
   signIn,
   signUp,
-  confirmSignUp,
-  resendSignUpCode,
   resetPassword,
   confirmResetPassword,
 } from "aws-amplify/auth";
 import "./AuthPage.css";
 
-type Mode = "login" | "signup" | "verify" | "forgot" | "reset";
+type Mode = "login" | "signup" | "forgot" | "reset";
 
 type Props = {
   onAuthenticated: () => void;
@@ -64,22 +61,22 @@ export default function AuthPage({
         });
 
         if (result.isSignUpComplete) {
-          changeMode("login");
-          setNotice("Account created! You can now log in.");
+          const loginResult = await signIn({
+            username,
+            password,
+          });
+
+          if (loginResult.isSignedIn) {
+            onAuthenticated();
+          } else {
+            changeMode("login");
+            setNotice("Account created! Please log in.");
+          }
         } else {
-          changeMode("verify");
-          setNotice("Check your email for your verification code.");
+          setError(
+            "Your account still requires confirmation. Please check the Cognito configuration."
+          );
         }
-      }
-
-      if (mode === "verify") {
-        await confirmSignUp({
-          username,
-          confirmationCode: code.trim(),
-        });
-
-        changeMode("login");
-        setNotice("Email verified! Please log in.");
       }
 
       if (mode === "login") {
@@ -93,12 +90,12 @@ export default function AuthPage({
         } else if (
           result.nextStep.signInStep === "CONFIRM_SIGN_UP"
         ) {
-          changeMode("verify");
-          setNotice("Please verify your email first.");
+          setError(
+            "This account still needs confirmation. Please contact support."
+          );
         } else {
           setError(
-            "Additional sign-in verification is required. " +
-            "Please check your Cognito settings."
+            "Additional sign-in verification is required. Please check your Cognito settings."
           );
         }
       }
@@ -128,27 +125,9 @@ export default function AuthPage({
     }
   }
 
-  async function resendCode() {
-    setError("");
-    setNotice("");
-
-    try {
-      await resendSignUpCode({
-        username: email.trim().toLowerCase(),
-      });
-
-      setNotice("A new verification code has been sent.");
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Could not resend code."
-      );
-    }
-  }
-
   const titles: Record<Mode, string> = {
     login: "Welcome back",
     signup: "Create your account",
-    verify: "Verify your email",
     forgot: "Forgot your password?",
     reset: "Set a new password",
   };
@@ -168,19 +147,20 @@ export default function AuthPage({
 
       <main className="auth-main">
         <div className="auth-card">
-          <p className="auth-eyebrow">YOUR FINANCIAL JOURNEY</p>
+          <p className="auth-eyebrow">
+            YOUR FINANCIAL JOURNEY
+          </p>
+
           <h1>{titles[mode]}</h1>
 
           <p className="auth-description">
             {mode === "signup"
               ? "Start learning about investing at your own pace."
               : mode === "login"
-                ? "Log in to continue your financial education."
-                : mode === "verify"
-                  ? "Enter the code sent to your email address."
-                  : mode === "forgot"
-                    ? "We'll send you a code to reset your password."
-                    : "Enter your verification code and new password."}
+              ? "Log in to continue your financial education."
+              : mode === "forgot"
+              ? "We'll send you a code to reset your password."
+              : "Enter your verification code and new password."}
           </p>
 
           <form onSubmit={handleSubmit} className="auth-form">
@@ -208,7 +188,7 @@ export default function AuthPage({
               placeholder="you@example.com"
               autoComplete="email"
               required
-              disabled={mode === "verify" || mode === "reset"}
+              disabled={mode === "reset"}
             />
 
             {(mode === "login" || mode === "signup") && (
@@ -221,7 +201,9 @@ export default function AuthPage({
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   autoComplete={
-                    mode === "signup" ? "new-password" : "current-password"
+                    mode === "signup"
+                      ? "new-password"
+                      : "current-password"
                   }
                   required
                 />
@@ -230,7 +212,9 @@ export default function AuthPage({
 
             {mode === "signup" && (
               <>
-                <label htmlFor="auth-birthdate">Date of birth</label>
+                <label htmlFor="auth-birthdate">
+                  Date of birth
+                </label>
                 <input
                   id="auth-birthdate"
                   type="date"
@@ -245,9 +229,11 @@ export default function AuthPage({
               </>
             )}
 
-            {(mode === "verify" || mode === "reset") && (
+            {mode === "reset" && (
               <>
-                <label htmlFor="auth-code">Verification code</label>
+                <label htmlFor="auth-code">
+                  Password reset code
+                </label>
                 <input
                   id="auth-code"
                   type="text"
@@ -257,11 +243,7 @@ export default function AuthPage({
                   autoComplete="one-time-code"
                   required
                 />
-              </>
-            )}
 
-            {mode === "reset" && (
-              <>
                 <label htmlFor="auth-new-password">
                   New password
                 </label>
@@ -286,30 +268,21 @@ export default function AuthPage({
               <p className="auth-notice">{notice}</p>
             )}
 
-            <button className="auth-submit" disabled={loading}>
+            <button
+              className="auth-submit"
+              disabled={loading}
+            >
               {loading
                 ? "Please wait..."
                 : mode === "login"
-                  ? "Log in"
-                  : mode === "signup"
-                    ? "Create account"
-                    : mode === "verify"
-                      ? "Verify email"
-                      : mode === "forgot"
-                        ? "Send reset code"
-                        : "Reset password"}
+                ? "Log in"
+                : mode === "signup"
+                ? "Create account"
+                : mode === "forgot"
+                ? "Send reset code"
+                : "Reset password"}
             </button>
           </form>
-
-          {mode === "verify" && (
-            <button
-              type="button"
-              className="auth-link"
-              onClick={resendCode}
-            >
-              Resend verification code
-            </button>
-          )}
 
           {mode === "login" && (
             <>
@@ -345,9 +318,7 @@ export default function AuthPage({
             </p>
           )}
 
-          {(mode === "forgot" ||
-            mode === "reset" ||
-            mode === "verify") && (
+          {(mode === "forgot" || mode === "reset") && (
             <button
               type="button"
               className="auth-link"

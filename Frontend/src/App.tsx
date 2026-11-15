@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import "./App.css";
 import TableOfContents from "./TableOfContents";
@@ -91,17 +90,25 @@ const features = [
 type AppProps = {
   authenticated: boolean;
   onQuizComplete: () => void;
+  onLogout: () => void;
+  onLogoClick: () => void;
 };
 
-function App({ authenticated, onQuizComplete }: AppProps) {
-  const [page, setPage] = useState<Page>(() =>
-    authenticated && sessionStorage.getItem("financeQuizAnswers")
+function App({
+    authenticated,
+    onQuizComplete,
+    onLogout,
+    onLogoClick,
+}: AppProps) {
+
+    const [page, setPage] = useState<Page>(() =>
+    authenticated && localStorage.getItem("financeQuizAnswers")
       ? "home"
       : "onboarding"
   );
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<string[]>(() => {
-  const saved = sessionStorage.getItem("financeQuizAnswers");
+  const saved = localStorage.getItem("financeQuizAnswers");
 
   try {
     return saved ? JSON.parse(saved) as string[] : [];
@@ -121,13 +128,9 @@ function App({ authenticated, onQuizComplete }: AppProps) {
     setAnswers(updated);
 
     if (step === questions.length - 1) {
-      sessionStorage.setItem("financeQuizAnswers", JSON.stringify(updated));
+      localStorage.setItem("financeQuizAnswers", JSON.stringify(updated));
 
-      if (authenticated) {
-        setPage("home");
-      } else {
-        onQuizComplete();
-      }
+      onQuizComplete();
     } else {
       setStep(step + 1);
       setSelected(updated[step + 1] || "");
@@ -143,10 +146,8 @@ function App({ authenticated, onQuizComplete }: AppProps) {
   return (
     <div className="app">
       <header className="header">
-        <button className="logo" onClick={() => {
-                if (authenticated) setPage("home");
-        }}
->
+        <button className="logo" onClick={onLogoClick}>
+          
           <span className="logo-icon">F.</span>
           <span>Finance for idiots</span>
         </button>
@@ -158,6 +159,7 @@ function App({ authenticated, onQuizComplete }: AppProps) {
             <button onClick={() => setPage("profile")}>Profile</button>
             <button onClick={() => setPage("coach")}>AI Coach</button>
             <button onClick={() => setPage("portfolio")}>Portfolio</button>
+            <button className="logout-button" onClick={onLogout}>Log out</button>
           </nav>
         )}
       </header>
@@ -203,7 +205,7 @@ function App({ authenticated, onQuizComplete }: AppProps) {
                 disabled={!selected}
                 onClick={nextQuestion}
               >
-                {step === questions.length - 1 ? "Sign up or Log in" : "Continue"}
+                {step === questions.length - 1 ? "Finish" : "Continue"}
               </button>
             </div>
           </section>
