@@ -7,14 +7,40 @@ import "./App.css";
 import App from "./App";
 import AuthPage from "./auth/AuthPage";
 import LandingPage from "./landing/LandingPage";
+import AIPhone from "./AIPhone";
 
 function Root() {
   const [authenticated, setAuthenticated] = useState(false);
   const [checking, setChecking] = useState(true);
 
-  const [screen, setScreen] = useState<
-    "landing" | "login" | "signup" | "dashboard"
-  >("landing");
+type Screen = "landing" | "login" | "signup" | "dashboard";
+
+const getScreen = (): Screen => {
+  const value = window.location.hash.slice(1).split("/")[0];
+
+  if (value === "login" || value === "signup" || value === "dashboard") {
+    return value;
+  }
+
+  return "landing";
+};
+
+const [screen, setScreen] = useState<Screen>(getScreen);
+
+useEffect(() => {
+  const handleNavigation = () => setScreen(getScreen());
+
+  window.addEventListener("hashchange", handleNavigation);
+
+  return () => window.removeEventListener("hashchange", handleNavigation);
+}, []);
+
+function navigate(screen: Screen) {
+  window.location.hash = screen === "dashboard" ? "dashboard/home" : screen;
+  setScreen(screen);
+}
+
+
 
   const [quizComplete, setQuizComplete] = useState(
     () => localStorage.getItem("financeQuizAnswers") !== null
@@ -35,7 +61,7 @@ function Root() {
     try {
       await signOut();
       setAuthenticated(false);
-      setScreen("landing");
+      navigate("landing");
 
       sessionStorage.removeItem("financeNbcChoice");
       setNbcComplete(false);
@@ -51,37 +77,37 @@ function Root() {
   // Public homepage
   if (screen === "landing") {    return (
       <LandingPage
-        onLogin={() => setScreen("login")}
-        onSignup={() => setScreen("signup")}
+        onLogin={() => navigate("login")}
+        onSignup={() => navigate("signup")}
       />
     );
   }
 
   // Cognito login/signup
-  if (!authenticated && screen !== "dashboard") {
+  if (!authenticated) {
     return (
       <AuthPage
-          key={screen}
-          initialMode={screen === "signup" ? "signup" : "login"}
-          onHome={() => setScreen("landing")}
-          onAuthenticated={() => {
-            setAuthenticated(true);
-            setQuizComplete(true);
-            setNbcComplete(true);
-            setScreen("dashboard");
-          }}
-        />
+        key={screen}
+        initialMode={screen === "signup" ? "signup" : "login"}
+        onHome={() => navigate("landing")}
+        onAuthenticated={() => {
+          setAuthenticated(true);
+          setQuizComplete(true);
+          setNbcComplete(true);
+          navigate("dashboard");
+        }}
+      />
     );
   }
 
   // Quiz after authentication
-  if (!quizComplete && !authenticated) {
+  if (!quizComplete ) {
     return (
       <App
         authenticated={authenticated}
         onQuizComplete={() => setQuizComplete(true)}
         onLogout={handleLogout}
-        onLogoClick={() => setScreen("landing")}
+        onLogoClick={() => navigate("landing")}
       />
     );
   }
@@ -142,12 +168,15 @@ function Root() {
   
   // Dashboard
   return (
-    <App
-      authenticated={authenticated}
-      onQuizComplete={() => setQuizComplete(true)}
-      onLogout={handleLogout}
-      onLogoClick={() => setScreen("landing")}
-    />
+    <>
+      <App
+        authenticated={authenticated}
+        onQuizComplete={() => setQuizComplete(true)}
+        onLogout={handleLogout}
+        onLogoClick={() => navigate("landing")}
+      />
+      <AIPhone />
+    </>
   );
 
 }
