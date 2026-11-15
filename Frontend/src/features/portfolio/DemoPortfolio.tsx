@@ -56,6 +56,7 @@ type Props = {
   onSelectClient?: (p: DemoPortfolioData) => void;
   selectionOnly?: boolean;
   initialClientId?: string | null;
+  onChangeClient?: () => void;
 };
 
 export default function DemoPortfolio({
@@ -64,6 +65,7 @@ export default function DemoPortfolio({
   onSelectClient,
   selectionOnly = false,
   initialClientId = null,
+  onChangeClient,
 }: Props) {
   const [clientId, setClientId] = useState<string | null>(initialClientId);
   const [connecting, setConnecting] = useState(false);
@@ -219,6 +221,18 @@ export default function DemoPortfolio({
           <p className="demo-sub demo-background">{p.background}</p>
 
         </div>
+
+        {onChangeClient && (
+          <button
+            className="demo-change-client"
+            onClick={() => {
+              setClientId(null);
+              onChangeClient();
+            }}
+          >
+            Change demo
+          </button>
+        )}
 
       </div>
 

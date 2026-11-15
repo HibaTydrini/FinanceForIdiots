@@ -247,6 +247,14 @@ function navigatePage(target: Page) {
     setPage(personalizationReturn);
   }
 
+  function persistDemoClient(portfolio: DemoPortfolioData | null) {
+    const updatedProfile = { ...profile, demoClientId: portfolio?.id ?? null };
+    setProfile(updatedProfile);
+    setDemoClient(portfolio);
+    if (userId) saveUserProfile(userId, updatedProfile);
+    else savePendingProfile(updatedProfile);
+  }
+
   function previousQuestion() {
     if (step === 0) return;
     setStep(step - 1);
@@ -394,10 +402,7 @@ function navigatePage(target: Page) {
             <DemoPortfolio
               selectionOnly
               onSelectClient={(portfolio) => {
-                const updated = { ...profile, demoClientId: portfolio.id };
-                setProfile(updated);
-                savePendingProfile(updated);
-                setDemoClient(portfolio);
+                persistDemoClient(portfolio);
                 onQuizComplete();
                 onDemoClientSelected?.();
               }}
@@ -594,6 +599,8 @@ function navigatePage(target: Page) {
             <DemoPortfolio
               initialClientId={profile.demoClientId}
               onConnect={markDemoConnected}
+              onSelectClient={persistDemoClient}
+              onChangeClient={() => persistDemoClient(null)}
               onAskCoach={(portfolio) => {
                 setDemoClient(portfolio);
                 setPage("coach");

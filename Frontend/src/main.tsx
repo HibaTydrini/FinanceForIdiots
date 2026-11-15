@@ -9,7 +9,7 @@ import AuthPage from "./auth/AuthPage";
 import LandingPage from "./landing/LandingPage";
 import AIPhone from "./features/coach/AIPhone";
 import { resetBabySteps } from "./features/planning/babyStepsStore";
-import { claimPendingProfile, clearPendingProfile, setActiveUser } from "./features/onboarding/onboarding";
+import { claimPendingProfile, clearPendingProfile, emptyProfile, readPendingProfile, savePendingProfile, setActiveUser } from "./features/onboarding/onboarding";
 
 type Screen = "landing" | "login" | "signup" | "dashboard";
 
@@ -61,6 +61,9 @@ function Root() {
   function startSignup() {
     clearPendingProfile();
     sessionStorage.removeItem("ffd:signup-auth-ready");
+    const signupFlowId = crypto.randomUUID();
+    sessionStorage.setItem("ffd:signup-flow", signupFlowId);
+    savePendingProfile({ ...emptyProfile(), signupFlowId });
     resetBabySteps();
     setSignupQuestions(true);
     navigate("signup");
@@ -86,6 +89,7 @@ function Root() {
       setActiveUser(null);
       setSignupQuestions(false);
       sessionStorage.removeItem("financeNbcChoice");
+      sessionStorage.removeItem("ffd:signup-flow");
       setNbcComplete(true);
 
       navigate("landing");
@@ -98,7 +102,12 @@ function Root() {
     const user = await getCurrentUser();
     setUserId(user.userId);
     setActiveUser(user.userId);
-    if (method === "signup") claimPendingProfile(user.userId);
+    const pending = readPendingProfile();
+    const signupFlowId = sessionStorage.getItem("ffd:signup-flow");
+    if (method === "signup" || (signupFlowId && pending?.signupFlowId === signupFlowId)) {
+      claimPendingProfile(user.userId);
+    }
+    sessionStorage.removeItem("ffd:signup-flow");
     sessionStorage.removeItem("ffd:signup-auth-ready");
     setAuthenticated(true);
 

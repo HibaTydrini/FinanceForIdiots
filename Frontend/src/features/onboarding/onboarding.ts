@@ -53,6 +53,7 @@ export type OnboardingProfile = {
   monthlyBudget: string;
   demoClientId: string | null;
   optionalSkipped: boolean;
+  signupFlowId: string | null;
 };
 
 const PENDING_KEY = "ffd:onboarding:pending";
@@ -67,7 +68,7 @@ export function estimatePreliminaryRisk(answers: string[]): string {
 }
 
 export function emptyProfile(): OnboardingProfile {
-  return { requiredAnswers: [], optionalAnswers: [], preliminaryRisk: "Not enough information", monthlyBudget: "", demoClientId: null, optionalSkipped: false };
+  return { requiredAnswers: [], optionalAnswers: [], preliminaryRisk: "Not enough information", monthlyBudget: "", demoClientId: null, optionalSkipped: false, signupFlowId: null };
 }
 
 function read(key: string): OnboardingProfile | null {
