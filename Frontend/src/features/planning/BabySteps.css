@@ -1,154 +1,195 @@
 /* Baby Steps roadmap, Do it cards and plan widgets.
    Same red (#cf1726), greys and card style as App.css and TableOfContents.css. */
 
-.bs .progress-label {
-  margin-top: 30px;
-}
-
-.bs .progress {
-  margin-bottom: 26px;
-}
-
-/* ---------- roadmap ---------- */
-.bs-road {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+/* ---------- layout: one step at a time, step list on the right ---------- */
+.bs-layout {
   display: grid;
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) 270px;
+  gap: 32px;
+  align-items: start;
+  margin-top: 36px;
 }
 
-.bs-step {
-  position: relative;
+.bs-nav {
+  grid-column: 2;
+  grid-row: 1;
+  position: sticky;
+  top: 20px;
+  padding: 18px 12px 12px;
   background: white;
   border: 1px solid #e5e5e5;
   border-radius: 8px;
 }
 
-.bs-step.current {
-  border-color: #cf1726;
+.bs-nav-progress {
+  padding: 0 10px 12px;
+  font-size: 13px;
+  color: #777777;
 }
 
-.bs-step.locked {
-  background: #faf8f5;
+.bs-nav-progress .progress {
+  margin: 0;
 }
 
-/* the line that joins the step markers */
-.bs-step + .bs-step::before {
-  content: "";
-  position: absolute;
-  top: -13px;
-  left: 45px;
-  width: 2px;
-  height: 12px;
-  background: #dddddd;
+.bs-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.bs-step-head {
+.bs-nav-item {
+  position: relative;
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 18px;
-  padding: 18px 26px;
+  gap: 12px;
+  padding: 9px 10px;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   background: transparent;
   text-align: left;
   color: #252525;
-  font-size: 16px;
+  font-size: 14px;
 }
 
-.bs-step-head:hover {
+.bs-nav-item:hover {
   background: #fcf3f4;
 }
 
-.bs-step-head:focus-visible,
+.bs-nav-item.selected {
+  background: #fcf3f4;
+  font-weight: 700;
+}
+
+.bs-nav-item.selected::before {
+  content: "";
+  position: absolute;
+  right: -12px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 3px 0 0 3px;
+  background: #cf1726;
+}
+
+.bs-nav-item.todo {
+  color: #555555;
+}
+
+.bs-nav-item:focus-visible,
 .bs-action-head:focus-visible,
 .bs-tick:focus-visible,
 .bs-choice:focus-visible,
 .bs-chip:focus-visible,
+.bs-step-nav:focus-visible,
 .bs-check .answer:focus-visible {
   outline: 2px solid #cf1726;
   outline-offset: 2px;
 }
 
-.bs-step-head[aria-disabled="true"] {
-  cursor: not-allowed;
-  color: #999999;
-}
-
-.bs-step-head[aria-disabled="true"]:hover {
-  background: transparent;
-}
-
-.bs-step.open > .bs-step-head .toc-chevron {
-  transform: rotate(-135deg);
-}
-
+/* the step number: plain text, red for the current step, a green tick when done */
 .bs-marker {
   flex: none;
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  border: 2px solid #dddddd;
-  background: white;
+  width: 20px;
+  display: inline-flex;
+  justify-content: center;
   color: #999999;
+  font-size: 13px;
   font-weight: 700;
 }
 
-.bs-step.current .bs-marker {
-  border-color: #cf1726;
-  background: #cf1726;
-  color: white;
+.bs-nav-item.current .bs-marker {
+  color: #cf1726;
 }
 
-.bs-step.done .bs-marker {
-  border-color: #0f7a52;
+.bs-nav-item.done .bs-marker {
   color: #0f7a52;
 }
 
-.bs-step-text {
-  flex: 1;
+.bs-nav-title {
+  min-width: 0;
+}
+
+/* ---------- the open step ---------- */
+.bs-panel {
+  padding: 32px 40px;
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  scroll-margin-top: 16px;
+}
+
+.bs-panel-eyebrow {
   display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.bs-step-text span {
-  color: #777777;
-  font-size: 14px;
-}
-
-.bs-step.locked .bs-step-text span {
-  color: #aaaaaa;
-}
-
-.bs-status {
-  flex: none;
-  font-size: 12px;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   text-transform: uppercase;
   color: #999999;
 }
 
-.bs-step.current .bs-status {
+.bs-status {
+  padding: 3px 9px;
+  border-radius: 12px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.bs-status.current {
+  background: #fcf3f4;
   color: #cf1726;
 }
 
-.bs-step.done .bs-status {
+.bs-status.done {
+  background: #f0f9f5;
   color: #0f7a52;
 }
 
-/* ---------- an open step ---------- */
-.bs-body {
-  padding: 4px 26px 26px 84px;
+.bs-panel h2 {
+  margin: 10px 0 8px;
+  font-size: 28px;
+}
+
+.bs-panel-why {
+  margin: 0;
+  max-width: 640px;
+  color: #666666;
+}
+
+.bs-panel-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 1px solid #eeeeee;
+}
+
+.bs-step-nav {
+  padding: 10px 16px;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  background: white;
+  color: #252525;
+  font-size: 14px;
+}
+
+.bs-step-nav:hover:not(:disabled) {
+  border-color: #cf1726;
+  color: #cf1726;
+}
+
+.bs-step-nav:disabled {
+  cursor: not-allowed;
+  color: #aaaaaa;
 }
 
 .bs-body h3 {
-  margin: 28px 0 10px;
+  margin: 30px 0 10px;
   font-size: 13px;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -188,6 +229,30 @@
 
 .lesson-links .slides {
   margin-left: 0;
+}
+
+/* lessons as links to the Learn page */
+.lesson-links.as-links .toc-topic-head {
+  align-items: center;
+}
+
+.lesson-go {
+  flex: none;
+  margin-left: auto;
+  font-size: 13px;
+  font-weight: 700;
+  color: #cf1726;
+  white-space: nowrap;
+}
+
+.lesson-links.as-links .toc-topic-head {
+  padding: 10px 0;
+}
+
+.bs-prompts-label {
+  margin-right: 4px;
+  font-size: 14px;
+  color: #777777;
 }
 
 /* ---------- checkpoint ---------- */
@@ -604,10 +669,8 @@
 /* ---------- step complete ---------- */
 .bs-complete {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
   margin-top: 28px;
   padding: 16px 20px;
   border-radius: 8px;
@@ -615,22 +678,57 @@
   color: #0f7a52;
 }
 
-@media (max-width: 700px) {
-  .bs-step-head {
-    gap: 12px;
-    padding: 16px;
+/* tablets and phones: the step list becomes a row of numbered circles above the step */
+@media (max-width: 900px) {
+  .bs-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
   }
 
-  .bs-step + .bs-step::before {
-    left: 35px;
+  .bs-nav {
+    grid-column: 1;
+    position: static;
+    padding: 14px 12px 8px;
   }
 
-  .bs-status {
+  .bs-nav-list {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+  }
+
+  .bs-nav-item {
+    width: auto;
+    padding: 8px 10px;
+  }
+
+  .bs-nav-item.selected::before {
+    left: 6px;
+    right: 6px;
+    top: auto;
+    bottom: 0;
+    width: auto;
+    height: 3px;
+    border-radius: 3px;
+  }
+
+  .bs-nav-title {
     display: none;
   }
+}
 
-  .bs-body {
-    padding: 4px 16px 20px;
+@media (max-width: 700px) {
+  .bs-panel {
+    padding: 22px 18px;
+  }
+
+  .bs-panel h2 {
+    font-size: 23px;
+  }
+
+  .bs-panel-foot > * {
+    flex: 1 1 100%;
   }
 
   .bs-fee-bars li {

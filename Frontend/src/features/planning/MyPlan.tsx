@@ -1,6 +1,7 @@
 // "My Plan": the long-term plan built in Baby Steps, and what to do next.
-// The plan itself is saved by babyStepsStore.ts; this page shows it and adds a timeline:
-// this week, this month, every month (CheckIn.tsx), every year, when life changes, and Level 2.
+// The plan itself is saved by babyStepsStore.ts. Below it: To do (setup at the bank, first contribution),
+// Stay on track (monthly check-in, weekly email, Google Calendar) and Later (every year, life changes,
+// Level 2). Lessons are links to the Learn page.
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import "./BabySteps.css";
@@ -12,6 +13,7 @@ import { MixBar } from "./PlanWidgets";
 import { RULE_PREFIX, formatDate, getSteps, setActionDone, todayISO, useBabySteps } from "./babyStepsStore";
 import type { Action, PlanField, Step } from "./babyStepsStore";
 import { levelFromKnowledge } from "../learning/learningLevel";
+import { topicById } from "../learning/lessons";
 import CalendarBox from "./CalendarBox";
 import EmailCheckinBox from "./EmailCheckinBox";
 import { money, monthlyNeeded, monthsUntil } from "./planMath";
@@ -27,44 +29,28 @@ const THIS_MONTH: Action[] = [
     id: "plan-first-contribution",
     label: "Make your first contribution",
     how: [
-      "Your first contribution is the first time money moves into your investment account.",
       "If you set up an automatic contribution, it happens by itself on the day you chose.",
-      "If not, you can move the amount from your plan yourself in your online banking.",
+      "If not, move the amount from your plan yourself in your online banking.",
     ],
   },
   {
     id: "plan-check-arrived",
     label: "Check that it arrived",
-    how: [
-      "A few days after the contribution day, log in to your investment account.",
-      "Look for the deposit and check that the amount matches your plan.",
-      "See whether the money is sitting as cash or has been invested, so there are no surprises.",
-    ],
+    how: ["A few days later, log in to your investment account and check the amount matches your plan."],
   },
 ];
 
-const LIFE_CHANGES = [
-  {
-    title: "A new job or a raise",
-    text: "A change in income is a good moment to look at your monthly amount again. A new employer may also offer a savings plan at work, so ask what is available.",
-    topics: ["dollar_cost_averaging", "registered_accounts"],
-  },
-  {
-    title: "Moving",
-    text: "Give your bank your new address. Moving to another province or country can change how your investments are taxed, so ask your bank before you go.",
-    topics: ["investment_taxes", "registered_accounts"],
-  },
-  {
-    title: "Buying a home",
-    text: "A home is a goal with a date. As the date gets closer, the money for it usually needs less risk. Go back to your goal card and your timeline.",
-    topics: ["goals_horizon", "registered_accounts", "gics"],
-  },
-  {
-    title: "A big market drop",
-    text: "Drops are a normal part of investing, even though they feel awful. Read your rule for yourself before you change anything.",
-    topics: ["volatility", "hype_fomo"],
-    showRule: true,
-  },
+const YEARLY: Item[] = [
+  { title: "Check your mix", text: "Some investments grow faster than others, so your mix drifts.", topics: ["rebalancing"] },
+  { title: "Check your contribution room", text: "New TFSA room is added each January. See your CRA My Account.", topics: ["registered_accounts"] },
+  { title: "Look at your goal again", text: "Is the amount or the date still right?", topics: ["goals_horizon"] },
+];
+
+const LIFE_CHANGES: Item[] = [
+  { title: "A new job or a raise", text: "Look at your monthly amount again, and ask about savings plans at work.", topics: ["dollar_cost_averaging"] },
+  { title: "Moving", text: "Give your bank your new address. Another province or country can change your taxes.", topics: ["investment_taxes"] },
+  { title: "Buying a home", text: "As the date gets closer, the money for it usually needs less risk.", topics: ["goals_horizon", "gics"] },
+  { title: "A big market drop", text: "Drops are normal. Read your rule before you change anything.", topics: ["volatility"], showRule: true },
 ];
 
 const LEVEL_2 = ["rebalancing", "research", "market_index", "bull_bear", "investment_taxes"];
@@ -75,12 +61,18 @@ export default function MyPlan({ answers, onNavigate }: Props) {
   const steps = useMemo(() => getSteps(answers), [answers]);
   const level = levelFromKnowledge(answers[0]);
   const { plan } = state;
+  const openLesson = (id: string) => onNavigate(`learning/${id}`);
 
   const finished = steps.every((s) => state.completedSteps.includes(s.id));
   const stepsLeft = steps.length - state.completedSteps.length;
-  // real-world setup tasks from the steps (open the account, set up the automatic contribution)
-  const setup = steps.flatMap((s) => s.doIt.filter((a) => a.later).map((action) => ({ action, step: s })));
-  const setupLeft = setup.filter(({ action }) => !state.doneActions.includes(action.id));
+  // One to-do list: setup at the bank from the steps (open the account, automatic contribution),
+  // then this month's first contribution.
+  const todos = [
+    ...steps.flatMap((s) => s.doIt.filter((a) => a.later).map((action) => ({ action, terms: s.terms }))),
+    ...THIS_MONTH.map((action) => ({ action, terms: undefined })),
+  ];
+  const todosLeft = todos.filter(({ action }) => !state.doneActions.includes(action.id));
+  const firstTodo = todosLeft[0]?.action.id;
 
   const goalMonths = plan.goal && plan.goal.date > today ? monthsUntil(plan.goal.date, today) : null;
 
@@ -91,13 +83,20 @@ export default function MyPlan({ answers, onNavigate }: Props) {
 
   return (
     <div className="plan">
-      <p className="plan-disclaimer">
-        Your plan is educational and is not a formal investment suitability assessment or financial advice.
-      </p>
+      {!finished && (
+        <div className="plan-banner">
+          <span>
+            {stepsLeft} Baby {stepsLeft === 1 ? "Step" : "Steps"} left to finish your plan.
+          </span>
+          <button type="button" className="primary" onClick={() => onNavigate("steps")}>
+            Continue Baby Steps →
+          </button>
+        </div>
+      )}
 
       {/* ---------- the saved plan ---------- */}
       <div className="plan-grid">
-        <PlanCard title="My goal" field="goal" steps={steps} filled={plan.goal !== undefined} onNavigate={onNavigate}>
+        <PlanCard title="Goal" field="goal" steps={steps} filled={plan.goal !== undefined} onNavigate={onNavigate}>
           {plan.goal && (
             <>
               <strong>{plan.goal.label}</strong>
@@ -105,148 +104,134 @@ export default function MyPlan({ answers, onNavigate }: Props) {
                 {money(plan.goal.amount)} by {formatDate(plan.goal.date)}
               </span>
               {goalMonths !== null && (
-                <span className="plan-small">
-                  About {money(monthlyNeeded(plan.goal.amount, goalMonths))} a month, with no growth assumed.
-                </span>
+                <span className="plan-small">≈ {money(monthlyNeeded(plan.goal.amount, goalMonths))} a month</span>
               )}
             </>
           )}
         </PlanCard>
 
-        <PlanCard title="My account" field="account" steps={steps} filled={plan.account !== undefined} onNavigate={onNavigate}>
+        <PlanCard title="Account" field="account" steps={steps} filled={plan.account !== undefined} onNavigate={onNavigate}>
           <strong>{plan.account}</strong>
-          <span className="plan-small">The account type you chose to start with.</span>
         </PlanCard>
 
-        <PlanCard title="My monthly contribution" field="monthly" steps={steps} filled={plan.monthly !== undefined} onNavigate={onNavigate}>
+        <PlanCard title="Monthly" field="monthly" steps={steps} filled={plan.monthly !== undefined} onNavigate={onNavigate}>
           {plan.monthly && (
             <>
-              <strong>{money(plan.monthly.amount)} a month</strong>
+              <strong>{money(plan.monthly.amount)}</strong>
               <span>On day {plan.monthly.day} of each month</span>
             </>
           )}
         </PlanCard>
 
-        <PlanCard title="My example mix" field="mix" steps={steps} filled={plan.mix !== undefined} onNavigate={onNavigate}>
+        <PlanCard title="Example mix" field="mix" steps={steps} filled={plan.mix !== undefined} onNavigate={onNavigate}>
           {plan.mix && (
             <>
               <MixBar mix={plan.mix} />
               <span>
                 {plan.mix.stocks}% stocks · {plan.mix.bonds}% bonds · {plan.mix.cash}% cash
               </span>
-              <span className="plan-small">Example for learning, not a recommendation.</span>
             </>
           )}
         </PlanCard>
 
-        <PlanCard title="My rule for myself" field="rule" steps={steps} filled={plan.rule !== undefined} onNavigate={onNavigate} wide>
+        <PlanCard title="My rule" field="rule" steps={steps} filled={plan.rule !== undefined} onNavigate={onNavigate} wide>
           <blockquote className="plan-rule">
             {RULE_PREFIX} {plan.rule}
           </blockquote>
         </PlanCard>
       </div>
 
-      {/* ---------- timeline ---------- */}
-      <h2 className="plan-heading">What's next</h2>
-
-      <Block when="This week" title="Get set up">
-        {!finished && (
-          <p className="plan-text">
-            You still have {stepsLeft} Baby {stepsLeft === 1 ? "Step" : "Steps"} to go.{" "}
-            <button type="button" className="plan-link" onClick={() => onNavigate("steps")}>
-              Continue Baby Steps
-            </button>
-          </p>
-        )}
-        {setupLeft.length === 0 ? (
-          <p className="plan-text">Your account and automatic contribution are set up. Nothing to do here.</p>
+      {/* ---------- to do ---------- */}
+      <Section title="To do">
+        {todosLeft.length === 0 ? (
+          <p className="plan-text">All done. Nice work!</p>
         ) : (
           <ul className="bs-actions">
-            {setupLeft.map(({ action, step }) => (
-              <ActionCard key={action.id} action={action} done={false} onToggle={() => toggle(action)} terms={step.terms} />
+            {todosLeft.map(({ action, terms }) => (
+              <ActionCard
+                key={action.id}
+                action={action}
+                done={false}
+                onToggle={() => toggle(action)}
+                terms={terms}
+                defaultOpen={action.id === firstTodo}
+              />
             ))}
           </ul>
         )}
-      </Block>
+      </Section>
 
-      <Block when="This month" title="Your first contribution">
-        <ul className="bs-actions">
-          {THIS_MONTH.map((action) => (
-            <ActionCard
-              key={action.id}
-              action={action}
-              done={state.doneActions.includes(action.id)}
-              onToggle={() => toggle(action)}
-            />
-          ))}
-        </ul>
-      </Block>
-
-      <Block when="Every month" title="30-second check-in" id="check-in">
-        <CheckIn plan={plan} level={level} onNavigate={onNavigate} />
-      </Block>
-
-      <Block when="Every week" title="Weekly email check-ins">
-        <EmailCheckinBox />
-      </Block>
-
-      <Block when="Every week" title="Your AI coach books it in Google Calendar">
-        <CalendarBox onNavigate={onNavigate} />
-      </Block>
-
-      <Block when="Every year" title="Annual check-up">
-        <ul className="plan-list">
-          <li>
-            <strong>Check your mix.</strong> Over a year, some investments grow faster than others
-            and your mix drifts. The lesson below explains how to bring it back.
-          </li>
-          <li>
-            <strong>Review your contribution room.</strong> New TFSA room is added each January.
-            For an RRSP, contributions made up to about 60 days after the end of the year can still
-            count for that year's taxes. The limits and exact dates change, so check your CRA My
-            Account or ask your bank.
-          </li>
-          <li>
-            <strong>Look at your goal again.</strong> Is the amount or the date still right?
-          </li>
-        </ul>
-        <LessonLinks topics={["rebalancing"]} level={level} onNavigate={onNavigate} />
-      </Block>
-
-      <Block when="When life changes" title="Come back to your plan">
-        <div className="plan-life">
-          {LIFE_CHANGES.map((change) => (
-            <div className="plan-life-card" key={change.title}>
-              <h4>{change.title}</h4>
-              <p>{change.text}</p>
-              {change.showRule && plan.rule && (
-                <blockquote className="plan-rule">
-                  {RULE_PREFIX} {plan.rule}
-                </blockquote>
-              )}
-              <LessonLinks topics={change.topics} level={level} onNavigate={onNavigate} />
-            </div>
-          ))}
+      {/* ---------- staying on track ---------- */}
+      <Section title="Stay on track">
+        <div className="plan-track">
+          <div className="plan-box wide" id="check-in">
+            <h3>Monthly check-in</h3>
+            <CheckIn plan={plan} level={level} onNavigate={onNavigate} />
+          </div>
+          <div className="plan-box">
+            <h3>Weekly email</h3>
+            <EmailCheckinBox />
+          </div>
+          <div className="plan-box">
+            <h3>Google Calendar</h3>
+            <CalendarBox onNavigate={onNavigate} />
+          </div>
         </div>
-      </Block>
+      </Section>
 
-      <Block when="Level 2" title="Growing">
-        {finished ? (
-          <>
-            <p className="plan-text">You finished Baby Steps. These lessons are a good next stop.</p>
-            <LessonLinks topics={LEVEL_2} level={level} onNavigate={onNavigate} />
-          </>
-        ) : (
-          <p className="plan-text plan-locked">
-            Finish Baby Steps to unlock your next lessons: rebalancing, researching an investment,
-            market indexes, bull and bear markets, and how investments are taxed.
-          </p>
-        )}
-      </Block>
+      {/* ---------- later ---------- */}
+      <Section title="Later">
+        <div className="plan-later">
+          <Group title="Every year" items={YEARLY} onOpenLesson={openLesson} />
+          <Group
+            title="When life changes"
+            items={LIFE_CHANGES}
+            onOpenLesson={openLesson}
+            rule={plan.rule ? `${RULE_PREFIX} ${plan.rule}` : undefined}
+          />
+          <div className="plan-box">
+            <h3>Level 2</h3>
+            {finished ? (
+              <LessonLinks topics={LEVEL_2} level={level} onOpenLesson={openLesson} />
+            ) : (
+              <p className="plan-text plan-locked">Unlocks when you finish Baby Steps.</p>
+            )}
+          </div>
+        </div>
+      </Section>
 
       <p className="disclaimer">
         Your plan is educational and is not a formal investment suitability assessment or financial advice.
       </p>
+    </div>
+  );
+}
+
+type Item = { title: string; text: string; topics: string[]; showRule?: boolean };
+
+type GroupProps = { title: string; items: Item[]; rule?: string; onOpenLesson: (id: string) => void };
+
+// A short list of moments; click one to see one line of advice and links to its lessons.
+function Group({ title, items, rule, onOpenLesson }: GroupProps) {
+  return (
+    <div className="plan-box">
+      <h3>{title}</h3>
+      <div className="plan-items">
+        {items.map((item) => (
+          <details className="plan-item" key={item.title}>
+            <summary>{item.title}</summary>
+            <p>{item.text}</p>
+            {item.showRule && rule && <blockquote className="plan-rule">{rule}</blockquote>}
+            <div className="plan-item-lessons">
+              {item.topics.map((id) => (
+                <button type="button" key={id} className="plan-link" onClick={() => onOpenLesson(id)}>
+                  {topicById(id)?.title ?? id} →
+                </button>
+              ))}
+            </div>
+          </details>
+        ))}
+      </div>
     </div>
   );
 }
@@ -271,10 +256,10 @@ function PlanCard({ title, field, steps, filled, wide, onNavigate, children }: C
         children
       ) : (
         <>
-          <span>Not set yet.</span>
+          <span>Not set yet</span>
           {index >= 0 && (
             <button type="button" className="plan-link" onClick={() => onNavigate("steps")}>
-              You'll set it in Baby Step {index + 1}: {steps[index].title}
+              Set it in step {index + 1} →
             </button>
           )}
         </>
@@ -283,14 +268,11 @@ function PlanCard({ title, field, steps, filled, wide, onNavigate, children }: C
   );
 }
 
-function Block({ when, title, id, children }: { when: string; title: string; id?: string; children: ReactNode }) {
+function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="plan-block" id={id}>
-      <div className="plan-when">
-        <span>{when}</span>
-        <h3>{title}</h3>
-      </div>
-      <div className="plan-block-body">{children}</div>
+    <section className="plan-section">
+      <h2 className="plan-heading">{title}</h2>
+      {children}
     </section>
   );
 }

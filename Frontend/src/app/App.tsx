@@ -109,6 +109,12 @@ function pageFromHash(): Page | null {
   return null;
 }
 
+// The lesson named in the address, e.g. "#dashboard/learning/tfsa" (Baby Steps lesson links).
+function lessonFromHash(): string | null {
+  const [, target, topic] = window.location.hash.split("/");
+  return target === "learning" && topic ? decodeURIComponent(topic) : null;
+}
+
 type AppProps = {
   authenticated: boolean;
   showOnboarding?: boolean;
@@ -147,6 +153,9 @@ function App({
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   // a question filled in for the AI Coach by a Baby Steps "Ask the AI Coach" button
   const [coachQuestion, setCoachQuestion] = useState("");
+  // the lesson to open on the Learn page, and whether to offer a way back to Baby Steps
+  const [lessonTopic, setLessonTopic] = useState<string | null>(lessonFromHash);
+  const [lessonFromSteps, setLessonFromSteps] = useState(false);
   const { state: babySteps } = useBabySteps();
   const babyStepList = useMemo(() => getSteps(answers), [answers]);
   const next = nextThing(babySteps, babyStepList);
@@ -159,6 +168,7 @@ function App({
 
       if (target) {
         setPage(target);
+        setLessonTopic(lessonFromHash());
         if (target !== "coach") setCoachQuestion("");
       }
     };
@@ -185,10 +195,14 @@ function App({
     setCurrentPage(PAGE_NAMES[page]);
   }, [page]);
 
-function navigatePage(target: Page) {
+// target is a page, or "learning/<topic id>" to open one lesson on the Learn page.
+function navigatePage(target: Page | string) {
+  const [pageName, topic = null] = target.split("/") as [Page, string?];
   window.location.hash = `dashboard/${target}`;
-  setPage(target);
-  if (target !== "coach") setCoachQuestion("");
+  setLessonFromSteps(pageName === "learning" && topic !== null && page === "steps");
+  setLessonTopic(pageName === "learning" ? topic : null);
+  setPage(pageName);
+  if (pageName !== "coach") setCoachQuestion("");
 }
 
   // Opens the AI Coach with a question already typed in.
@@ -442,8 +456,6 @@ function navigatePage(target: Page) {
               )}
             </div>
 
-            <ActivityFeed onNavigate={(target) => navigatePage(target as Page)} />
-
             <p className="eyebrow">YOUR FINANCIAL JOURNEY STARTS HERE</p>
             <h1>Finance made simple.</h1>
             <p className="subtitle">
@@ -465,6 +477,8 @@ function navigatePage(target: Page) {
                 </button>
               ))}
             </div>
+
+            <ActivityFeed onNavigate={(target) => navigatePage(target as Page)} />
 
             <NewsFeed />
           </section>
@@ -509,11 +523,23 @@ function navigatePage(target: Page) {
             <p className="subtitle">
               Explore the foundations of investing, one topic at a time.
             </p>
+            {lessonFromSteps && (
+              <button type="button" className="back-to-steps" onClick={() => navigatePage("steps")}>
+                ← Back to Baby Steps for the quick check
+              </button>
+            )}
 
             <TableOfContents
+              key={lessonTopic ?? "all"}
               initialLevel={levelFromKnowledge(answers[0])}
               onNavigate={(target) => navigatePage(target as Page)}
+              focusTopic={lessonTopic}
             />
+            {lessonFromSteps && (
+              <button type="button" className="back-to-steps" onClick={() => navigatePage("steps")}>
+                ← Back to Baby Steps for the quick check
+              </button>
+            )}
           </section>
         )}
 
@@ -611,6 +637,7 @@ function navigatePage(target: Page) {
                 setDemoClient(portfolio);
                 setPage("coach");
               }}
+              onOpenLesson={(id) => navigatePage(`learning/${id}`)}
             />
 
             <p className="disclaimer">

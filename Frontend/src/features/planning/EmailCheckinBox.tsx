@@ -1,21 +1,24 @@
-// "Weekly email check-ins": opt-in box on My Plan (email address + consent) and the demo
-// "Send a check-in now" button. The backend (backend/app.py) writes the email with Bedrock and
-// sends it with Amazon SES; Amazon EventBridge triggers the weekly run.
+// "Weekly email check-ins": opt-in box on My Plan and the demo "Send a check-in now" button.
+// The backend (backend/app.py) writes the email with Bedrock and sends it with Amazon SES;
+// Amazon EventBridge triggers the weekly run.
+// If the server already has an address for this account (or the user signed in with one), the box
+// doesn't ask for it again: turning check-ins on is one click, and changing the address is optional.
 import { useEffect, useState } from "react";
 import { fetchUserAttributes } from "aws-amplify/auth";
 import { getProgress, putProgress, sendCheckin } from "../coach/api";
 import { flushProgress } from "./babyStepsStore";
-
-type Status = { kind: "ok" | "error"; text: string } | null;
+import { useFlash } from "./useFlash";
 
 export default function EmailCheckinBox() {
-  const [address, setAddress] = useState("");
-  const [consent, setConsent] = useState(false);
-  const [saved, setSaved] = useState(false); // the server has this address with consent
+  const [address, setAddress] = useState(""); // the address on file (server, or the sign-in email)
+  const [draft, setDraft] = useState(""); // what's typed while changing it
+  const [on, setOn] = useState(false); // the server sends weekly check-ins to `address`
+  const [editing, setEditing] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [status, setStatus] = useState<Status>(null);
+  const [status, flash] = useFlash();
 
-  // Show what the server has (the email's "Turn off check-ins" link turns consent off there).
+  // Show what the server has (the email's "Turn off check-ins" link turns it off there).
   // Otherwise suggest the email the user signed in with.
   useEffect(() => {
     let cancelled = false;
@@ -25,35 +28,34 @@ export default function EmailCheckinBox() {
         if (cancelled) return;
         if (progress?.email?.address) {
           setAddress(progress.email.address);
-          setConsent(progress.email.consent);
-          setSaved(progress.email.consent);
-          return;
+          setOn(progress.email.consent);
+        } else {
+          try {
+            const { email } = await fetchUserAttributes();
+            if (!cancelled && email) setAddress(email);
+          } catch {
+            // not signed in: the box asks for an address
+          }
         }
-        try {
-          const { email } = await fetchUserAttributes();
-          if (!cancelled && email) setAddress((current) => current || email);
-        } catch {
-          // not signed in: leave the field empty
-        }
+        if (!cancelled) setLoaded(true);
       });
     return () => {
       cancelled = true;
     };
   }, []);
 
-  async function save() {
+  async function save(nextAddress: string, consent: boolean) {
     setBusy(true);
-    setStatus(null);
+    flash(null);
     try {
       await flushProgress(); // make sure the server has the plan first
-      await putProgress({ email: { address: address.trim(), consent } });
-      setSaved(consent);
-      setStatus({
-        kind: "ok",
-        text: consent ? "Saved. You'll get a check-in email every week." : "Saved. Check-ins are off.",
-      });
+      await putProgress({ email: { address: nextAddress, consent } });
+      setAddress(nextAddress);
+      setOn(consent);
+      setEditing(false);
+      flash({ kind: "ok", text: consent ? "Check-ins are on." : "Check-ins are off." });
     } catch (e) {
-      setStatus({ kind: "error", text: e instanceof Error ? e.message : "Could not save." });
+      flash({ kind: "error", text: e instanceof Error ? e.message : "Could not save." });
     } finally {
       setBusy(false);
     }
@@ -61,47 +63,90 @@ export default function EmailCheckinBox() {
 
   async function sendNow() {
     setBusy(true);
-    setStatus(null);
+    flash(null);
     try {
       await flushProgress(); // the email is written from the latest plan
       const { to } = await sendCheckin();
-      setStatus({ kind: "ok", text: `Check-in sent to ${to}. Check your inbox (and the spam folder).` });
+      flash({ kind: "ok", text: `Sent to ${to}. Check your inbox (and spam).` });
     } catch (e) {
-      setStatus({ kind: "error", text: e instanceof Error ? e.message : "Could not send." });
+      flash({ kind: "error", text: e instanceof Error ? e.message : "Could not send." });
     } finally {
       setBusy(false);
     }
   }
 
+  function startEditing() {
+    setDraft(address);
+    setEditing(true);
+    flash(null);
+  }
+
+  if (!loaded) return <p className="plan-text">Loading…</p>;
+
+  const asking = editing || !address;
+
   return (
     <div className="plan-email">
-      <p className="plan-text">
-        Once a week, get a short email about your next step, written for your plan. Answer with one click:
-        "I did it" ticks it off here, "I need help" opens the AI Coach. It never tells you what to buy or sell,
-        and every email has a link to turn it off.
-      </p>
-      <label className="plan-field">
-        <span>Email address</span>
-        <input
-          type="email"
-          autoComplete="email"
-          placeholder="sam@example.com"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-        />
-      </label>
-      <label className="plan-consent">
-        <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
-        <span>Yes, email me a weekly check-in about my plan.</span>
-      </label>
-      <div className="plan-email-buttons">
-        <button type="button" className="primary" onClick={save} disabled={busy || (consent && !address.trim())}>
-          Save
-        </button>
-        <button type="button" className="secondary" onClick={sendNow} disabled={busy || !saved}>
-          Send a check-in now
-        </button>
-      </div>
+      <p className="plan-text">A short email about your next step. Answer in one click, turn it off anytime.</p>
+
+      {asking ? (
+        <form
+          className="plan-email-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (draft.trim()) void save(draft.trim(), true);
+          }}
+        >
+          <label className="plan-field">
+            <span>Email address</span>
+            <input
+              type="email"
+              autoComplete="email"
+              placeholder="sam@example.com"
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              required
+            />
+          </label>
+          <div className="plan-email-buttons">
+            <button type="submit" className="primary" disabled={busy || !draft.trim()}>
+              Email me weekly
+            </button>
+            {address && (
+              <button type="button" className="secondary" onClick={() => setEditing(false)} disabled={busy}>
+                Cancel
+              </button>
+            )}
+          </div>
+        </form>
+      ) : (
+        <>
+          <p className="plan-email-to">
+            {on ? "Sending to " : "Send to "}
+            <strong>{address}</strong>{" "}
+            <button type="button" className="plan-link" onClick={startEditing} disabled={busy}>
+              Change
+            </button>
+          </p>
+          <div className="plan-email-buttons">
+            {on ? (
+              <>
+                <button type="button" className="primary" onClick={sendNow} disabled={busy}>
+                  Send one now
+                </button>
+                <button type="button" className="secondary" onClick={() => save(address, false)} disabled={busy}>
+                  Turn off
+                </button>
+              </>
+            ) : (
+              <button type="button" className="primary" onClick={() => save(address, true)} disabled={busy}>
+                Turn on weekly emails
+              </button>
+            )}
+          </div>
+        </>
+      )}
+
       {status && (
         <p className={`plan-status ${status.kind}`} role={status.kind === "error" ? "alert" : "status"}>
           {status.text}

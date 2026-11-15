@@ -195,6 +195,16 @@ class ChatRequest(BaseModel):
     # {"step": {"id": "...", "title": "...", "number": 6, "total": 10}, "plan": {...},
     #  "completedSteps": ["..."], "nextAction": "..."}
     context: dict | None = None
+    brief: bool = False  # the small AI Phone: a short answer that fits its screen
+
+
+BRIEF_RULES = """
+SHORT ANSWER (the user is chatting in a small phone window)
+- Answer in at most 3 short sentences, about 60 words in total. No lists.
+- Lead with the plain answer, then the one thing that matters most for this user.
+- End by offering to explain more, e.g. "Want me to go deeper on that?"
+- Still cite the NBC sources as [Source N] when you use them.
+"""
 
 
 def search_nbc(question: str) -> list[dict]:
@@ -376,6 +386,8 @@ def chat(req: ChatRequest):
 
     doc = load_progress().get(req.user_id) or {}
     system = build_system_prompt(profile, passages, req.portfolio, req.context) + calendar_rules(doc)
+    if req.brief:
+        system += BRIEF_RULES
     tasks: list[dict] = []
     if calendar_connected(doc):
         # Agent mode: it can read the plan, look at free time and add tasks to Google Calendar.

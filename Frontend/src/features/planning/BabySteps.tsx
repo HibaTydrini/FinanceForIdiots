@@ -1,11 +1,11 @@
 // "Baby Steps": a guided path for complete beginners, about investing only.
 //
-// The path lives in src/data/babySteps.json. Each step re-uses lessons from
-// data/learningPath.json (shown with the same TopicSlides as the Learning Path), then asks a
+// The path lives in src/data/babySteps.json. Each step links to its lessons from
+// data/learningPath.json (they open on the Learn page, "#dashboard/learning/<topic id>"), then asks a
 // few checkpoint questions, then gives "Do it" actions. Progress and the plan are saved by
 // babyStepsStore.ts. A step is complete when its checkpoint is passed and its actions are ticked.
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "./BabySteps.css";
 import ActionCard from "./ActionCard";
 import Icon from "../../shared/Icon";
@@ -26,8 +26,9 @@ type Props = {
   onAskCoach: (question: string) => void;
 };
 
-type Status = "done" | "current" | "locked";
-const STATUS_LABEL: Record<Status, string> = { done: "Done", current: "Current step", locked: "Locked" };
+// Every step is open: "current" is just the first one not done yet (the suggested next step).
+type Status = "done" | "current" | "todo";
+const STATUS_LABEL: Record<Status, string> = { done: "Done", current: "Up next", todo: "Not started" };
 
 export default function BabySteps({ answers, onNavigate, onAskCoach }: Props) {
   const { state } = useBabySteps();
@@ -36,82 +37,122 @@ export default function BabySteps({ answers, onNavigate, onAskCoach }: Props) {
   const expert = isExpert(answers);
 
   const currentIndex = steps.findIndex((s) => s.id === state.currentStep);
-  const [openId, setOpenId] = useState<string | null>(currentIndex >= 0 ? state.currentStep : null);
-  const openIndex = steps.findIndex((s) => s.id === openId);
-  const openTitle = openIndex >= 0 ? steps[openIndex].title : "";
   const total = steps.length;
   const doneCount = state.completedSteps.length;
+  const statusOf = (index: number): Status =>
+    state.completedSteps.includes(steps[index].id) ? "done" : index === currentIndex ? "current" : "todo";
+
+  // The step shown in the panel: the current one, or the last one once everything is done.
+  const [openId, setOpenId] = useState<string>(steps[currentIndex >= 0 ? currentIndex : total - 1]?.id ?? "");
+  const openIndex = Math.max(0, steps.findIndex((s) => s.id === openId));
+  const open = steps[openIndex];
+  const openStatus = statusOf(openIndex);
+  const prev = openIndex > 0 ? openIndex - 1 : null;
+  const next = openIndex < total - 1 ? openIndex + 1 : null;
+  const panelRef = useRef<HTMLElement>(null);
 
   // Tell the AI Phone which Baby Step is open (pageContext.ts).
   useEffect(() => {
-    if (!openId || openIndex < 0) return;
-    setCurrentStep({ id: openId, title: openTitle, number: openIndex + 1, total });
-    return () => clearCurrentStep(openId);
-  }, [openId, openIndex, openTitle, total]);
+    if (!open) return;
+    setCurrentStep({ id: open.id, title: open.title, number: openIndex + 1, total });
+    return () => clearCurrentStep(open.id);
+  }, [open, openIndex, total]);
+
+  function show(index: number) {
+    setOpenId(steps[index].id);
+    // on small screens the panel is below the step list: bring its top into view
+    const top = panelRef.current?.getBoundingClientRect().top ?? 0;
+    if (top < 0) panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  if (!open) return null;
 
   return (
     <div className="bs">
-      <div className="progress-label">
-        <span>Your Baby Steps</span>
-        {currentIndex >= 0 ? `Step ${currentIndex + 1} of ${total}` : `All ${total} steps done`}
-      </div>
-      <div
-        className="progress"
-        role="progressbar"
-        aria-label="Baby Steps completed"
-        aria-valuemin={0}
-        aria-valuemax={total}
-        aria-valuenow={doneCount}
-      >
-        <div style={{ width: `${(doneCount / total) * 100}%` }} />
-      </div>
+      <div className="bs-layout">
+        <nav className="bs-nav" aria-label="Baby Steps">
+          <div className="bs-nav-progress">
+            <div
+              className="progress"
+              role="progressbar"
+              aria-label="Baby Steps completed"
+              aria-valuemin={0}
+              aria-valuemax={total}
+              aria-valuenow={doneCount}
+            >
+              <div style={{ width: `${(doneCount / total) * 100}%` }} />
+            </div>
+          </div>
+          <ol className="bs-nav-list">
+            {steps.map((step, index) => {
+              const status = statusOf(index);
+              const selected = index === openIndex;
+              return (
+                <li key={step.id}>
+                  <button
+                    type="button"
+                    className={`bs-nav-item ${status} ${selected ? "selected" : ""}`}
+                    aria-current={selected ? "step" : undefined}
+                    aria-label={`Step ${index + 1}: ${step.title} (${STATUS_LABEL[status]})`}
+                    title={step.title}
+                    onClick={() => show(index)}
+                  >
+                    <span className="bs-marker" aria-hidden="true">
+                      {index + 1}
+                    </span>
+                    <span className="bs-nav-title">{step.title}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
 
-      <ol className="bs-road">
-        {steps.map((step, index) => {
-          const done = state.completedSteps.includes(step.id);
-          const status: Status = done ? "done" : index === currentIndex ? "current" : "locked";
-          const isOpen = openId === step.id;
-          return (
-            <li key={step.id} className={`bs-step ${status} ${isOpen ? "open" : ""}`}>
+        <article className={`bs-panel ${openStatus}`} ref={panelRef} key={open.id}>
+          {openStatus !== "todo" && (
+            <p className="bs-panel-eyebrow">
+              <span className={`bs-status ${openStatus}`}>{STATUS_LABEL[openStatus]}</span>
+            </p>
+          )}
+          <h2>{open.title}</h2>
+          <p className="bs-panel-why">{open.why}</p>
+
+          <StepBody
+            step={open}
+            answers={answers}
+            level={level}
+            expert={expert}
+            state={state}
+            onNavigate={onNavigate}
+            onAskCoach={onAskCoach}
+          />
+
+          <div className="bs-panel-foot">
+            {prev !== null ? (
+              <button type="button" className="bs-step-nav" onClick={() => show(prev)}>
+                ← {steps[prev].title}
+              </button>
+            ) : (
+              <span />
+            )}
+            {next !== null ? (
               <button
                 type="button"
-                className="bs-step-head"
-                aria-expanded={isOpen}
-                aria-current={status === "current" ? "step" : undefined}
-                aria-disabled={status === "locked"}
-                title={status === "locked" ? "Finish the steps before this one to unlock it" : undefined}
-                onClick={() => {
-                  if (status !== "locked") setOpenId(isOpen ? null : step.id);
-                }}
+                className={openStatus === "done" ? "primary" : "bs-step-nav"}
+                onClick={() => show(next)}
               >
-                <span className="bs-marker" aria-hidden="true">
-                  {done ? <Icon name="done" size={22} /> : index + 1}
-                </span>
-                <span className="bs-step-text">
-                  <strong>{step.title}</strong>
-                  <span>{step.why}</span>
-                </span>
-                <span className="bs-status">{STATUS_LABEL[status]}</span>
-                {status !== "locked" && <span className="toc-chevron" aria-hidden="true" />}
+                Next: {steps[next].title} →
               </button>
-
-              {isOpen && (
-                <StepBody
-                  step={step}
-                  next={steps[index + 1]}
-                  answers={answers}
-                  level={level}
-                  expert={expert}
-                  state={state}
-                  onNavigate={onNavigate}
-                  onAskCoach={onAskCoach}
-                  onOpen={setOpenId}
-                />
-              )}
-            </li>
-          );
-        })}
-      </ol>
+            ) : (
+              openStatus === "done" && (
+                <button type="button" className="primary" onClick={() => onNavigate("plan")}>
+                  Go to My Plan →
+                </button>
+              )
+            )}
+          </div>
+        </article>
+      </div>
 
       <p className="disclaimer">{data.disclaimer}</p>
     </div>
@@ -120,17 +161,15 @@ export default function BabySteps({ answers, onNavigate, onAskCoach }: Props) {
 
 type BodyProps = {
   step: Step;
-  next?: Step;
   answers: string[];
   level: Level;
   expert: boolean;
   state: BabyState;
   onNavigate: (page: string) => void;
   onAskCoach: (question: string) => void;
-  onOpen: (id: string) => void;
 };
 
-function StepBody({ step, next, answers, level, expert, state, onNavigate, onAskCoach, onOpen }: BodyProps) {
+function StepBody({ step, answers, level, expert, state, onNavigate, onAskCoach }: BodyProps) {
   const view = personalize(step, answers);
   const complete = state.completedSteps.includes(step.id);
   const testOut = expert && step.check.length > 0;
@@ -157,16 +196,14 @@ function StepBody({ step, next, answers, level, expert, state, onNavigate, onAsk
 
   return (
     <div className="bs-body">
-      {view.lead && <p className="bs-lead">{view.lead}</p>}
-      <p className="bs-why">
-        <strong>Why this matters: </strong>
-        <RichText text={step.why} terms={step.terms} />
-      </p>
-
       {view.topics.length > 0 && (
         <section>
           <h3>1. Learn</h3>
-          <LessonLinks topics={view.topics} level={level} openFirst={!complete} onNavigate={onNavigate} />
+          <LessonLinks
+            topics={view.topics}
+            level={level}
+            onOpenLesson={(id) => onNavigate(`learning/${id}`)}
+          />
         </section>
       )}
 
@@ -174,10 +211,7 @@ function StepBody({ step, next, answers, level, expert, state, onNavigate, onAsk
         <section>
           <h3>2. Quick check</h3>
           {testOut && !complete && (
-            <p className="bs-note">
-              You said you are experienced with investing: pass this check to unlock the next step. The
-              Do it actions are optional for you.
-            </p>
+            <p className="bs-note">Pass this to finish the step. Do it is optional for you.</p>
           )}
           <Checkpoint step={step} passed={checkPassed(step, state)} />
         </section>
@@ -198,10 +232,7 @@ function StepBody({ step, next, answers, level, expert, state, onNavigate, onAsk
                 onGo={(page) => go(action, page)}
               >
                 {action.later && (
-                  <p className="bs-note">
-                    This one happens at your bank, so it can wait: it is not needed to finish this step.
-                    It stays on My Plan until you tick it.
-                  </p>
+                  <p className="bs-note">This happens at your bank, so it can wait. It isn't needed to finish this step.</p>
                 )}
                 {action.widget && <PlanWidget action={action} plan={state.plan} suggest={view.suggest} />}
               </ActionCard>
@@ -212,8 +243,8 @@ function StepBody({ step, next, answers, level, expert, state, onNavigate, onAsk
 
       {step.coachPrompts.length > 0 && (
         <section>
-          <h3>Ask the AI Coach</h3>
           <div className="bs-prompts">
+            <span className="bs-prompts-label">Ask the coach:</span>
             {step.coachPrompts.map((prompt) => (
               <button type="button" key={prompt} className="bs-chip" onClick={() => onAskCoach(prompt)}>
                 {prompt}
@@ -226,15 +257,6 @@ function StepBody({ step, next, answers, level, expert, state, onNavigate, onAsk
       {complete && (
         <div className="bs-complete" role="status">
           <strong>Step complete. Nice work!</strong>
-          {next ? (
-            <button type="button" className="primary" onClick={() => onOpen(next.id)}>
-              Next: {next.title} →
-            </button>
-          ) : (
-            <button type="button" className="primary" onClick={() => onNavigate("plan")}>
-              Go to My Plan →
-            </button>
-          )}
         </div>
       )}
     </div>

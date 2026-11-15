@@ -428,8 +428,9 @@ footer {
   min-height: 82px;
   height: auto;
   padding: 16px 5%;
-  background: #f5efe6;
-  border-bottom: 1px solid #e7e0d7;
+  /* white with a light grey edge, like the cards and tabs below it */
+  background: white;
+  border-bottom: 1px solid #e4e4e4;
 }
 
 .app main {
@@ -592,4 +593,19 @@ footer {
   .next-step-card {
     padding: 24px;
   }
+}
+
+/* Learn page: way back after opening a lesson from Baby Steps */
+.back-to-steps {
+  margin-top: 18px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #cf1726;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.back-to-steps:hover {
+  text-decoration: underline;
 }

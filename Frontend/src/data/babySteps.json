@@ -50,8 +50,7 @@
           "label": "Emergency fund: I have one, or I know I should build one first",
           "how": [
             "An [[emergency fund]] is cash you can reach quickly if something goes wrong.",
-            "It stays in cash, not in investments, so it is there when you need it.",
-            "No fund yet? You can still keep learning here. Just know it comes before investing."
+            "It stays in cash, not in investments, so it is there when you need it."
           ],
           "link": {
             "title": "National Bank: How to invest my money?",
@@ -63,8 +62,7 @@
           "label": "High-interest debt: I've dealt with it, or I have a plan for it",
           "how": [
             "[[High-interest debt]] often costs more each year than investments can be expected to earn.",
-            "That is why many people deal with it before they start investing.",
-            "This is a readiness check for you, not a test. Tick it when you have thought about it."
+            "That is why many people deal with it before they start investing."
           ]
         }
       ],
@@ -137,7 +135,7 @@
           "how": [
             "Say what the money is for, in your own words.",
             "Add the amount you are aiming for and the date you want it by.",
-            "We work out the monthly amount for you. The first number assumes no growth at all, so it is the safe one to plan with."
+            "We work out the monthly amount for you."
           ],
           "widget": "goal",
           "planField": "goal",
@@ -213,8 +211,7 @@
           "label": "Read a fund page: find the fee (MER)",
           "how": [
             "Open any fund or ETF page and look for its [[Fund Facts]] or ETF Facts document.",
-            "Find the [[MER]]. It is a percentage, charged every year.",
-            "You are only practising reading the page. You don't need to buy anything."
+            "Find the [[MER]]. It is a percentage, charged every year."
           ],
           "link": {
             "title": "National Bank: 6 things to know about ETFs",
@@ -226,8 +223,7 @@
           "label": "Read a fund page: look at what it holds",
           "how": [
             "Find the top [[holdings]] list.",
-            "Ask yourself: is it many companies, or a few? One country, or many?",
-            "A fund with hundreds of holdings spreads your money more than one with ten."
+            "Ask yourself: is it many companies, or a few? One country, or many?"
           ]
         },
         {
@@ -286,8 +282,7 @@
           "label": "See what fees cost over 25 years",
           "how": [
             "Type a monthly amount below.",
-            "Compare the two results: same contributions, same growth before fees, different fee.",
-            "Tick this off once you have seen the gap."
+            "Compare the two results: same contributions, same growth before fees, different fee."
           ],
           "widget": "fees",
           "link": {
@@ -356,8 +351,7 @@
           "label": "Pick an example mix to learn with",
           "how": [
             "Look at the three example mixes below. The one that matches your risk answer is highlighted.",
-            "Pick the one you want to learn with and save it to your plan.",
-            "These are examples for learning, not a recommendation. A bank advisor can help you find your real mix."
+            "Pick the one you want to learn with and save it to your plan."
           ],
           "widget": "mix",
           "planField": "mix",
@@ -439,8 +433,7 @@
           "label": "Choose the account type to start with",
           "how": [
             "Read the three cards below. The one that fits your goal is first.",
-            "Pick one and save it to your plan. You can change it later.",
-            "Many people end up with more than one account. This is only where you start."
+            "Pick one and save it to your plan. You can change it later."
           ],
           "widget": "account",
           "planField": "account",
@@ -455,10 +448,9 @@
           "later": true,
           "how": [
             "Have ready: a government photo ID, your [[SIN]] and your chequing account details.",
-            "The bank will ask about your goal, your timeline, your income and how you feel about risk. That is normal. It is how they get to know you.",
+            "The bank will ask about your goal, timeline, income and comfort with risk. That is normal.",
             "Tell them which account type you chose: [[TFSA]], [[RRSP]] or [[FHSA]].",
-            "Before you add money, check your [[contribution room]] in your CRA My Account.",
-            "What happens next: the account opens empty. Nothing is invested until you add money and choose what to hold."
+            "Before you add money, check your [[contribution room]] in your CRA My Account."
           ],
           "link": {
             "title": "National Bank: Registered savings plans (TFSA, RRSP, etc.)",
@@ -529,7 +521,6 @@
           "how": [
             "A [[pre-authorized contribution]] moves money from your bank account to your investment account by itself.",
             "In your online banking, or with an advisor, choose the amount and the day from your plan.",
-            "Check which account the money comes from and which account it goes to.",
             "You can change the amount, pause it or stop it whenever you need to."
           ]
         }
@@ -594,8 +585,7 @@
           "label": "Write a rule for myself",
           "how": [
             "Finish the sentence below in your own words.",
-            "Keep it simple, so you can follow it on a bad day.",
-            "We save it to your plan and show it back to you when markets get scary."
+            "Keep it simple, so you can follow it on a bad day."
           ],
           "widget": "rule",
           "planField": "rule",
@@ -624,8 +614,7 @@
           "how": [
             "Go to My Portfolio and log in as one of the pretend clients.",
             "Sofia's portfolio is a good one to start with. See how many problems you can spot.",
-            "Look for the things you learned: fees, the mix, how spread out it is, and the worst drop.",
-            "This step ticks itself as soon as you connect a demo client."
+            "Look for fees, the mix, how spread out it is, and the worst drop."
           ],
           "auto": "demo",
           "page": "portfolio",
@@ -650,8 +639,7 @@
           "label": "Open My Plan",
           "how": [
             "My Plan shows your goal, your account, your monthly amount, your example mix and your rule for yourself.",
-            "Below that is a timeline: what to do this week, this month, every month and every year.",
-            "Come back once a month for a 30-second check-in."
+            "Below that is a timeline: what to do this week, this month, every month and every year."
           ],
           "page": "plan",
           "pageLabel": "Go to My Plan"
