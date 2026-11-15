@@ -236,6 +236,17 @@ function navigatePage(target: Page) {
     }
   }
 
+  function skipRemainingOptionalQuestions() {
+    const updatedProfile = { ...profile, optionalSkipped: true };
+    setProfile(updatedProfile);
+    if (userId) saveUserProfile(userId, updatedProfile);
+    else savePendingProfile(updatedProfile);
+    setOptionalStarted(false);
+    setOptionalStep(0);
+    setOptionalSelected("");
+    setPage(personalizationReturn);
+  }
+
   function previousQuestion() {
     if (step === 0) return;
     setStep(step - 1);
@@ -361,6 +372,9 @@ function navigatePage(target: Page) {
                 setOptionalStep(previous);
                 setOptionalSelected(profile.optionalAnswers[previous] ?? "");
               }}>Back</button>}
+              <button className="secondary" onClick={skipRemainingOptionalQuestions}>
+                Skip the rest for now
+              </button>
               <button className="primary" disabled={!optionalSelected} onClick={saveOptionalAnswer}>
                 {optionalStep === optionalQuestions.length - 1 ? "Finish personalization" : "Continue"}
               </button>
