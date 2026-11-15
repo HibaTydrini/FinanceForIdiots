@@ -137,7 +137,7 @@ function stepComplete(step: Step, state: BabyState, expert: boolean): boolean {
   return step.doIt.filter((a) => !a.later).every((a) => state.doneActions.includes(a.id));
 }
 
-// Works out which steps are complete, in order. A finished step stays finished.
+// Works out which steps are complete. Steps can be done in any order; a finished step stays finished.
 function sync(state: BabyState): BabyState {
   const answers = readQuizAnswers();
   const steps = getSteps(answers);
@@ -145,8 +145,7 @@ function sync(state: BabyState): BabyState {
   const completed = state.completedSteps.filter((id) => steps.some((s) => s.id === id));
   for (const step of steps) {
     if (completed.includes(step.id)) continue;
-    if (!stepComplete(step, state, expert)) break;
-    completed.push(step.id);
+    if (stepComplete(step, state, expert)) completed.push(step.id);
   }
   const current = steps.find((s) => !completed.includes(s.id));
   const plan = { ...state.plan };

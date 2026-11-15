@@ -5,13 +5,15 @@ import { useEffect, useState } from "react";
 import { disconnectCalendar, getCalendarStatus, googleConnectUrl } from "../coach/api";
 import type { CalendarStatus } from "../coach/api";
 import { flushProgress } from "./babyStepsStore";
+import { useFlash } from "./useFlash";
 
 type Props = { onNavigate: (page: string) => void };
 
 export default function CalendarBox({ onNavigate }: Props) {
   const [status, setStatus] = useState<CalendarStatus | null>(null);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(""); // can't load the status (cleared by the next good load)
   const [busy, setBusy] = useState(false);
+  const [flash, showFlash] = useFlash(); // result of the last button press
 
   useEffect(() => {
     let cancelled = false;
@@ -30,17 +32,20 @@ export default function CalendarBox({ onNavigate }: Props) {
 
   async function connect() {
     setBusy(true);
+    showFlash(null);
     await flushProgress(); // the agent plans from the latest plan and time zone
     window.location.href = googleConnectUrl();
   }
 
   async function disconnect() {
     setBusy(true);
+    showFlash(null);
     try {
       await disconnectCalendar();
       setStatus((s) => (s ? { ...s, connected: false, upcoming: [] } : s));
+      showFlash({ kind: "ok", text: "Disconnected." });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not disconnect.");
+      showFlash({ kind: "error", text: e instanceof Error ? e.message : "Could not disconnect." });
     } finally {
       setBusy(false);
     }
@@ -61,37 +66,22 @@ export default function CalendarBox({ onNavigate }: Props) {
 
   return (
     <div className="plan-email">
-      <p className="plan-text">
-        Connect Google Calendar and your AI coach books time for your next step every week, in a separate
-        "Finance For Dummies" calendar. It only sees when you're busy, never what your other events are, and it
-        never books anything about buying or selling.
-      </p>
+      <p className="plan-text">Your coach books time for your next step each week. It only sees when you're busy.</p>
 
       {status.connected ? (
         <>
-          <p className="plan-status ok" role="status">
-            ✓ Google Calendar is connected.
+          <p className="plan-status ok">Connected</p>
+          <p className="plan-text plan-cal-summary">
+            {status.upcoming.length === 0
+              ? "Nothing booked yet."
+              : `${status.upcoming.length} ${status.upcoming.length === 1 ? "session" : "sessions"} booked, next on ${status.upcoming[0].start}.`}{" "}
+            <a href="https://calendar.google.com" target="_blank" rel="noreferrer">
+              Open Google Calendar →
+            </a>
           </p>
-          {status.upcoming.length > 0 ? (
-            <ul className="plan-list">
-              {status.upcoming.map((task) => (
-                <li key={`${task.title}-${task.start}`}>
-                  <strong>{task.start}</strong>: {task.title}
-                  {task.link && (
-                    <>
-                      {" "}
-                      (<a href={task.link} target="_blank" rel="noreferrer">open</a>)
-                    </>
-                  )}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="plan-text">Nothing booked yet. The next weekly check-in will book your next step.</p>
-          )}
           <div className="plan-email-buttons">
             <button type="button" className="primary" onClick={() => onNavigate("coach")}>
-              Ask the AI Coach to plan my week
+              Plan my week
             </button>
             <button type="button" className="secondary" onClick={disconnect} disabled={busy}>
               Disconnect
@@ -105,9 +95,9 @@ export default function CalendarBox({ onNavigate }: Props) {
           </button>
         </div>
       )}
-      {error && (
-        <p className="plan-status error" role="alert">
-          {error}
+      {(flash || error) && (
+        <p className={`plan-status ${flash?.kind ?? "error"}`} role={flash?.kind === "ok" ? "status" : "alert"}>
+          {flash?.text ?? error}
         </p>
       )}
     </div>

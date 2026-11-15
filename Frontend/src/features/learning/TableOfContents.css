@@ -772,3 +772,9 @@
     font-size: 12px;
   }
 }
+
+/* a lesson opened from a link (Baby Steps) scrolls here */
+.toc-chapter[id],
+.toc-topic[id] {
+  scroll-margin-top: 16px;
+}

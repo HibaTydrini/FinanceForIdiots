@@ -593,3 +593,18 @@ footer {
     padding: 24px;
   }
 }
+
+/* Learn page: way back after opening a lesson from Baby Steps */
+.back-to-steps {
+  margin-top: 18px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #cf1726;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.back-to-steps:hover {
+  text-decoration: underline;
+}

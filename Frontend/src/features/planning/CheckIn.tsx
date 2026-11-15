@@ -27,8 +27,7 @@ export default function CheckIn({ plan, level, onNavigate }: Props) {
     return (
       <div className="plan-checkin" role="status">
         <p className="plan-checkin-done">
-          <strong>Check-in done. See you next month!</strong> Your next check-in is on{" "}
-          {formatDate(plan.nextCheckIn)}.
+          <strong>Done. See you next month!</strong> Next: {formatDate(plan.nextCheckIn)}.
         </p>
       </div>
     );
@@ -37,19 +36,19 @@ export default function CheckIn({ plan, level, onNavigate }: Props) {
   return (
     <div className="plan-checkin">
       <p className="plan-checkin-dates">
-        {plan.lastCheckIn ? `Last check-in: ${formatDate(plan.lastCheckIn)}. ` : "You haven't done a check-in yet. "}
-        {plan.nextCheckIn && (due ? "Your check-in is due now." : `Next one: ${formatDate(plan.nextCheckIn)}.`)}
+        30 seconds, once a month.{" "}
+        {plan.nextCheckIn && (due ? "Due now." : `Next: ${formatDate(plan.nextCheckIn)}.`)}
       </p>
 
       <Question label="Did your contribution go through?" options={CONTRIBUTION} value={went} onChange={setWent} />
       {went === "No" && (
         <p className="plan-tip">
-          It happens. Check that the money was in your bank account on the day, then look at your
-          automatic contribution in your online banking, or ask your bank.
+          Check the money was in your bank account that day, then look at your automatic contribution or ask
+          your bank.
         </p>
       )}
       {went === "I haven't set it up yet" && (
-        <p className="plan-tip">No rush. It is on your "This week" list above whenever you are ready.</p>
+        <p className="plan-tip">No rush. It's on your To do list above.</p>
       )}
 
       <Question label="Anything worrying you?" options={WORRIES} value={worry} onChange={setWorry} />
@@ -57,23 +56,20 @@ export default function CheckIn({ plan, level, onNavigate }: Props) {
         <div className="plan-tip">
           {plan.rule ? (
             <>
-              <p>That is normal. Here is the rule you wrote for yourself on a calm day:</p>
+              <p>That's normal. Here's the rule you wrote on a calm day:</p>
               <blockquote className="plan-rule">
                 {RULE_PREFIX} {plan.rule}
               </blockquote>
             </>
           ) : (
-            <p>That is normal. Drops are part of investing, and this lesson explains what they are.</p>
+            <p>That's normal. Drops are part of investing.</p>
           )}
-          <LessonLinks topics={["volatility"]} level={level} onNavigate={onNavigate} />
+          <LessonLinks topics={["volatility"]} level={level} onOpenLesson={(id) => onNavigate(`learning/${id}`)} />
         </div>
       )}
       {worry === "I'm not sure my plan still fits" && (
         <div className="plan-tip">
-          <p>
-            Plans are allowed to change. Have another look at your goal, timeline and risk, or talk
-            it through with an advisor at your bank.
-          </p>
+          <p>Plans can change. Review your goal and risk, or talk to an advisor at your bank.</p>
           <button type="button" className="toc-action" onClick={() => onNavigate("steps")}>
             Review my Baby Steps
           </button>

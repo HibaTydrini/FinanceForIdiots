@@ -5,8 +5,10 @@
 // To add a topic, copy one entry in that file and change it.
 //
 // Click a chapter to open it, then click a topic to see its slides (TopicSlides.tsx).
+// focusTopic (from "#dashboard/learning/<topic id>", e.g. a Baby Steps lesson link) opens that
+// topic's chapter and topic and scrolls to it.
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import data from "../../data/learningPath.json";
 import "./TableOfContents.css";
 import type { Level } from "./learningLevel";
@@ -17,6 +19,12 @@ import type { Topic } from "./TopicSlides";
 type Chapter = { title: string; single?: boolean; topics: Topic[] };
 
 const chapters = data.chapters as Chapter[];
+
+function chapterOf(topicId: string | null): number | null {
+  if (!topicId) return null;
+  const index = chapters.findIndex((ch) => ch.topics.some((t) => t.id === topicId));
+  return index >= 0 ? index : null;
+}
 const LEVELS: Level[] = ["novice", "intermediate", "expert"];
 const LEVEL_LABELS: Record<Level, string> = {
   novice: "Beginner",
@@ -28,13 +36,24 @@ type Props = {
   initialLevel?: Level;
   // Called by topics that link to another page (for example "Go to My Portfolio").
   onNavigate?: (page: string) => void;
+  focusTopic?: string | null;
 };
 
-export default function TableOfContents({ initialLevel = "novice", onNavigate }: Props) {
+export default function TableOfContents({ initialLevel = "novice", onNavigate, focusTopic = null }: Props) {
   const [level, setLevel] = useState<Level>(initialLevel);
-  const [openChapter, setOpenChapter] = useState<number | null>(0);
-  const [openTopic, setOpenTopic] = useState<string | null>(null);
+  const [openChapter, setOpenChapter] = useState<number | null>(() => chapterOf(focusTopic) ?? 0);
+  const [openTopic, setOpenTopic] = useState<string | null>(focusTopic);
   const [search, setSearch] = useState("");
+
+  // App.tsx remounts this (key) when focusTopic changes, so the state above starts on it.
+  useEffect(() => {
+    if (chapterOf(focusTopic) === null) return;
+    // wait for the slides to render, then bring the lesson into view
+    const frame = requestAnimationFrame(() =>
+      document.getElementById(`lesson-${focusTopic}`)?.scrollIntoView({ behavior: "smooth", block: "start" }),
+    );
+    return () => cancelAnimationFrame(frame);
+  }, [focusTopic]);
 
   const query = search.trim().toLowerCase();
   const visible = useMemo(
@@ -85,7 +104,11 @@ export default function TableOfContents({ initialLevel = "novice", onNavigate }:
         {visible.map((ch) => {
           const isOpen = query !== "" || openChapter === ch.index;
           return (
-            <div className={`toc-chapter ${isOpen ? "open" : ""}`} key={ch.title}>
+            <div
+              className={`toc-chapter ${isOpen ? "open" : ""}`}
+              key={ch.title}
+              id={ch.single ? `lesson-${ch.topics[0].id}` : undefined}
+            >
               <button
                 className="chapter"
                 aria-expanded={isOpen}
@@ -115,7 +138,7 @@ export default function TableOfContents({ initialLevel = "novice", onNavigate }:
                   {ch.topics.map((t) => {
                     const topicOpen = openTopic === t.id;
                     return (
-                      <li key={t.id} className="toc-topic">
+                      <li key={t.id} id={`lesson-${t.id}`} className="toc-topic">
                         <button
                           className="toc-topic-head"
                           aria-expanded={topicOpen}
