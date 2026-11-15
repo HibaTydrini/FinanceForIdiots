@@ -7,6 +7,7 @@ import { levelFromKnowledge } from "./learningLevel";
 import Coach from "./Coach";
 import { saveProfile } from "./api";
 import type { ChatMessage } from "./api";
+import { setCurrentPage } from "./pageContext";
 
 // What the AI Coach is told about the demo client picked on the Portfolio page.
 function portfolioForCoach(p: DemoPortfolioData) {
@@ -32,6 +33,16 @@ function portfolioForCoach(p: DemoPortfolioData) {
 }
 
 type Page = "onboarding" | "home" | "learning" | "profile" | "coach" | "portfolio";
+
+// Page names as the AI Phone describes them to the coach.
+const PAGE_NAMES: Record<Page, string> = {
+  onboarding: "Onboarding quiz",
+  home: "Home",
+  learning: "My Learning Path",
+  profile: "My Investor Profile",
+  coach: "AI Coach",
+  portfolio: "My Portfolio (demo portfolios)",
+};
 
 
 const questions = [
@@ -180,6 +191,11 @@ function App({
     if (answers.length < questions.length) return;
     saveProfile(answers).catch((err) => console.warn("Could not save profile:", err));
   }, [answers]);
+
+  // Tell the AI Phone which page is open (pageContext.ts).
+  useEffect(() => {
+    setCurrentPage(PAGE_NAMES[page]);
+  }, [page]);
 
 function navigatePage(target: Page) {
   window.location.hash = `dashboard/${target}`;

@@ -89,6 +89,9 @@ class ChatRequest(BaseModel):
     question: str
     history: list[Message] = []   # previous messages, sent by the frontend
     portfolio: dict | None = None  # demo client picked on the Portfolio page (fictional data)
+    # What the user is looking at, sent by the AI Phone:
+    # {"page": "My Learning Path", "lesson": {"topic": "ETFs", "slide": "Example", "content": "..."}}
+    context: dict | None = None
 
 
 def search_nbc(question: str) -> list[dict]:
@@ -111,11 +114,33 @@ def search_nbc(question: str) -> list[dict]:
     return [{"url": url, "text": "\n...\n".join(texts)} for url, texts in by_url.items()]
 
 
-def build_system_prompt(profile: dict, passages: list[dict], portfolio: dict | None = None) -> str:
+def current_lesson(context: dict | None) -> dict:
+    """The lesson open on screen, or {} if none."""
+    return (context or {}).get("lesson") or {}
+
+
+def build_system_prompt(
+    profile: dict, passages: list[dict], portfolio: dict | None = None, context: dict | None = None
+) -> str:
     """Step 2b: put the user's profile and the NBC passages into the instructions."""
     sources = "\n\n".join(
         f"[Source {i + 1}] {p['url']}\n{p['text']}" for i, p in enumerate(passages)
     ) or "(no relevant NBC sources were found)"
+
+    screen_section = ""
+    if context and context.get("page"):
+        lesson = current_lesson(context)
+        screen_section = f"""
+ON SCREEN
+The user is on the "{context['page']}" page of the Finance for idiots website."""
+        if lesson:
+            screen_section += f"""
+They are reading the lesson "{lesson.get('topic', '')}", slide "{lesson.get('slide', '')}", which says:
+\"\"\"{str(lesson.get('content', ''))[:2000]}\"\"\"
+When they say "this", "that" or "explain this", they mean this lesson and slide. The slide is the
+website's own teaching text, not an NBC source: use it to understand the question, but cite only
+the NBC sources below for facts."""
+        screen_section += "\n"
 
     portfolio_section = ""
     if portfolio:
@@ -135,7 +160,7 @@ USER PROFILE
 - Goals: {profile.get('goals') or 'unknown'}
 - Risk tolerance: {profile.get('risk_tolerance') or 'unknown'}
 - Wants help with: {profile.get('looking_for') or 'unknown'}
-{portfolio_section}
+{portfolio_section}{screen_section}
 HOW TO ANSWER
 - Explain at this user's level. For beginners, define every term and use simple, everyday examples.
 - Relate explanations to the user's goals and risk tolerance when it helps.
@@ -152,7 +177,9 @@ NBC SOURCES
 @app.post("/chat")
 def chat(req: ChatRequest):
     profile = load_profiles().get(req.user_id, {})
-    passages = search_nbc(req.question)
+    # "Explain this" alone would find nothing useful, so search for the open lesson's topic too.
+    topic = current_lesson(req.context).get("topic")
+    passages = search_nbc(f"{topic}: {req.question}" if topic else req.question)
 
     # Conversation = recent history + the new question
     messages = [
@@ -163,7 +190,7 @@ def chat(req: ChatRequest):
 
     resp = llm_client.converse(
         modelId=MODEL_ID,
-        system=[{"text": build_system_prompt(profile, passages, req.portfolio)}],
+        system=[{"text": build_system_prompt(profile, passages, req.portfolio, req.context)}],
         messages=messages,
         # No temperature: some newer Claude models reject sampling parameters.
         inferenceConfig={"maxTokens": 1500},

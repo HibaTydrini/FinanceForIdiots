@@ -40,10 +40,12 @@ export async function saveProfile(answers: string[]): Promise<void> {
 // `history` must contain complete question/answer pairs only (the model requires
 // user and assistant turns to alternate).
 // `portfolio` is the demo client picked on the Portfolio page, if any.
+// `context` is what the user is looking at (page, lesson, slide), sent by the AI Phone.
 export async function sendChat(
   question: string,
   history: ChatMessage[],
   portfolio?: object,
+  context?: object,
 ): Promise<{ answer: string; sources: Source[] }> {
   const res = await fetch(`${API_URL}/chat`, {
     method: "POST",
@@ -53,6 +55,7 @@ export async function sendChat(
       question,
       history: history.map(({ role, text }) => ({ role, text })),
       portfolio: portfolio ?? null,
+      context: context ?? null,
     }),
   });
   if (!res.ok) throw new Error(`Chat failed (${res.status})`);
