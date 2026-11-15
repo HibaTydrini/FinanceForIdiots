@@ -7,6 +7,7 @@ import "./App.css";
 import App from "./App";
 import AuthPage from "./auth/AuthPage";
 import LandingPage from "./landing/LandingPage";
+import AIPhone from "./AIPhone";
 
 function Root() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -167,12 +168,15 @@ function navigate(screen: Screen) {
   
   // Dashboard
   return (
-    <App
-      authenticated={authenticated}
-      onQuizComplete={() => setQuizComplete(true)}
-      onLogout={handleLogout}
-      onLogoClick={() => navigate("landing")}
-    />
+    <>
+      <App
+        authenticated={authenticated}
+        onQuizComplete={() => setQuizComplete(true)}
+        onLogout={handleLogout}
+        onLogoClick={() => navigate("landing")}
+      />
+      <AIPhone />
+    </>
   );
 
 }

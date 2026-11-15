@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import TableOfContents from "./TableOfContents";
+import DemoPortfolio from "./DemoPortfolio";
+import type { DemoPortfolioData } from "./DemoPortfolio";
 import { levelFromKnowledge } from "./learningLevel";
 
 type Page = "onboarding" | "home" | "learning" | "profile" | "coach" | "portfolio";
@@ -106,6 +108,8 @@ function App({
       ? "home"
       : "onboarding"
   );
+  // the pretend National Bank client picked on the Portfolio page (demo), shared with the AI Coach
+  const [demoClient, setDemoClient] = useState<DemoPortfolioData | null>(null);
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<string[]>(() => {
   const saved = localStorage.getItem("financeQuizAnswers");
@@ -318,7 +322,11 @@ function navigatePage(target: Page) {
                 <span className="coach-avatar">F.</span>
                 <div>
                   <strong>Finance for idiots Coach</strong>
-                  <p>Hi! What would you like to learn today?</p>
+                  <p>
+                    {demoClient
+                      ? `Hi ${demoClient.name}! I can see your demo ${demoClient.account} portfolio. Ask me anything about it, like "Am I too concentrated?"`
+                      : "Hi! What would you like to learn today?"}
+                  </p>
                 </div>
               </div>
 
@@ -363,17 +371,12 @@ function navigatePage(target: Page) {
               Understand your investments and how they behave.
             </p>
 
-            <div className="portfolio-card">
-              <span className="feature-number">PORTFOLIO OVERVIEW</span>
-              <h2>Connect your investments</h2>
-              <p>
-                Soon, you'll be able to explore a demo portfolio,
-                understand your asset allocation and simulate market scenarios.
-              </p>
-              <button className="primary" disabled>
-                Coming soon
-              </button>
-            </div>
+            <DemoPortfolio
+              onAskCoach={(portfolio) => {
+                setDemoClient(portfolio);
+                setPage("coach");
+              }}
+            />
 
             <p className="disclaimer">
               Investment simulations are educational, not predictions

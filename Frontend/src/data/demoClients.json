@@ -1,0 +1,66 @@
+{
+  "note": "Pretend National Bank clients for the demo. Not real people or real accounts. Based on the datathon personas. Shares are in today's (split-adjusted) terms.",
+  "clients": [
+    {
+      "id": "amira",
+      "name": "Amira",
+      "age": 26,
+      "job": "Software engineer",
+      "account": "TFSA",
+      "risk": "High",
+      "horizon": "15+ years",
+      "goal": "Grow her money over the long term",
+      "preferences": ["Loves AI and new tech", "Open to crypto and big swings", "Still wants some diversification, not only tech"],
+      "holdings": [
+        { "ticker": "NVDA", "shares": 60, "bought": "2022-01-04" },
+        { "ticker": "SHOP.TO", "shares": 25, "bought": "2022-01-04" },
+        { "ticker": "QQQ", "shares": 8, "bought": "2022-01-04" },
+        { "ticker": "TSLA", "shares": 6, "bought": "2022-03-01" },
+        { "ticker": "BTC-USD", "shares": 0.05, "bought": "2022-01-04" },
+        { "ticker": "ETH-USD", "shares": 0.8, "bought": "2022-01-04" },
+        { "ticker": "XIU.TO", "shares": 30, "bought": "2023-06-01" }
+      ]
+    },
+    {
+      "id": "mateo",
+      "name": "Mateo",
+      "age": 41,
+      "job": "Operations manager",
+      "account": "RRSP",
+      "risk": "Moderate",
+      "horizon": "8 to 12 years",
+      "goal": "Balanced growth for his family",
+      "preferences": ["Cares a lot about ESG (environment, social, governance)", "Wants to avoid companies with big environmental controversies", "Not interested in very speculative bets"],
+      "holdings": [
+        { "ticker": "ESGV", "shares": 40, "bought": "2022-01-04" },
+        { "ticker": "XIU.TO", "shares": 120, "bought": "2022-01-04" },
+        { "ticker": "XBB.TO", "shares": 150, "bought": "2022-01-04" },
+        { "ticker": "FTS.TO", "shares": 40, "bought": "2022-01-04" },
+        { "ticker": "ENB.TO", "shares": 50, "bought": "2022-01-04" },
+        { "ticker": "CNQ.TO", "shares": 80, "bought": "2022-01-04" },
+        { "ticker": "XOM", "shares": 20, "bought": "2022-01-04" }
+      ]
+    },
+    {
+      "id": "robert",
+      "name": "Robert",
+      "age": 59,
+      "job": "Healthcare professional",
+      "account": "RRSP",
+      "risk": "Low to moderate",
+      "horizon": "3 to 5 years (retirement)",
+      "goal": "Protect his savings while still growing a little",
+      "preferences": ["Likes established companies he understands", "Little interest in crypto", "Sometimes tempted by companies in the news"],
+      "holdings": [
+        { "ticker": "RY.TO", "shares": 40, "bought": "2022-01-04" },
+        { "ticker": "TD.TO", "shares": 50, "bought": "2022-01-04" },
+        { "ticker": "JNJ", "shares": 15, "bought": "2022-01-04" },
+        { "ticker": "PG", "shares": 15, "bought": "2022-01-04" },
+        { "ticker": "XBB.TO", "shares": 200, "bought": "2022-01-04" },
+        { "ticker": "ZST.TO", "shares": 120, "bought": "2022-01-04" },
+        { "ticker": "CNR.TO", "shares": 15, "bought": "2022-01-04" },
+        { "ticker": "TSLA", "shares": 25, "bought": "2025-12-17" }
+      ]
+    }
+  ]
+}
