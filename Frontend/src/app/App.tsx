@@ -22,6 +22,7 @@ import {
   saveUserProfile,
   type OnboardingProfile,
 } from "../features/onboarding/onboarding";
+import NewsFeed from "../features/news/NewsFeed";
 
 type Page =
   | "onboarding"
@@ -461,6 +462,8 @@ function navigatePage(target: Page) {
                 </button>
               ))}
             </div>
+
+            <NewsFeed />
           </section>
         )}
 
