@@ -566,12 +566,12 @@
       "topics": [
         {
           "id": "risk_return",
-          "title": "Risk vs. return",
-          "summary": "Bigger possible gains come with bigger possible losses.",
+          "title": "What makes up a return",
+          "summary": "Every return pays you for three things: time, inflation and risk.",
           "levels": {
-            "novice": "Every investment has some [[risk]]: the chance it loses value. Investments that can earn a big [[return]] can usually lose a lot too, while safe ones grow slowly. Your job is to pick a level of risk you can live with. That's your [[risk tolerance]].",
-            "intermediate": "Expected return rises with risk. Risk is often measured by volatility and by maximum drawdown (the biggest fall from a peak). A good portfolio matches the risk to your goals and timeline.",
-            "expert": "Use risk-adjusted metrics such as the Sharpe and Sortino ratios, and look at drawdown and tail risk (VaR, CVaR). The efficient frontier shows the best expected return for each level of volatility."
+            "novice": "When you invest, you expect to get back more than you put in. That extra is your [[return]], and it pays you for three things: waiting ([[time premium]]), rising prices ([[inflation premium]]) and the chance of losing money ([[risk premium]]). A safe investment pays you little for risk. A risky one, like stocks, has to pay you more, or it isn't worth it.",
+            "intermediate": "Start with the risk-free rate, about what a Government of Canada treasury bill pays. It covers waiting plus expected inflation. Every other investment adds a risk premium on top: almost nothing for a GIC, a little for a company bond (the company might not pay you back), and the most for stocks (prices swing). What you keep after inflation is your [[real return]].",
+            "expert": "The Fisher equation links the parts: (1 + nominal rate) = (1 + real rate) x (1 + expected inflation), so the nominal rate is about the real rate plus inflation. The risk premium splits further into a term premium for longer maturities, a default (credit) spread, a liquidity premium, and for stocks the equity risk premium, often estimated at 4 to 6% a year over government bonds but never guaranteed. If an investment's expected return is below this sum, it doesn't pay you enough for what you take on."
           },
           "sources": [
             {
@@ -587,43 +587,43 @@
               "url": "https://www.nbc.ca/en/direct-brokerage/learning-centre/understanding-stock-market/about-shares/portfolio-diversification.html"
             }
           ],
-          "example": "A savings account is like a bike: slow but safe. Stocks are like a sports car: much faster, but you can crash. The faster you want to go, the more bumps you have to accept.",
+          "example": "Say stocks are expected to earn 7% a year. About 1% pays you for waiting, 2% keeps up with rising prices, and the last 4% pays you for the chance of losing money. A GIC at 3% has the same first two parts but almost no risk premium, so if inflation jumps to 4%, it actually loses you buying power.",
           "terms": [
             {
-              "term": "Risk",
-              "meaning": "The chance your investment loses value, or does worse than expected."
-            },
-            {
               "term": "Return",
-              "meaning": "What you gain or lose, in %."
+              "meaning": "What you gain or lose on an investment, in %."
             },
             {
-              "term": "Risk tolerance",
-              "meaning": "How much ups and downs you can handle without panicking."
+              "term": "Time premium",
+              "meaning": "The part of a return that pays you for waiting, even with no risk. Also called the real risk-free rate."
+            },
+            {
+              "term": "Inflation premium",
+              "meaning": "The part of a return that makes up for rising prices, so your money keeps its buying power."
+            },
+            {
+              "term": "Risk premium",
+              "meaning": "The extra return you ask for taking the chance of losing money."
+            },
+            {
+              "term": "Real return",
+              "meaning": "Your return after inflation: what you really gain in buying power."
             }
           ],
           "highlights": {
-            "title": "The main types of risk",
+            "title": "The three parts of a return",
             "items": [
               {
-                "name": "Market risk",
-                "detail": "The whole market drops, taking most investments with it."
+                "name": "Time premium",
+                "detail": "Pay for waiting. Your money is tied up, so you earn something even with zero risk."
               },
               {
-                "name": "Inflation risk",
-                "detail": "Your money grows slower than prices rise."
+                "name": "Inflation premium",
+                "detail": "Pay for rising prices, so your money still buys as much later."
               },
               {
-                "name": "Interest rate risk",
-                "detail": "When rates go up, existing bond prices go down."
-              },
-              {
-                "name": "Currency risk",
-                "detail": "US investments can lose value for Canadians if the US dollar falls."
-              },
-              {
-                "name": "Concentration risk",
-                "detail": "Too much money in one company or sector."
+                "name": "Risk premium",
+                "detail": "Extra pay for the chance of losing money. Almost zero for a GIC, highest for stocks."
               }
             ]
           }
