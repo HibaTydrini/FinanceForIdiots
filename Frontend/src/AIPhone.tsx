@@ -1,40 +1,27 @@
 
 import { useEffect, useRef, useState } from "react";
 import "./AIPhone.css";
+import { sendChat } from "./api";
+import type { Source } from "./api";
+import { shortUrl, withSourceLinks } from "./chatText";
+import { usePageContext } from "./pageContext";
+import { coachContext, readQuizAnswers, useBabySteps } from "./babyStepsStore";
+
+// Answers come from the same backend as the AI Coach page (backend/app.py: NBC knowledge
+// base + the user's quiz profile). The phone keeps its own conversation.
 
 type Message = {
     id: number;
     role: "user" | "assistant";
     text: string;
+    sources?: Source[];
 };
 
 const welcomeMessage: Message = {
     id: 1,
     role: "assistant",
-    text: "Hi! I'm your Finance for idiots AI coach. Ask me anything about investing!",
+    text: "Hi! I'm your Finance for idiots AI coach. Ask me anything about investing, wherever you are on the site. My answers come from National Bank's website.",
 };
-
-function getDemoReply(question: string): string {
-    const text = question.toLowerCase();
-
-    if (text.includes("portfolio")) {
-        return "Your portfolio is the collection of investments you own. I can help you understand diversification and risk!";
-    }
-
-    if (text.includes("risk")) {
-        return "Investment risk is the possibility of losing money. Different investments have different levels of risk.";
-    }
-
-    if (text.includes("stock")) {
-        return "A stock represents partial ownership in a company. Its price can increase or decrease over time.";
-    }
-
-    if (text.includes("etf")) {
-        return "An ETF is a fund containing multiple investments. It can be a useful way to diversify your portfolio.";
-    }
-
-    return "I'm currently a demo chatbot! Once my AI agent is connected, I'll be able to answer your questions in more detail.";
-}
 
 export default function AIPhone() {
     const [expanded, setExpanded] = useState(false);
@@ -44,9 +31,11 @@ export default function AIPhone() {
     ]);
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    const { page, lesson, step } = usePageContext();
+    const { state: babySteps } = useBabySteps();
 
     const bottomRef = useRef<HTMLDivElement>(null);
-    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const nextId = useRef(2);
 
     useEffect(() => {
@@ -56,20 +45,16 @@ export default function AIPhone() {
                 block: "nearest",
             });
         }
-    }, [messages, expanded, loading]);
+    }, [messages, expanded, loading, error]);
 
-    useEffect(() => {
-        return () => {
-            if (timerRef.current !== null) {
-                clearTimeout(timerRef.current);
-            }
-        };
-    }, []);
-
-    function sendMessage() {
+    async function sendMessage() {
         const question = input.trim();
 
         if (!question || loading) return;
+
+        // Earlier questions and answers, so follow-ups work. The welcome message is left out:
+        // the conversation sent to the model must start with a question.
+        const history = messages.filter((m) => m.id !== welcomeMessage.id);
 
         const newMessage: Message = {
             id: nextId.current++,
@@ -79,19 +64,31 @@ export default function AIPhone() {
 
         setMessages((old) => [...old, newMessage]);
         setInput("");
+        setError("");
         setLoading(true);
 
-        timerRef.current = setTimeout(() => {
+        try {
+            // Send what's on screen so questions like "explain this" make sense.
+            // Baby Steps progress and plan go along too, so "what should I do next?" works.
+            const progress = coachContext(babySteps, readQuizAnswers(), step);
+            const context = page ? { page, lesson, ...progress } : progress;
+            const { answer, sources } = await sendChat(question, history, undefined, context);
             const reply: Message = {
                 id: nextId.current++,
                 role: "assistant",
-                text: getDemoReply(question),
+                text: answer,
+                sources,
             };
-
             setMessages((old) => [...old, reply]);
+        } catch {
+            // Remove the unanswered question so questions and answers stay in pairs,
+            // and put it back in the box so the user can resend it.
+            setMessages((old) => old.filter((m) => m.id !== newMessage.id));
+            setInput(question);
+            setError("I couldn't answer right now. Is the backend running? Try again.");
+        } finally {
             setLoading(false);
-            timerRef.current = null;
-        }, 900);
+        }
     }
 
     // When hidden, display only the restore button
@@ -142,7 +139,7 @@ export default function AIPhone() {
                                     <div className="ai-phone-avatar">FI</div>
                                     <div>
                                         <strong>Finance AI</strong>
-                                        <small>● Demo assistant</small>
+                                        <small>● Answers from NBC</small>
                                     </div>
                                 </div>
 
@@ -165,7 +162,19 @@ export default function AIPhone() {
                                         className={`ai-phone-message ${message.role}`}
                                     >
                                         <div className="ai-phone-bubble">
-                                            {message.text}
+                                            {withSourceLinks(message.text, message.sources)}
+
+                                            {message.sources && message.sources.length > 0 && (
+                                                <ol className="ai-phone-sources">
+                                                    {message.sources.map((source) => (
+                                                        <li key={source.n}>
+                                                            <a href={source.url} target="_blank" rel="noreferrer">
+                                                                {shortUrl(source.url)}
+                                                            </a>
+                                                        </li>
+                                                    ))}
+                                                </ol>
+                                            )}
                                         </div>
                                     </div>
                                 ))}
@@ -178,8 +187,20 @@ export default function AIPhone() {
                                     </div>
                                 )}
 
+                                {error && (
+                                    <div className="ai-phone-error" role="alert">
+                                        {error}
+                                    </div>
+                                )}
+
                                 <div ref={bottomRef} />
                             </div>
+
+                            {lesson && (
+                                <div className="ai-phone-context" title="The coach can see this lesson. Ask &quot;explain this&quot;.">
+                                    Looking at: <strong>{lesson.topic}</strong> · {lesson.slide}
+                                </div>
+                            )}
 
                             <form
                                 className="ai-phone-input"
@@ -206,7 +227,7 @@ export default function AIPhone() {
                             </form>
 
                             <div className="ai-phone-disclaimer">
-                                Educational information only.
+                                Educational, not financial advice. Check the sources.
                             </div>
                         </div>
                     )}

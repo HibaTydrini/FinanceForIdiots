@@ -2,6 +2,9 @@
 // Set VITE_API_URL in Frontend/.env to point at a deployed backend; defaults to the local one.
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
+import type { Plan, StepInfo } from "./babyStepsStore";
+import type { Lesson } from "./pageContext";
+
 export type Source = { n: number; url: string };
 export type ChatMessage = { role: "user" | "assistant"; text: string; sources?: Source[] };
 
@@ -37,13 +40,25 @@ export async function saveProfile(answers: string[]): Promise<void> {
   if (!res.ok) throw new Error(`Saving profile failed (${res.status})`);
 }
 
+// What the chatbot is told about where the user is. Every field is optional.
+export type ChatContext = {
+  page?: string;                 // page name (AI Phone)
+  lesson?: Lesson | null;        // lesson slide on screen (AI Phone)
+  step?: StepInfo | null;        // Baby Step the user is on
+  plan?: Plan;                   // their saved plan (My Plan)
+  completedSteps?: string[];     // ids of finished Baby Steps
+  nextAction?: string;           // the next unfinished thing, in words
+};
+
 // `history` must contain complete question/answer pairs only (the model requires
 // user and assistant turns to alternate).
 // `portfolio` is the demo client picked on the Portfolio page, if any.
+// `context` is what the user is looking at (page, lesson, slide) and where they are in Baby Steps.
 export async function sendChat(
   question: string,
   history: ChatMessage[],
   portfolio?: object,
+  context?: ChatContext,
 ): Promise<{ answer: string; sources: Source[] }> {
   const res = await fetch(`${API_URL}/chat`, {
     method: "POST",
@@ -53,6 +68,7 @@ export async function sendChat(
       question,
       history: history.map(({ role, text }) => ({ role, text })),
       portfolio: portfolio ?? null,
+      context: context ?? null,
     }),
   });
   if (!res.ok) throw new Error(`Chat failed (${res.status})`);

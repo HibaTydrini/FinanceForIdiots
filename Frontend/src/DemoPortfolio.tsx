@@ -37,9 +37,11 @@ const pct = (n: number) => `${n > 0 ? "+" : ""}${n}%`;
 
 type Props = {
   onAskCoach?: (p: DemoPortfolioData) => void;
+  // Called when a demo client is connected (Baby Steps uses it to complete its "Practise" step).
+  onConnect?: (clientId: string) => void;
 };
 
-export default function DemoPortfolio({ onAskCoach }: Props) {
+export default function DemoPortfolio({ onAskCoach, onConnect }: Props) {
   const [clientId, setClientId] = useState<string | null>(null);
   const [connecting, setConnecting] = useState(false);
   const [showContext, setShowContext] = useState(false);
@@ -59,6 +61,7 @@ export default function DemoPortfolio({ onAskCoach }: Props) {
   function connect(id: string) {
     setConnecting(true);
     setClientId(id);
+    onConnect?.(id);
     window.setTimeout(() => setConnecting(false), 1100);
   }
 

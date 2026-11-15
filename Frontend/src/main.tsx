@@ -8,47 +8,55 @@ import App from "./App";
 import AuthPage from "./auth/AuthPage";
 import LandingPage from "./landing/LandingPage";
 import AIPhone from "./AIPhone";
-
-function Root() {
-  const [authenticated, setAuthenticated] = useState(false);
-  const [checking, setChecking] = useState(true);
+import { resetBabySteps } from "./babyStepsStore";
 
 type Screen = "landing" | "login" | "signup" | "dashboard";
 
-const getScreen = (): Screen => {
+function getScreen(): Screen {
   const value = window.location.hash.slice(1).split("/")[0];
 
-  if (value === "login" || value === "signup" || value === "dashboard") {
+  if (
+    value === "login" ||
+    value === "signup" ||
+    value === "dashboard"
+  ) {
     return value;
   }
 
   return "landing";
-};
-
-const [screen, setScreen] = useState<Screen>(getScreen);
-
-useEffect(() => {
-  const handleNavigation = () => setScreen(getScreen());
-
-  window.addEventListener("hashchange", handleNavigation);
-
-  return () => window.removeEventListener("hashchange", handleNavigation);
-}, []);
-
-function navigate(screen: Screen) {
-  window.location.hash = screen === "dashboard" ? "dashboard/home" : screen;
-  setScreen(screen);
 }
 
+// The app's entry file: it renders Root and exports nothing, so fast refresh doesn't apply here.
+// eslint-disable-next-line react-refresh/only-export-components
+function Root() {
+  const [authenticated, setAuthenticated] = useState(false);
+  const [checking, setChecking] = useState(true);
+  const [signupQuestions, setSignupQuestions] = useState(false);
 
+  const [screen, setScreen] = useState<Screen>(getScreen);
 
   const [quizComplete, setQuizComplete] = useState(
     () => localStorage.getItem("financeQuizAnswers") !== null
   );
 
-  const [nbcComplete, setNbcComplete] = useState(
-    () => sessionStorage.getItem("financeNbcChoice") !== null
-  );
+  const [nbcComplete, setNbcComplete] = useState(true);
+
+  useEffect(() => {
+    const handleNavigation = () => setScreen(getScreen());
+
+    window.addEventListener("hashchange", handleNavigation);
+
+    return () => {
+      window.removeEventListener("hashchange", handleNavigation);
+    };
+  }, []);
+
+  function navigate(target: Screen) {
+    window.location.hash =
+      target === "dashboard" ? "dashboard/home" : target;
+
+    setScreen(target);
+  }
 
   useEffect(() => {
     getCurrentUser()
@@ -60,14 +68,37 @@ function navigate(screen: Screen) {
   async function handleLogout() {
     try {
       await signOut();
+
       setAuthenticated(false);
-      navigate("landing");
+      setSignupQuestions(false);
+      setQuizComplete(
+        localStorage.getItem("financeQuizAnswers") !== null
+      );
 
       sessionStorage.removeItem("financeNbcChoice");
-      setNbcComplete(false);
+      setNbcComplete(true);
+
+      navigate("landing");
     } catch (error) {
       console.error("Sign out failed:", error);
     }
+  }
+
+  function handleAuthenticated(method: "login" | "signup") {
+    setAuthenticated(true);
+
+    if (method === "signup") {
+      localStorage.removeItem("financeQuizAnswers");
+      resetBabySteps(); // a new account starts Baby Steps from step 1
+      setSignupQuestions(true);
+      setQuizComplete(false);
+    } else {
+      setSignupQuestions(false);
+      setQuizComplete(true);
+    }
+
+    setNbcComplete(true);
+    navigate("dashboard");
   }
 
   if (checking) {
@@ -75,7 +106,8 @@ function navigate(screen: Screen) {
   }
 
   // Public homepage
-  if (screen === "landing") {    return (
+  if (screen === "landing") {
+    return (
       <LandingPage
         onLogin={() => navigate("login")}
         onSignup={() => navigate("signup")}
@@ -83,45 +115,42 @@ function navigate(screen: Screen) {
     );
   }
 
-  // Cognito login/signup
+  // Cognito login and signup
   if (!authenticated) {
     return (
       <AuthPage
         key={screen}
         initialMode={screen === "signup" ? "signup" : "login"}
         onHome={() => navigate("landing")}
-        onAuthenticated={() => {
-          setAuthenticated(true);
-          setQuizComplete(true);
-          setNbcComplete(true);
-          navigate("dashboard");
-        }}
+        onAuthenticated={handleAuthenticated}
       />
     );
   }
 
-  // Quiz after authentication
-  if (!quizComplete ) {
+  // Investment questions only after signup
+  if (signupQuestions && !quizComplete) {
     return (
       <App
         authenticated={authenticated}
-        onQuizComplete={() => setQuizComplete(true)}
+        showOnboarding={true}
+        onQuizComplete={() => {
+          setQuizComplete(true);
+          setSignupQuestions(false);
+          // New users start on the guided path instead of the home page.
+          window.location.hash = "dashboard/steps";
+        }}
         onLogout={handleLogout}
         onLogoClick={() => navigate("landing")}
       />
     );
   }
 
-
   // National Bank or demo selection
   if (!nbcComplete) {
     return (
       <div className="nbc-page">
         <header className="nbc-header">
-          <div
-            className="nbc-brand"
-            onClick={handleLogout}
-          >
+          <div className="nbc-brand" onClick={handleLogout}>
             <span className="nbc-logo">FI</span>
             <span>Finance for idiots</span>
           </div>
@@ -142,7 +171,9 @@ function navigate(screen: Screen) {
               <button
                 className="nbc-primary"
                 onClick={() => {
-                  alert("National Bank account connection is coming soon.");
+                  alert(
+                    "National Bank account connection is coming soon."
+                  );
                 }}
               >
                 Connect my National Bank account
@@ -164,13 +195,12 @@ function navigate(screen: Screen) {
     );
   }
 
-
-  
   // Dashboard
   return (
     <>
       <App
         authenticated={authenticated}
+      showOnboarding={false}
         onQuizComplete={() => setQuizComplete(true)}
         onLogout={handleLogout}
         onLogoClick={() => navigate("landing")}
@@ -178,7 +208,6 @@ function navigate(screen: Screen) {
       <AIPhone />
     </>
   );
-
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

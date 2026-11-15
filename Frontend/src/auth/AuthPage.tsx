@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   signIn,
@@ -10,7 +11,7 @@ import "./AuthPage.css";
 type Mode = "login" | "signup" | "forgot" | "reset";
 
 type Props = {
-  onAuthenticated: () => void;
+  onAuthenticated: (method: "login" | "signup") => void;
   initialMode: "login" | "signup";
   onHome: () => void;
 };
@@ -67,7 +68,7 @@ export default function AuthPage({
           });
 
           if (loginResult.isSignedIn) {
-            onAuthenticated();
+            onAuthenticated("signup");
           } else {
             changeMode("login");
             setNotice("Account created! Please log in.");
@@ -86,7 +87,7 @@ export default function AuthPage({
         });
 
         if (result.isSignedIn) {
-          onAuthenticated();
+          onAuthenticated("login");
         } else if (
           result.nextStep.signInStep === "CONFIRM_SIGN_UP"
         ) {

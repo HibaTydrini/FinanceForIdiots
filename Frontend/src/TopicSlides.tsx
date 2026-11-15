@@ -8,9 +8,10 @@
 // Key words are underlined inside the text (RichText.tsx): hover or tap to see the meaning.
 // A slide is skipped when the topic has nothing for it.
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { KeyboardEvent, ReactNode } from "react";
 import type { Level } from "./learningLevel";
+import { clearCurrentLesson, setCurrentLesson } from "./pageContext";
 import Icon from "./Icon";
 import { CHARTS } from "./charts";
 import { SCENES } from "./scenes";
@@ -29,7 +30,8 @@ export type Topic = {
   action?: { label: string; page: string };
 };
 
-type Slide = { key: string; label: string; body: ReactNode };
+// `text` is the slide's content as plain text, sent to the AI Phone (pageContext.ts).
+type Slide = { key: string; label: string; body: ReactNode; text: string };
 
 type Props = {
   topic: Topic;
@@ -44,6 +46,7 @@ export default function TopicSlides({ topic: t, level, onNavigate }: Props) {
     {
       key: "idea",
       label: "The idea",
+      text: t.levels[level],
       body: (
         <div className="slide-idea">
           <div className="slide-icon">
@@ -65,6 +68,7 @@ export default function TopicSlides({ topic: t, level, onNavigate }: Props) {
     slides.push({
       key: "picture",
       label: "See it",
+      text: picture.caption,
       body: (
         <figure className="slide-picture">
           {picture.art}
@@ -78,6 +82,7 @@ export default function TopicSlides({ topic: t, level, onNavigate }: Props) {
     slides.push({
       key: "example",
       label: "Example",
+      text: t.example,
       body: (
         <div className="slide-example">
           <div className="slide-icon small">
@@ -98,6 +103,7 @@ export default function TopicSlides({ topic: t, level, onNavigate }: Props) {
     slides.push({
       key: "highlights",
       label: t.highlights.title,
+      text: t.highlights.items.map((item) => `${item.name}: ${item.detail}`).join("\n"),
       body: (
         <div>
           <h3>{t.highlights.title}</h3>
@@ -117,6 +123,13 @@ export default function TopicSlides({ topic: t, level, onNavigate }: Props) {
   const last = slides.length - 1;
   const current = Math.min(index, last);
   const go = (i: number) => setIndex(Math.max(0, Math.min(last, i)));
+
+  // Tell the AI Phone which lesson and slide are on screen, so "explain this" works.
+  const slide = slides[current];
+  useEffect(() => {
+    setCurrentLesson({ id: t.id, topic: t.title, slide: slide.label, content: slide.text });
+  }, [t.id, t.title, slide.label, slide.text]);
+  useEffect(() => () => clearCurrentLesson(t.id), [t.id]);
 
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
     if (e.key === "ArrowRight") go(current + 1);
