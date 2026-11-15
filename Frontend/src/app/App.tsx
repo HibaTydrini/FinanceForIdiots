@@ -32,7 +32,6 @@ type Page =
   | "steps"
   | "plan"
   | "learning"
-  | "news"
   | "profile"
   | "coach"
   | "portfolio";
@@ -45,7 +44,6 @@ const PAGE_NAMES: Record<Page, string> = {
   steps: "Baby Steps (guided path for beginners)",
   plan: "My Plan",
   learning: "My Learning Path",
-  news: "Market News",
   profile: "My Investor Profile",
   coach: "AI Coach",
   portfolio: "My Portfolio (demo portfolios)",
@@ -88,12 +86,6 @@ const features = [
     description: "Understand your investments and explore scenarios.",
     page: "portfolio" as Page,
   },
-  {
-    number: "07",
-    title: "Market News",
-    description: "See financial headlines and trusted market-news sources.",
-    page: "news" as Page,
-  },
 ];
 
 
@@ -106,7 +98,6 @@ function pageFromHash(): Page | null {
     target === "steps" ||
     target === "plan" ||
     target === "learning" ||
-    target === "news" ||
     target === "profile" ||
     target === "coach" ||
     target === "portfolio"
@@ -286,7 +277,6 @@ function navigatePage(target: Page) {
             <button onClick={() => navigatePage("steps")}>Baby Steps</button>
             <button onClick={() => navigatePage("plan")}>My Plan</button>
             <button onClick={() => navigatePage("learning")}>Learn</button>
-            <button onClick={() => navigatePage("news")}>News</button>
             <button onClick={() => navigatePage("profile")}>Profile</button>
             <button onClick={() => navigatePage("coach")}>AI Coach</button>
             <button onClick={() => navigatePage("portfolio")}>Portfolio</button>
@@ -491,17 +481,6 @@ function navigatePage(target: Page) {
               onNavigate={(target) => navigatePage(target as Page)}
               onAskCoach={askCoach}
             />
-          </section>
-        )}
-
-        {page === "news" && (
-          <section>
-            <p className="eyebrow">UNDERSTAND WHAT'S HAPPENING</p>
-            <h1>Market News</h1>
-            <p className="subtitle">
-              Explore financial headlines, then ask the AI Coach to explain unfamiliar terms.
-            </p>
-            <NewsFeed />
           </section>
         )}
 
