@@ -10,6 +10,7 @@ import type { ChatMessage } from "./api";
 import { setCurrentPage } from "./pageContext";
 import BabySteps from "./BabySteps";
 import MyPlan from "./MyPlan";
+import NewsFeed from "./NewsFeed";
 import { formatDate, getSteps, markDemoConnected, nextThing, useBabySteps } from "./babyStepsStore";
 
 // What the AI Coach is told about the demo client picked on the Portfolio page.
@@ -391,6 +392,8 @@ function navigatePage(target: Page) {
                 </button>
               ))}
             </div>
+
+            <NewsFeed />
           </section>
         )}
 

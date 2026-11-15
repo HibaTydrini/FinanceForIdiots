@@ -9,6 +9,7 @@ FastAPI service that answers investing questions using the NBC content in an Ama
 | POST | `/profile` | Save a user's onboarding answers |
 | GET | `/profile/{user_id}` | Read them back |
 | POST | `/chat` | Answer `{ user_id, question, history }` using the NBC knowledge base and the profile; returns `{ answer, sources }` |
+| GET | `/news?limit=6` | Latest market headlines from Finnhub, cached 15 minutes; returns `{ items, updated }`. Needs `FINNHUB_API_KEY` (free at finnhub.io), otherwise 503 and the Home page hides the news section |
 
 Profiles are stored in `profiles.json` (ignored by git). Swap for DynamoDB later.
 
@@ -22,6 +23,7 @@ pip install -r requirements.txt
 export AWS_REGION=us-east-1
 export KB_ID=<knowledge base ID>
 export MODEL_ID=<model ID from Bedrock > Model catalog>
+export FINNHUB_API_KEY=<free key from finnhub.io>   # optional, for /news
 uvicorn app:app --reload --port 8000
 ```
 

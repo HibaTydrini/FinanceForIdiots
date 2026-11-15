@@ -74,3 +74,21 @@ export async function sendChat(
   if (!res.ok) throw new Error(`Chat failed (${res.status})`);
   return res.json();
 }
+
+// Latest market headlines for the Home page (backend GET /news, from Finnhub).
+export type NewsItem = {
+  id: number | null;
+  headline: string;
+  summary: string;
+  source: string;
+  url: string;
+  image: string | null;
+  datetime: number | null; // Unix seconds
+};
+
+export async function fetchNews(limit = 6): Promise<NewsItem[]> {
+  const res = await fetch(`${API_URL}/news?limit=${limit}`);
+  if (!res.ok) throw new Error(`News failed (${res.status})`);
+  const data: { items: NewsItem[] } = await res.json();
+  return data.items;
+}
