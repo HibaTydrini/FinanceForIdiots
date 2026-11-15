@@ -2,7 +2,7 @@
 // Set VITE_API_URL in Frontend/.env to point at a deployed backend; defaults to the local one.
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
-import type { Plan, StepInfo } from "../planning/babyStepsStore";
+import type { BabyState, Plan, StepInfo } from "../planning/babyStepsStore";
 import type { Lesson } from "../../app/pageContext";
 import { getActiveUserId, type OnboardingProfile } from "../onboarding/onboarding";
 
@@ -38,6 +38,95 @@ export async function saveProfile(profile: OnboardingProfile): Promise<void> {
   if (!res.ok) throw new Error(`Saving profile failed (${res.status})`);
 }
 
+// ---------- progress (Baby Steps, plan, weekly email opt-in), saved on the server ----------
+
+export type EmailSettings = { address: string; consent: boolean };
+
+// Every field is optional: the server only replaces the parts that are sent.
+export type ProgressUpdate = {
+  state?: BabyState;
+  answers?: string[];
+  nextAction?: string;
+  nextActionId?: string; // "" when the next thing isn't an action that can be ticked
+  actions?: { id: string; label: string; step: string }[];
+  email?: EmailSettings;
+  timeZone?: string; // the browser's, so calendar tasks land at the right local time
+};
+
+export type ServerProgress = { state?: Partial<BabyState>; email?: EmailSettings };
+
+async function errorMessage(res: Response, fallback: string): Promise<string> {
+  try {
+    const body = await res.json();
+    if (typeof body.detail === "string") return body.detail;
+  } catch {
+    // not JSON: use the fallback
+  }
+  return `${fallback} (${res.status})`;
+}
+
+export async function putProgress(update: ProgressUpdate): Promise<void> {
+  const res = await fetch(`${API_URL}/progress/${encodeURIComponent(getUserId())}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(update),
+  });
+  if (!res.ok) throw new Error(await errorMessage(res, "Saving progress failed"));
+}
+
+// null when the server has nothing saved for this user yet.
+export async function getProgress(): Promise<ServerProgress | null> {
+  const res = await fetch(`${API_URL}/progress/${encodeURIComponent(getUserId())}`);
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(await errorMessage(res, "Reading progress failed"));
+  return res.json();
+}
+
+// Sends the weekly check-in email now (the demo trigger). Returns where it went and its opening text.
+export async function sendCheckin(): Promise<{ to: string; nudge: string; booked: CalendarTask | null }> {
+  const res = await fetch(`${API_URL}/checkins/send/${encodeURIComponent(getUserId())}`, { method: "POST" });
+  if (!res.ok) throw new Error(await errorMessage(res, "Sending the check-in failed"));
+  return res.json();
+}
+
+// ---------- Google Calendar (the AI agent adds tasks to a "Finance For Dummies" calendar) ----------
+
+export type CalendarTask = { title: string; start: string; link?: string };
+export type CalendarStatus = { configured: boolean; connected: boolean; upcoming: CalendarTask[] };
+
+// Where the "Connect Google Calendar" button goes (the backend sends the user on to Google).
+export function googleConnectUrl(): string {
+  return `${API_URL}/google/connect/${encodeURIComponent(getUserId())}`;
+}
+
+export async function getCalendarStatus(): Promise<CalendarStatus> {
+  const res = await fetch(`${API_URL}/google/status/${encodeURIComponent(getUserId())}`);
+  if (!res.ok) throw new Error(await errorMessage(res, "Reading the calendar status failed"));
+  return res.json();
+}
+
+export async function disconnectCalendar(): Promise<void> {
+  const res = await fetch(`${API_URL}/google/disconnect/${encodeURIComponent(getUserId())}`, { method: "POST" });
+  if (!res.ok) throw new Error(await errorMessage(res, "Disconnecting failed"));
+}
+
+// ---------- Activity feed: what the coach did, and why (Home page) ----------
+
+export type Activity = {
+  at: string; // ISO time (UTC)
+  kind: "email" | "calendar" | "skip" | "tick" | "answer" | "settings";
+  title: string;
+  reason: string;
+  by: "own" | "asked"; // on its own, or because the user asked
+  link?: string;
+};
+
+export async function getActivity(): Promise<Activity[]> {
+  const res = await fetch(`${API_URL}/activity/${encodeURIComponent(getUserId())}`);
+  if (!res.ok) throw new Error(await errorMessage(res, "Reading the activity failed"));
+  return (await res.json()).activity;
+}
+
 // What the chatbot is told about where the user is. Every field is optional.
 export type ChatContext = {
   page?: string;                 // page name (AI Phone)
@@ -57,7 +146,7 @@ export async function sendChat(
   history: ChatMessage[],
   portfolio?: object,
   context?: ChatContext,
-): Promise<{ answer: string; sources: Source[] }> {
+): Promise<{ answer: string; sources: Source[]; tasks?: CalendarTask[] }> {
   const res = await fetch(`${API_URL}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

@@ -221,3 +221,8 @@ __marimo__/
 
 # Chatbot user profiles (local demo storage)
 profiles.json
+# Baby Steps progress and check-in email addresses (local demo storage)
+progress.json
+
+# Backend start script with credentials
+backend/start.ps1
