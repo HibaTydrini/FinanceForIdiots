@@ -3,10 +3,13 @@
 // with real numbers worked out from the datathon market data (scripts/build_demo_accounts.py).
 // Nothing here is a real person or a real bank connection.
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import data from "./data/demoPortfolios.json";
 import { C } from "./chartColors";
 import PortfolioChart from "./PortfolioChart";
+import NextIdeas from "./NextIdeas";
+import { demoInsights, fetchCoachInsights } from "./coachInsights";
+import type { CoachInsights } from "./coachInsights";
 import "./DemoPortfolio.css";
 
 export type DemoPortfolioData = (typeof data.portfolios)[number];
@@ -40,6 +43,18 @@ export default function DemoPortfolio({ onAskCoach }: Props) {
   const [clientId, setClientId] = useState<string | null>(null);
   const [connecting, setConnecting] = useState(false);
   const [showContext, setShowContext] = useState(false);
+  // the AI Coach's own "What stands out" and ideas, once the chatbot answers (see coachInsights.ts)
+  const [coach, setCoach] = useState<{ id: string; insights: CoachInsights } | null>(null);
+
+  useEffect(() => {
+    const picked = PORTFOLIOS.find((x) => x.id === clientId);
+    if (!picked) return;
+    const stop = new AbortController();
+    fetchCoachInsights(picked, stop.signal).then((r) => {
+      if (r) setCoach({ id: picked.id, insights: r });
+    });
+    return () => stop.abort();
+  }, [clientId]);
 
   function connect(id: string) {
     setConnecting(true);
@@ -101,7 +116,9 @@ export default function DemoPortfolio({ onAskCoach }: Props) {
 
   const t = p.totals;
   const gainCad = t.valueCad + t.dividendsCad - t.investedCad;
-  const facts = [...p.facts].sort((a, b) => order(a.level) - order(b.level));
+  // the chatbot's version when it has answered for this client, otherwise the hardcoded demo version
+  const insights = coach?.id === p.id ? coach.insights : demoInsights(p);
+  const facts = [...insights.facts].sort((a, b) => order(a.level) - order(b.level));
 
   return (
     <div className="demo">
@@ -146,12 +163,16 @@ export default function DemoPortfolio({ onAskCoach }: Props) {
           )}
         </section>
 
-        <section className="demo-card">
-          <h3>What you own, by type</h3>
-          <Bars items={p.mix.assetClass.map((m) => ({ label: CLASS_NAMES[m.name] ?? m.name, pct: m.pct, color: CLASS_COLORS[m.name] ?? C.grey }))} />
-          <h3>By sector</h3>
-          <Bars items={p.mix.sector.slice(0, 6).map((m) => ({ label: shortSector(m.name), pct: m.pct, color: C.blue }))} />
-        </section>
+        <div className="demo-side">
+          <section className="demo-card">
+            <h3>What you own, by type</h3>
+            <Bars items={p.mix.assetClass.map((m) => ({ label: CLASS_NAMES[m.name] ?? m.name, pct: m.pct, color: CLASS_COLORS[m.name] ?? C.grey }))} />
+            <h3>By sector</h3>
+            <Bars items={p.mix.sector.slice(0, 6).map((m) => ({ label: shortSector(m.name), pct: m.pct, color: C.blue }))} />
+          </section>
+
+          <NextIdeas key={p.id} plan={insights.ideas} />
+        </div>
       </div>
 
       <section className="demo-card">

@@ -641,3 +641,224 @@
     padding: 7px 9px;
   }
 }
+
+/* "Ideas for your next $1,000" wheel (NextIdeas.tsx) */
+.ideas-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ideas-head h3 {
+  margin: 0;
+}
+
+.ideas-badge {
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #fcf3f4;
+  color: #cf1726;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.ideas-sub {
+  margin: 6px 0 14px;
+  font-size: 14px;
+  color: #6b6b6b;
+}
+
+.ideas-body {
+  display: grid;
+  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  gap: 28px;
+  align-items: center;
+}
+
+.ideas-wheel {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.ideas-slice {
+  cursor: pointer;
+  outline: none;
+}
+
+.ideas-slice path {
+  transition: opacity 0.15s;
+}
+
+.ideas-slice:focus-visible path {
+  stroke: #252525;
+  stroke-width: 3;
+}
+
+.ideas-pct {
+  font-size: 13px;
+  font-weight: 800;
+  pointer-events: none;
+}
+
+.ideas-center-amount {
+  font-size: 22px;
+  font-weight: 800;
+  fill: #252525;
+}
+
+.ideas-center-label {
+  font-size: 12px;
+  fill: #6b6b6b;
+}
+
+.ideas-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ideas-type {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6b6b6b;
+}
+
+.ideas-type i {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+  flex: none;
+}
+
+.ideas-name {
+  font-size: 20px;
+  color: #252525;
+  line-height: 1.3;
+}
+
+.ideas-meta {
+  font-size: 13px;
+  color: #9a9a9a;
+}
+
+.ideas-why {
+  margin: 8px 0 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border-left: 4px solid #2a78d6;
+  background: #f5efe6;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: #252525;
+  transition: border-color 0.15s;
+}
+
+.ideas-why b {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #6b6b6b;
+  margin-bottom: 3px;
+}
+
+.ideas-tip {
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border-left: 4px solid #eb6834;
+  background: #f5efe6;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #333333;
+}
+
+.ideas-tip b {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #6b6b6b;
+  margin-bottom: 2px;
+}
+
+@media (max-width: 800px) {
+  .ideas-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .ideas-wheel {
+    max-width: 240px;
+  }
+}
+
+/* right column: what you own + ideas wheel stacked; the wheel sits above its details there */
+.demo-side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+/* both columns end at the same height: the ideas card fills what is left on the right */
+.demo-grid {
+  align-items: stretch;
+}
+
+.demo-side .ideas {
+  flex: 1;
+  padding: 20px 22px;
+}
+
+.demo-side .ideas-sub {
+  margin: 4px 0 10px;
+  font-size: 13px;
+}
+
+.demo-side .ideas-body {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+
+.demo-side .ideas-wheel {
+  max-width: 170px;
+}
+
+/* the small wheel is scaled down, so its text is drawn larger to stay readable */
+.demo-side .ideas-pct {
+  font-size: 18px;
+}
+
+.demo-side .ideas-center-amount {
+  font-size: 30px;
+}
+
+.demo-side .ideas-center-label {
+  font-size: 16px;
+}
+
+.demo-side .ideas-name {
+  font-size: 16px;
+}
+
+.demo-side .ideas-why {
+  font-size: 13.5px;
+  padding: 10px 12px;
+}
+
+.demo-side .ideas .disclaimer {
+  margin: 10px 0 0;
+  font-size: 11.5px;
+}
