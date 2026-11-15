@@ -21,3 +21,15 @@ input {
 button {
   cursor: pointer;
 }
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+  background-color: #f5efe6;
+}
+
+body {
+  background-color: #f5efe6;
+}
