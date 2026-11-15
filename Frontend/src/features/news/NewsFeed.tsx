@@ -13,8 +13,38 @@ function timeAgo(seconds: number | null): string {
   return `${Math.round(hours / 24)} d ago`;
 }
 
-// Latest market headlines on the Home page. Each one links to the original article.
-// Hidden entirely if the backend has no Finnhub key or can't be reached.
+const FALLBACK_SOURCES: NewsItem[] = [
+  {
+    id: -1,
+    url: "https://www.bankofcanada.ca/news/",
+    source: "Bank of Canada",
+    headline: "Latest Canadian economic and interest-rate news",
+    summary: "Read official Bank of Canada announcements, speeches and updates.",
+    image: null,
+    datetime: null,
+  },
+  {
+    id: -2,
+    url: "https://www.cbc.ca/news/business",
+    source: "CBC Business",
+    headline: "Business and market news from Canada",
+    summary: "Follow Canadian companies, markets and the economy.",
+    image: null,
+    datetime: null,
+  },
+  {
+    id: -3,
+    url: "https://www.reuters.com/markets/",
+    source: "Reuters Markets",
+    headline: "Global markets coverage",
+    summary: "Explore current reporting on stocks, bonds, currencies and commodities.",
+    image: null,
+    datetime: null,
+  },
+];
+
+// Latest market headlines. When the optional live-news backend is unavailable,
+// keep the feature visible with links to reputable news destinations.
 export default function NewsFeed() {
   const [items, setItems] = useState<NewsItem[] | null>(null);
   const [failed, setFailed] = useState(false);
@@ -32,20 +62,23 @@ export default function NewsFeed() {
     };
   }, []);
 
-  if (failed || (items && items.length === 0)) return null;
+  const showingFallback = failed || (items !== null && items.length === 0);
+  const visibleItems = showingFallback ? FALLBACK_SOURCES : items;
 
   return (
     <section className="news">
       <p className="eyebrow">IN THE NEWS TODAY</p>
       <h2>What's moving the markets</h2>
       <p className="news-intro">
-        Headlines from around the financial world. Curious what one means? Ask the AI Coach.
+        {showingFallback
+          ? "The live feed is temporarily unavailable. You can still explore these trusted market-news sources."
+          : "Headlines from around the financial world. Curious what one means? Ask the AI Coach."}
       </p>
 
       <div className="news-grid">
-        {items === null
+        {visibleItems === null
           ? Array.from({ length: 3 }, (_, i) => <div key={i} className="news-card news-loading" />)
-          : items.map((item) => (
+          : visibleItems.map((item) => (
               <a
                 key={item.id ?? item.url}
                 className="news-card"
@@ -76,7 +109,7 @@ export default function NewsFeed() {
       </div>
 
       <p className="disclaimer">
-        News provided by Finnhub. Headlines are for information only, not investment advice.
+        {showingFallback ? "External news sources are provided for convenience." : "News provided by Finnhub."} Headlines are for information only, not investment advice.
       </p>
     </section>
   );
