@@ -20,7 +20,7 @@ type Message = {
 const welcomeMessage: Message = {
     id: 1,
     role: "assistant",
-    text: "Hey! 👋 I'm your Finance for idiots AI coach. Ask me anything about investing, wherever you are on the site. My answers come from National Bank's website.",
+    text: "Hi! I'm your Finance for idiots AI coach. Ask me anything about investing, wherever you are on the site. My answers come from National Bank's website.",
 };
 
 export default function AIPhone() {
@@ -100,7 +100,7 @@ export default function AIPhone() {
                 onClick={() => setVisible(true)}
                 aria-label="Show AI coach"
             >
-                💬
+                FI
             </button>
         );
     }
@@ -120,8 +120,6 @@ export default function AIPhone() {
 
             <div className="ai-phone-frame">
                 <div className="ai-phone-screen">
-                    <div className="ai-phone-island" />
-
                     {!expanded ? (
                         <button
                             type="button"
@@ -234,7 +232,6 @@ export default function AIPhone() {
                         </div>
                     )}
 
-                    <div className="ai-phone-home" />
                 </div>
             </div>
         </div>

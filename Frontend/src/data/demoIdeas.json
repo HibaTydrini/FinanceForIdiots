@@ -1,0 +1,269 @@
+{
+    "note": "Example ideas for the demo, written to the user as you/your. Same shape the AI Coach will return later (see coachInsights.ts). Each idea's `tip` is the kind of the 'What stands out' fact it answers. Educational only, not financial advice.",
+    "clients": {
+        "sofia": {
+            "amount": 200,
+            "ideas": [
+                {
+                    "ticker": "ZST.TO",
+                    "name": "BMO Ultra Short-Term Bond ETF",
+                    "type": "Short-term bonds",
+                    "pct": 50,
+                    "tip": "horizon",
+                    "why": "You need this money for your semester abroad in about 2 years. Short-term bonds barely move, so this part should still be there when you need it."
+                },
+                {
+                    "ticker": "XIU.TO",
+                    "name": "iShares S&P/TSX 60 Index ETF",
+                    "type": "Stock ETF (Canada)",
+                    "pct": 30,
+                    "tip": "concentration",
+                    "why": "One fund that holds 60 big Canadian companies. Adding here instead of more Shopify slowly makes one company a smaller share of your account."
+                },
+                {
+                    "ticker": "SPY",
+                    "name": "SPDR S&P 500 ETF Trust",
+                    "type": "Stock ETF (U.S.)",
+                    "pct": 20,
+                    "tip": "sector",
+                    "why": "500 U.S. companies across every industry, not only tech. It spreads your money beyond one sector."
+                }
+            ]
+        },
+        "jordan": {
+            "amount": 1000,
+            "ideas": [
+                {
+                    "ticker": "ZST.TO",
+                    "name": "BMO Ultra Short-Term Bond ETF",
+                    "type": "Short-term bonds",
+                    "pct": 60,
+                    "tip": "horizon",
+                    "why": "You need the condo down payment in about 3 years. Putting new money somewhere steady protects it from a bad year in the stock market right before you buy."
+                },
+                {
+                    "ticker": "XBB.TO",
+                    "name": "iShares Core Canadian Universe Bond Index ETF",
+                    "type": "Bond ETF (Canada)",
+                    "pct": 25,
+                    "tip": "bonds",
+                    "why": "Your account has no bonds yet. Bonds usually move less than stocks and now pay more interest than a few years ago."
+                },
+                {
+                    "ticker": "XIU.TO",
+                    "name": "iShares S&P/TSX 60 Index ETF",
+                    "type": "Stock ETF (Canada)",
+                    "pct": 15,
+                    "tip": "currency",
+                    "why": "Everything you own is in U.S. dollars, but you will pay for the condo in Canadian dollars. A Canadian fund lowers the exchange-rate effect."
+                }
+            ]
+        },
+        "amira": {
+            "amount": 1000,
+            "ideas": [
+                {
+                    "ticker": "SPY",
+                    "name": "SPDR S&P 500 ETF Trust",
+                    "type": "Stock ETF (U.S.)",
+                    "pct": 40,
+                    "tip": "concentration",
+                    "why": "NVIDIA is over a third of your account. A broad fund still includes the big AI companies but spreads the rest over 500 businesses."
+                },
+                {
+                    "ticker": "MSFT",
+                    "name": "Microsoft",
+                    "type": "Single stock",
+                    "pct": 20,
+                    "tip": "sector",
+                    "why": "Fits your interest in AI with a company that also earns from software and cloud services, so it is less tied to one product than a chip maker."
+                },
+                {
+                    "ticker": "XIU.TO",
+                    "name": "iShares S&P/TSX 60 Index ETF",
+                    "type": "Stock ETF (Canada)",
+                    "pct": 20,
+                    "tip": "currency",
+                    "why": "Adds banks, energy and railways from Canada, which move differently from tech, and lowers how much you hold in U.S. dollars."
+                },
+                {
+                    "ticker": "GLD",
+                    "name": "SPDR Gold Shares",
+                    "type": "Gold",
+                    "pct": 20,
+                    "tip": "drop",
+                    "why": "Your account once fell 57% from its high. Gold often holds up when tech and crypto fall, which can soften the big swings you are fine with."
+                }
+            ]
+        },
+        "mateo": {
+            "amount": 1000,
+            "ideas": [
+                {
+                    "ticker": "ESGV",
+                    "name": "Vanguard ESG U.S. Stock ETF",
+                    "type": "Stock ETF (U.S., ESG)",
+                    "pct": 50,
+                    "tip": "values",
+                    "why": "Screens out companies with big environmental and social issues, which matches what you care about, while holding hundreds of companies."
+                },
+                {
+                    "ticker": "XBB.TO",
+                    "name": "iShares Core Canadian Universe Bond Index ETF",
+                    "type": "Bond ETF (Canada)",
+                    "pct": 30,
+                    "tip": "bonds",
+                    "why": "For a balanced family plan, bonds are only 12% of your account today. After the 2022 drop, new bonds pay more interest, so adding now buys that higher income."
+                },
+                {
+                    "ticker": "JNJ",
+                    "name": "Johnson & Johnson",
+                    "type": "Single stock",
+                    "pct": 20,
+                    "tip": "sector",
+                    "why": "Health care, a sector you do not own yet. It helps balance the 39% of your account that is in energy."
+                }
+            ]
+        },
+        "priya": {
+            "amount": 1000,
+            "ideas": [
+                {
+                    "ticker": "SPY",
+                    "name": "SPDR S&P 500 ETF Trust",
+                    "type": "Stock ETF (U.S.)",
+                    "pct": 30,
+                    "tip": "home-bias",
+                    "why": "Everything you own is Canadian. U.S. companies cover industries Canada barely has, like technology and health care."
+                },
+                {
+                    "ticker": "CNR.TO",
+                    "name": "Canadian National Railway",
+                    "type": "Single stock",
+                    "pct": 25,
+                    "tip": "sector",
+                    "why": "A big Canadian name that pays dividends, like you prefer, but in Industrials instead of banks and insurance, which are 54% of your account."
+                },
+                {
+                    "ticker": "PG",
+                    "name": "Procter & Gamble",
+                    "type": "Single stock",
+                    "pct": 25,
+                    "tip": "sector",
+                    "why": "Everyday products and a long record of paying dividends. Consumer staples tend to be steady when banks have a hard year."
+                },
+                {
+                    "ticker": "ATD.TO",
+                    "name": "Alimentation Couche-Tard",
+                    "type": "Single stock",
+                    "pct": 20,
+                    "tip": "tax",
+                    "why": "A well-known Canadian company with a small dividend that mostly grows in value. In your taxable account, growth is taxed only when you sell, unlike dividends taxed every year."
+                }
+            ]
+        },
+        "marc": {
+            "amount": 2000,
+            "ideas": [
+                {
+                    "ticker": "ZST.TO",
+                    "name": "BMO Ultra Short-Term Bond ETF",
+                    "type": "Short-term bonds",
+                    "pct": 35,
+                    "tip": "bonds-fell",
+                    "why": "You hate losing money. Very short-term bonds hardly react to interest rates, unlike your long-term bond fund that fell 38%."
+                },
+                {
+                    "ticker": "XBB.TO",
+                    "name": "iShares Core Canadian Universe Bond Index ETF",
+                    "type": "Bond ETF (Canada)",
+                    "pct": 25,
+                    "tip": "bonds",
+                    "why": "Keeps a solid base of bonds for your income, now paying higher interest than when you retired."
+                },
+                {
+                    "ticker": "XIU.TO",
+                    "name": "iShares S&P/TSX 60 Index ETF",
+                    "type": "Stock ETF (Canada)",
+                    "pct": 25,
+                    "tip": "inflation",
+                    "why": "Your account grew less than prices in Canada. A small part in big Canadian companies, which pay dividends, can help you keep up with prices."
+                },
+                {
+                    "ticker": "SPY",
+                    "name": "SPDR S&P 500 ETF Trust",
+                    "type": "Stock ETF (U.S.)",
+                    "pct": 15,
+                    "tip": "inflation",
+                    "why": "A little more growth from 500 large U.S. companies, spread out so no single company can hurt you much."
+                }
+            ]
+        },
+        "robert": {
+            "amount": 1000,
+            "ideas": [
+                {
+                    "ticker": "XBB.TO",
+                    "name": "iShares Core Canadian Universe Bond Index ETF",
+                    "type": "Bond ETF (Canada)",
+                    "pct": 30,
+                    "tip": "risk",
+                    "why": "You retire in 3 to 5 years and your account is bumpier than your profile. More bonds make it steadier as the date gets closer."
+                },
+                {
+                    "ticker": "ZST.TO",
+                    "name": "BMO Ultra Short-Term Bond ETF",
+                    "type": "Short-term bonds",
+                    "pct": 25,
+                    "tip": "bonds",
+                    "why": "A safe place for money you may need in your first years of retirement."
+                },
+                {
+                    "ticker": "SPY",
+                    "name": "SPDR S&P 500 ETF Trust",
+                    "type": "Stock ETF (U.S.)",
+                    "pct": 25,
+                    "tip": "recent-buy",
+                    "why": "Instead of buying companies in the news like Tesla, one fund gives you 500 established U.S. companies."
+                },
+                {
+                    "ticker": "CNR.TO",
+                    "name": "Canadian National Railway",
+                    "type": "Single stock",
+                    "pct": 20,
+                    "tip": "spread",
+                    "why": "An established Canadian business you can understand, which pays dividends and adds a sector you own little of."
+                }
+            ]
+        },
+        "kevin": {
+            "amount": 1000,
+            "ideas": [
+                {
+                    "ticker": "XIU.TO",
+                    "name": "iShares S&P/TSX 60 Index ETF",
+                    "type": "Stock ETF (Canada)",
+                    "pct": 40,
+                    "tip": "currency",
+                    "why": "84% of your account is in U.S. dollars. A low-fee Canadian index fund fits your plan and lowers the exchange-rate effect."
+                },
+                {
+                    "ticker": "XBB.TO",
+                    "name": "iShares Core Canadian Universe Bond Index ETF",
+                    "type": "Bond ETF (Canada)",
+                    "pct": 30,
+                    "tip": "bonds",
+                    "why": "Bonds are 11% of your account today. At your yearly rebalance, adding here brings them back toward your target."
+                },
+                {
+                    "ticker": "SPY",
+                    "name": "SPDR S&P 500 ETF Trust",
+                    "type": "Stock ETF (U.S.)",
+                    "pct": 30,
+                    "tip": "spread",
+                    "why": "Your core holding. Keeping part of each contribution here keeps your plan simple."
+                }
+            ]
+        }
+    }
+}

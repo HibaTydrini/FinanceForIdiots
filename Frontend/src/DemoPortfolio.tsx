@@ -3,10 +3,13 @@
 // with real numbers worked out from the datathon market data (scripts/build_demo_accounts.py).
 // Nothing here is a real person or a real bank connection.
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import data from "./data/demoPortfolios.json";
 import { C } from "./chartColors";
-import { Figure, LineChart } from "./chartParts";
+import PortfolioChart from "./PortfolioChart";
+import NextIdeas from "./NextIdeas";
+import { demoInsights, fetchCoachInsights } from "./coachInsights";
+import type { CoachInsights } from "./coachInsights";
 import "./DemoPortfolio.css";
 
 export type DemoPortfolioData = (typeof data.portfolios)[number];
@@ -30,7 +33,6 @@ const CLASS_COLORS: Record<string, string> = {
 const LEVEL_LABEL: Record<string, string> = { watch: "Worth a look", good: "Looking good", info: "Good to know" };
 
 const money = (n: number) => `$${Math.round(n).toLocaleString("en-CA")}`;
-const shortMoney = (n: number) => (n >= 1000 ? `$${Math.round(n / 1000)}k` : `$${Math.round(n)}`);
 const pct = (n: number) => `${n > 0 ? "+" : ""}${n}%`;
 
 type Props = {
@@ -43,6 +45,18 @@ export default function DemoPortfolio({ onAskCoach, onConnect }: Props) {
   const [clientId, setClientId] = useState<string | null>(null);
   const [connecting, setConnecting] = useState(false);
   const [showContext, setShowContext] = useState(false);
+  // the AI Coach's own "What stands out" and ideas, once the chatbot answers (see coachInsights.ts)
+  const [coach, setCoach] = useState<{ id: string; insights: CoachInsights } | null>(null);
+
+  useEffect(() => {
+    const picked = PORTFOLIOS.find((x) => x.id === clientId);
+    if (!picked) return;
+    const stop = new AbortController();
+    fetchCoachInsights(picked, stop.signal).then((r) => {
+      if (r) setCoach({ id: picked.id, insights: r });
+    });
+    return () => stop.abort();
+  }, [clientId]);
 
   function connect(id: string) {
     setConnecting(true);
@@ -105,9 +119,9 @@ export default function DemoPortfolio({ onAskCoach, onConnect }: Props) {
 
   const t = p.totals;
   const gainCad = t.valueCad + t.dividendsCad - t.investedCad;
-  const top = Math.max(...p.history.map((h) => h.value));
-  const yMax = Math.ceil(top / 4 / 5000) * 5000 * 4; // 4 even steps of $5k, $10k...
-  const facts = [...p.facts].sort((a, b) => order(a.level) - order(b.level));
+  // the chatbot's version when it has answered for this client, otherwise the hardcoded demo version
+  const insights = coach?.id === p.id ? coach.insights : demoInsights(p);
+  const facts = [...insights.facts].sort((a, b) => order(a.level) - order(b.level));
 
   return (
     <div className="demo">
@@ -132,24 +146,7 @@ export default function DemoPortfolio({ onAskCoach, onConnect }: Props) {
         <Stat label="Worst drop" value={`${t.worstDropPct}%`} note={`${p.totals.worstDropFrom.slice(0, 7)} to ${p.totals.worstDropTo.slice(0, 7)}`} />
       </div>
 
-      <Figure
-        title="Your account over time (CAD)"
-        legend={[
-          { name: "Worth", color: C.blue },
-          { name: "Money put in", color: C.grey },
-        ]}
-      >
-        <LineChart
-          series={[
-            { name: "Worth", color: C.blue, values: p.history.map((h) => h.value), area: true },
-            { name: "Money put in", color: C.grey, values: p.history.map((h) => h.invested), dashed: true },
-          ]}
-          xLabels={p.history.map((h) => monthLabel(h.month))}
-          yMax={yMax}
-          fmt={shortMoney}
-          height={210}
-        />
-      </Figure>
+      <PortfolioChart daily={p.daily} />
 
       <div className="demo-grid">
         <section className="demo-card">
@@ -169,12 +166,16 @@ export default function DemoPortfolio({ onAskCoach, onConnect }: Props) {
           )}
         </section>
 
-        <section className="demo-card">
-          <h3>What you own, by type</h3>
-          <Bars items={p.mix.assetClass.map((m) => ({ label: CLASS_NAMES[m.name] ?? m.name, pct: m.pct, color: CLASS_COLORS[m.name] ?? C.grey }))} />
-          <h3>By sector</h3>
-          <Bars items={p.mix.sector.slice(0, 6).map((m) => ({ label: shortSector(m.name), pct: m.pct, color: C.blue }))} />
-        </section>
+        <div className="demo-side">
+          <section className="demo-card">
+            <h3>What you own, by type</h3>
+            <Bars items={p.mix.assetClass.map((m) => ({ label: CLASS_NAMES[m.name] ?? m.name, pct: m.pct, color: CLASS_COLORS[m.name] ?? C.grey }))} />
+            <h3>By sector</h3>
+            <Bars items={p.mix.sector.slice(0, 6).map((m) => ({ label: shortSector(m.name), pct: m.pct, color: C.blue }))} />
+          </section>
+
+          <NextIdeas key={p.id} plan={insights.ideas} />
+        </div>
       </div>
 
       <section className="demo-card">
@@ -256,11 +257,6 @@ function Stat({ label, value, note, good }: { label: string; value: string; note
 
 function order(level: string) {
   return level === "watch" ? 0 : level === "good" ? 1 : 2;
-}
-
-function monthLabel(m: string) {
-  const [y, mo] = m.split("-");
-  return mo === "01" ? y : `${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][+mo - 1]} ${y.slice(2)}`;
 }
 
 function shortSector(s: string) {
