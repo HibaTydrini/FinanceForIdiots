@@ -2,6 +2,8 @@
 import { useState } from "react";
 import "./App.css";
 import TableOfContents from "./TableOfContents";
+import DemoPortfolio from "./DemoPortfolio";
+import type { DemoPortfolioData } from "./DemoPortfolio";
 import { levelFromKnowledge } from "./learningLevel";
 
 type Page = "onboarding" | "home" | "learning" | "profile" | "coach" | "portfolio";
@@ -97,6 +99,8 @@ function App() {
   // The opening quiz is skipped for now: the site starts on the home page.
   // Change "home" back to "onboarding" to show the quiz again.
   const [page, setPage] = useState<Page>("home");
+  // the pretend National Bank client picked on the Portfolio page (demo), shared with the AI Coach
+  const [demoClient, setDemoClient] = useState<DemoPortfolioData | null>(null);
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [selected, setSelected] = useState("");
@@ -268,7 +272,11 @@ function App() {
                 <span className="coach-avatar">F.</span>
                 <div>
                   <strong>Finance for idiots Coach</strong>
-                  <p>Hi! What would you like to learn today?</p>
+                  <p>
+                    {demoClient
+                      ? `Hi ${demoClient.name}! I can see your demo ${demoClient.account} portfolio. Ask me anything about it, like "Am I too concentrated?"`
+                      : "Hi! What would you like to learn today?"}
+                  </p>
                 </div>
               </div>
 
@@ -313,17 +321,12 @@ function App() {
               Understand your investments and how they behave.
             </p>
 
-            <div className="portfolio-card">
-              <span className="feature-number">PORTFOLIO OVERVIEW</span>
-              <h2>Connect your investments</h2>
-              <p>
-                Soon, you'll be able to explore a demo portfolio,
-                understand your asset allocation and simulate market scenarios.
-              </p>
-              <button className="primary" disabled>
-                Coming soon
-              </button>
-            </div>
+            <DemoPortfolio
+              onAskCoach={(portfolio) => {
+                setDemoClient(portfolio);
+                setPage("coach");
+              }}
+            />
 
             <p className="disclaimer">
               Investment simulations are educational, not predictions
