@@ -5,22 +5,29 @@ Endpoints
   POST /profile        save the onboarding answers for a user
   GET  /profile/{id}   read them back
   POST /chat           answer a question using the NBC knowledge base + the user's profile
+  GET  /news           latest market headlines from Finnhub (cached 15 min)
 
 Run locally
   pip install -r requirements.txt
   export AWS_REGION=us-east-1
   export KB_ID=<your knowledge base ID>
   export MODEL_ID=<model ID copied from Bedrock > Model catalog>
+  export FINNHUB_API_KEY=<free key from finnhub.io>   # optional, for /news
   uvicorn app:app --reload --port 8000
 """
 
 import json
 import os
+import threading
+import time
+import urllib.parse
+import urllib.request
 from pathlib import Path
 
 import boto3
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 REGION = os.environ.get("AWS_REGION", "us-east-1")
@@ -37,6 +44,12 @@ app = FastAPI()
 app.add_middleware(  # lets your frontend (different port/domain) call this API
     CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
 )
+
+
+@app.exception_handler(Exception)
+async def show_error(request: Request, exc: Exception):
+    """Return the real error (e.g. expired AWS credentials, wrong model ID) instead of a bare 500."""
+    return JSONResponse(status_code=500, content={"detail": f"{type(exc).__name__}: {exc}"})
 
 
 # ---------- Profile storage (a JSON file is enough for a datathon; swap for DynamoDB later) ----------
@@ -80,6 +93,57 @@ def get_profile(user_id: str):
     if profile is None:
         raise HTTPException(404, "Profile not found")
     return profile
+
+
+# ---------- Market news (Finnhub) ----------
+# Headlines for the Home page. Finnhub's free tier allows 60 calls/minute; caching for
+# NEWS_TTL seconds means every visitor shares one call. We only show headline + link and
+# send readers to the original article (no full text is copied).
+
+FINNHUB_API_KEY = os.environ.get("FINNHUB_API_KEY", "")
+NEWS_TTL = 15 * 60
+_news_cache: dict = {"at": 0.0, "items": []}
+_news_lock = threading.Lock()
+
+
+def fetch_finnhub_news() -> list[dict]:
+    url = "https://finnhub.io/api/v1/news?" + urllib.parse.urlencode(
+        {"category": "general", "token": FINNHUB_API_KEY}
+    )
+    with urllib.request.urlopen(url, timeout=10) as resp:
+        raw = json.loads(resp.read().decode("utf-8"))
+    items = []
+    for a in raw if isinstance(raw, list) else []:
+        if not a.get("headline") or not str(a.get("url", "")).startswith("http"):
+            continue
+        items.append({
+            "id": a.get("id"),
+            "headline": a["headline"],
+            "summary": a.get("summary", ""),
+            "source": a.get("source", ""),
+            "url": a["url"],
+            "image": a.get("image") or None,
+            "datetime": a.get("datetime"),  # Unix seconds
+        })
+    items.sort(key=lambda a: a["datetime"] or 0, reverse=True)
+    return items
+
+
+@app.get("/news")
+def news(limit: int = 6):
+    if not FINNHUB_API_KEY:
+        raise HTTPException(503, "News is off: set FINNHUB_API_KEY on the backend.")
+    limit = max(1, min(limit, 30))
+    with _news_lock:
+        if time.time() - _news_cache["at"] > NEWS_TTL:
+            try:
+                _news_cache["items"] = fetch_finnhub_news()
+                _news_cache["at"] = time.time()
+            except Exception as exc:
+                # Finnhub down or rate-limited: keep showing the last headlines we had.
+                if not _news_cache["items"]:
+                    raise HTTPException(502, f"Could not load news: {exc}") from exc
+        return {"items": _news_cache["items"][:limit], "updated": int(_news_cache["at"])}
 
 
 # ---------- Chat ----------
