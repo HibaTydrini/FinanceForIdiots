@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import TableOfContents from "./TableOfContents";
-import DemoPortfolio from "./DemoPortfolio";
-import type { DemoPortfolioData } from "./DemoPortfolio";
+import DemoPortfolio, { type DemoPortfolioData } from "./DemoPortfolio";
 import { levelFromKnowledge } from "./learningLevel";
 import Coach from "./Coach";
 import { saveProfile } from "./api";
@@ -35,11 +34,20 @@ function portfolioForCoach(p: DemoPortfolioData) {
   };
 }
 
-type Page = "onboarding" | "home" | "steps" | "plan" | "learning" | "profile" | "coach" | "portfolio";
+type Page =
+  | "onboarding"
+  | "demo-selection"
+  | "home"
+  | "steps"
+  | "plan"
+  | "learning"
+  | "profile"
+  | "coach"
+  | "portfolio";
 
-// Page names as the AI Phone describes them to the coach.
 const PAGE_NAMES: Record<Page, string> = {
   onboarding: "Onboarding quiz",
+  "demo-selection": "Choose Demo Account",
   home: "Home",
   steps: "Baby Steps (guided path for beginners)",
   plan: "My Plan",
@@ -48,7 +56,6 @@ const PAGE_NAMES: Record<Page, string> = {
   coach: "AI Coach",
   portfolio: "My Portfolio (demo portfolios)",
 };
-
 
 const questions = [
   {
@@ -166,6 +173,7 @@ type AppProps = {
   authenticated: boolean;
   showOnboarding?: boolean;
   onQuizComplete: () => void;
+  onDemoClientSelected?: () => void;
   onLogout: () => void;
   onLogoClick: () => void;
 };
@@ -174,6 +182,7 @@ function App({
   authenticated,
   showOnboarding = false,
   onQuizComplete,
+  onDemoClientSelected,
   onLogout,
   onLogoClick,
 }: AppProps) {
@@ -257,7 +266,7 @@ function navigatePage(target: Page) {
     if (step === questions.length - 1) {
       localStorage.setItem("financeQuizAnswers", JSON.stringify(updated));
 
-      onQuizComplete();
+      setPage("demo-selection");
     } else {
       setStep(step + 1);
       setSelected(updated[step + 1] || "");
@@ -337,6 +346,25 @@ function navigatePage(target: Page) {
                 {step === questions.length - 1 ? "Finish" : "Continue"}
               </button>
             </div>
+          </section>
+        )}
+
+        {page === "demo-selection" && (
+          <section>
+            <p className="eyebrow">CHOOSE YOUR DEMO EXPERIENCE</p>
+            <h1>Pick a client portfolio.</h1>
+            <p className="subtitle">
+              Choose the hardcoded demo client whose investments you want to explore.
+              This choice will stay attached to your account experience.
+            </p>
+
+            <DemoPortfolio
+              selectionOnly
+              onSelectClient={() => {
+                onQuizComplete();
+                onDemoClientSelected?.();
+              }}
+            />
           </section>
         )}
 

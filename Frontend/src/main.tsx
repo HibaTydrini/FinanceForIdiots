@@ -35,10 +35,6 @@ function Root() {
 
   const [screen, setScreen] = useState<Screen>(getScreen);
 
-  const [quizComplete, setQuizComplete] = useState(
-    () => localStorage.getItem("financeQuizAnswers") !== null
-  );
-
   const [nbcComplete, setNbcComplete] = useState(true);
 
   useEffect(() => {
@@ -58,6 +54,14 @@ function Root() {
     setScreen(target);
   }
 
+  function startSignup() {
+    localStorage.removeItem("financeQuizAnswers");
+    localStorage.removeItem("financeDemoClientId");
+    resetBabySteps();
+    setSignupQuestions(true);
+    navigate("signup");
+  }
+
   useEffect(() => {
     getCurrentUser()
       .then(() => setAuthenticated(true))
@@ -71,10 +75,6 @@ function Root() {
 
       setAuthenticated(false);
       setSignupQuestions(false);
-      setQuizComplete(
-        localStorage.getItem("financeQuizAnswers") !== null
-      );
-
       sessionStorage.removeItem("financeNbcChoice");
       setNbcComplete(true);
 
@@ -84,18 +84,10 @@ function Root() {
     }
   }
 
-  function handleAuthenticated(method: "login" | "signup") {
+  function handleAuthenticated() {
     setAuthenticated(true);
 
-    if (method === "signup") {
-      localStorage.removeItem("financeQuizAnswers");
-      resetBabySteps(); // a new account starts Baby Steps from step 1
-      setSignupQuestions(true);
-      setQuizComplete(false);
-    } else {
-      setSignupQuestions(false);
-      setQuizComplete(true);
-    }
+    setSignupQuestions(false);
 
     setNbcComplete(true);
     navigate("dashboard");
@@ -110,7 +102,23 @@ function Root() {
     return (
       <LandingPage
         onLogin={() => navigate("login")}
-        onSignup={() => navigate("signup")}
+        onSignup={startSignup}
+      />
+    );
+  }
+
+  // Show investment questions before account registration
+  if (screen === "signup" && signupQuestions) {
+    return (
+      <App
+        authenticated={false}
+        showOnboarding={true}
+        onQuizComplete={() => {}}
+        onDemoClientSelected={() => {
+          setSignupQuestions(false);
+        }}
+        onLogout={handleLogout}
+        onLogoClick={() => navigate("landing")}
       />
     );
   }
@@ -122,25 +130,8 @@ function Root() {
         key={screen}
         initialMode={screen === "signup" ? "signup" : "login"}
         onHome={() => navigate("landing")}
+        onStartSignup={startSignup}
         onAuthenticated={handleAuthenticated}
-      />
-    );
-  }
-
-  // Investment questions only after signup
-  if (signupQuestions && !quizComplete) {
-    return (
-      <App
-        authenticated={authenticated}
-        showOnboarding={true}
-        onQuizComplete={() => {
-          setQuizComplete(true);
-          setSignupQuestions(false);
-          // New users start on the guided path instead of the home page.
-          window.location.hash = "dashboard/steps";
-        }}
-        onLogout={handleLogout}
-        onLogoClick={() => navigate("landing")}
       />
     );
   }
@@ -201,7 +192,7 @@ function Root() {
       <App
         authenticated={authenticated}
       showOnboarding={false}
-        onQuizComplete={() => setQuizComplete(true)}
+        onQuizComplete={() => {}}
         onLogout={handleLogout}
         onLogoClick={() => navigate("landing")}
       />

@@ -14,12 +14,14 @@ type Props = {
   onAuthenticated: (method: "login" | "signup") => void;
   initialMode: "login" | "signup";
   onHome: () => void;
+  onStartSignup?: () => void;
 };
 
 export default function AuthPage({
   onAuthenticated,
   initialMode,
   onHome,
+  onStartSignup,
 }: Props) {
   const [mode, setMode] = useState<Mode>(initialMode);
   const [email, setEmail] = useState("");
@@ -299,7 +301,10 @@ export default function AuthPage({
                 Don't have an account?{" "}
                 <button
                   type="button"
-                  onClick={() => changeMode("signup")}
+                  onClick={() => {
+                    if (onStartSignup) onStartSignup();
+                    else changeMode("signup");
+                  }}
                 >
                   Sign up
                 </button>
