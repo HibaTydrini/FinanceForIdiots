@@ -225,3 +225,54 @@
     grid-template-columns: 1fr;
   }
 }
+
+.plan-email {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 460px;
+}
+
+.plan-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.plan-field input[type="email"] {
+  padding: 10px 12px;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  font: inherit;
+  font-weight: 400;
+}
+
+.plan-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.plan-consent input {
+  margin-top: 4px;
+}
+
+.plan-email-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.plan-status {
+  margin: 0;
+  font-weight: 600;
+}
+
+.plan-status.ok {
+  color: #0f7a52;
+}
+
+.plan-status.error {
+  color: #cf1726;
+}

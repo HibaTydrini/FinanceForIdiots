@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import ActivityFeed from "./ActivityFeed";
 import "./App.css";
 import TableOfContents from "./TableOfContents";
 import DemoPortfolio from "./DemoPortfolio";
@@ -369,6 +370,8 @@ function navigatePage(target: Page) {
                 </>
               )}
             </div>
+
+            <ActivityFeed onNavigate={(target) => navigatePage(target as Page)} />
 
             <p className="eyebrow">YOUR FINANCIAL JOURNEY STARTS HERE</p>
             <h1>Finance made simple.</h1>

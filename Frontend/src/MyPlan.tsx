@@ -12,6 +12,8 @@ import { MixBar } from "./PlanWidgets";
 import { RULE_PREFIX, formatDate, getSteps, setActionDone, todayISO, useBabySteps } from "./babyStepsStore";
 import type { Action, PlanField, Step } from "./babyStepsStore";
 import { levelFromKnowledge } from "./learningLevel";
+import CalendarBox from "./CalendarBox";
+import EmailCheckinBox from "./EmailCheckinBox";
 import { money, monthlyNeeded, monthsUntil } from "./planMath";
 
 type Props = {
@@ -182,6 +184,14 @@ export default function MyPlan({ answers, onNavigate }: Props) {
 
       <Block when="Every month" title="30-second check-in" id="check-in">
         <CheckIn plan={plan} level={level} onNavigate={onNavigate} />
+      </Block>
+
+      <Block when="Every week" title="Weekly email check-ins">
+        <EmailCheckinBox />
+      </Block>
+
+      <Block when="Every week" title="Your AI coach books it in Google Calendar">
+        <CalendarBox onNavigate={onNavigate} />
       </Block>
 
       <Block when="Every year" title="Annual check-up">

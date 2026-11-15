@@ -2,6 +2,8 @@
 // Saved in localStorage under "financeBabySteps" (same idea as "financeQuizAnswers"),
 // so a page reload keeps everything. Used by BabySteps, MyPlan, Home, Coach and the AI Phone.
 import { useSyncExternalStore } from "react";
+import { getProgress, putProgress } from "./api";
+import type { ProgressUpdate } from "./api";
 import data from "./data/babySteps.json";
 import type { TermDef } from "./RichText";
 
@@ -186,6 +188,75 @@ function update(change: (s: BabyState) => BabyState) {
     // storage blocked (private mode): progress still works until the page is closed
   }
   listeners.forEach((listener) => listener());
+  schedulePush();
+}
+
+// ---------- the server copy (backend /progress) ----------
+// localStorage stays the fallback: if the backend is down, nothing here throws.
+// The server copy is what the weekly check-in emails read, and where their "I did it" button ticks actions.
+
+// To-dos that only exist on the My Plan page (MyPlan.tsx THIS_MONTH), so the agent can tick them too.
+const PLAN_TODOS = [
+  { id: "plan-first-contribution", label: "Make your first contribution", step: "My Plan: this month" },
+  { id: "plan-check-arrived", label: "Check that it arrived", step: "My Plan: this month" },
+];
+
+function progressPayload(): ProgressUpdate {
+  const answers = readQuizAnswers();
+  const actions = getSteps(answers)
+    .flatMap((step) => step.doIt.map((a) => ({ id: a.id, label: a.label, step: step.title })))
+    .concat(PLAN_TODOS);
+  // The action the email's "I did it" button ticks: only a real to-do, not "pass the quick check".
+  const next = nextThing(state, getSteps(answers));
+  const todo =
+    next.kind === "step" && checkPassed(next.step, state)
+      ? next.step.doIt.find((a) => !a.later && !state.doneActions.includes(a.id))
+      : undefined;
+  return {
+    state,
+    answers,
+    nextAction: coachContext(state, answers).nextAction,
+    nextActionId: todo?.id ?? "",
+    actions,
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  };
+}
+
+let pushTimer: ReturnType<typeof setTimeout> | undefined;
+let pushing = 0;
+
+// Saves shortly after the last change, so a burst of clicks is one request.
+function schedulePush() {
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(flushProgress, 400);
+}
+
+// Saves right now (e.g. before "Send check-in now", so the message uses the latest plan).
+export async function flushProgress(): Promise<void> {
+  clearTimeout(pushTimer);
+  pushTimer = undefined;
+  pushing++;
+  try {
+    await putProgress(progressPayload());
+  } catch {
+    // backend unreachable: the next change tries again
+  } finally {
+    pushing--;
+  }
+}
+
+// Picks up actions ticked from a check-in email. It only adds ticks, and waits while a local change is unsaved.
+export async function pullProgress(): Promise<void> {
+  if (pushTimer !== undefined || pushing > 0) return;
+  try {
+    const server = await getProgress();
+    const ticked = server?.state?.doneActions;
+    if (!Array.isArray(ticked) || pushTimer !== undefined || pushing > 0) return;
+    const missing = ticked.filter((id) => !state.doneActions.includes(id));
+    if (missing.length) update((s) => ({ ...s, doneActions: [...new Set([...s.doneActions, ...missing])] }));
+  } catch {
+    // backend unreachable: keep what's in localStorage
+  }
 }
 
 function subscribe(listener: () => void) {
@@ -237,6 +308,7 @@ export function resetBabySteps() {
   }
   state = emptyState();
   listeners.forEach((listener) => listener());
+  schedulePush();
 }
 
 export function useBabySteps() {
@@ -281,3 +353,9 @@ export function coachContext(s: BabyState, answers: string[], openStep?: StepInf
 
 // The start of the "rule for myself" sentence (Baby Step "Staying calm"); plan.rule holds the ending.
 export const RULE_PREFIX = "If my portfolio drops 20%, I will";
+
+// Save what's already in localStorage once, then watch for ticks made from check-in emails.
+schedulePush();
+setInterval(() => {
+  if (document.visibilityState === "visible") void pullProgress();
+}, 5000);

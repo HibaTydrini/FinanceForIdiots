@@ -33,6 +33,12 @@ const PATHS: Record<string, string[]> = {
   // slide pictures
   example: ["M9 18h6", "M10 21h4", "M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"],
   done: ["M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18z", "M8 12l3 3 5-6"],
+  // AI coach activity (Home)
+  mail: ["M4 6h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z", "M3.5 7l8.5 6 8.5-6"],
+  calendar: ["M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z", "M3 10h18", "M8 3v4", "M16 3v4", "M9 15l2 2 4-4"],
+  skip: ["M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18z", "M10 9v6", "M14 9v6"],
+  chat: ["M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z", "M8 10h8", "M8 13h5"],
+  settings: ["M4 7h10", "M18 7h2", "M16 5v4", "M4 17h4", "M12 17h8", "M10 15v4"],
 };
 
 type Props = { name: string; size?: number; className?: string };
