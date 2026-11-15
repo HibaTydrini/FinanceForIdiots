@@ -531,3 +531,41 @@
     font-size: 22px;
     cursor: pointer;
 }
+/* NBC sources under coach answers (inline [n] links use .source-ref from Coach.css) */
+
+.ai-phone-sources {
+    margin: 8px 0 0;
+    padding: 7px 0 0 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 10.5px;
+    line-height: 1.5;
+    white-space: normal;
+}
+
+.ai-phone-sources a {
+    color: #b91c1c;
+}
+
+.ai-phone-error {
+    align-self: stretch;
+    font-size: 11px;
+    line-height: 1.5;
+    color: #b91c1c;
+    text-align: center;
+    padding: 0 6px;
+}
+
+/* "Looking at: ETFs · Example" above the input, when a lesson is open */
+
+.ai-phone-context {
+    margin: 0 13px 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: #fff0f0;
+    color: #7f1d1d;
+    font-size: 10.5px;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

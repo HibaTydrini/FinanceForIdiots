@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import type { Dispatch, FormEvent, ReactNode, SetStateAction } from "react";
+import type { Dispatch, FormEvent, SetStateAction } from "react";
 import "./Coach.css";
 import { sendChat } from "./api";
-import type { ChatMessage, Source } from "./api";
+import type { ChatMessage } from "./api";
+import { shortUrl, withSourceLinks } from "./chatText";
 
 type Props = {
   // Kept in App so the conversation survives switching pages.
@@ -13,32 +14,6 @@ type Props = {
   // Demo portfolio the coach can talk about, sent with each question.
   portfolio?: object;
 };
-
-// Turns "[Source 2]" markers in an answer into links to that NBC page.
-function withSourceLinks(text: string, sources: Source[] = []): ReactNode[] {
-  return text.split(/(\[Source \d+\])/g).map((part, i) => {
-    const match = part.match(/^\[Source (\d+)\]$/);
-    const source = match && sources.find((s) => s.n === Number(match[1]));
-    if (!source) return part;
-    return (
-      <a key={i} className="source-ref" href={source.url} target="_blank" rel="noreferrer">
-        [{source.n}]
-      </a>
-    );
-  });
-}
-
-// "https://www.nbc.ca/personal/savings-investments/tfsa.html" -> "nbc.ca/personal/…/tfsa.html"
-function shortUrl(url: string): string {
-  try {
-    const { hostname, pathname } = new URL(url);
-    const parts = pathname.split("/").filter(Boolean);
-    const path = parts.length > 2 ? `${parts[0]}/…/${parts[parts.length - 1]}` : parts.join("/");
-    return `${hostname.replace(/^www\./, "")}/${path}`;
-  } catch {
-    return url;
-  }
-}
 
 export default function Coach({ messages, setMessages, intro, portfolio }: Props) {
   const [input, setInput] = useState("");
