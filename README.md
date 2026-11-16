@@ -14,6 +14,12 @@ An agentic AI financial coach for beginner investors, built for the PolyFinances
 - **Google Calendar agent**: the coach finds free time and books the next step in the user's calendar.
 - **Market news and activity feed**: recent headlines, plus a log of everything the coach did and why.
 
+## Trying the demo
+
+We aren't allowed to use real client data yet, so the site comes with premade demo clients. After you sign in, pick one of these preregistered users on the **Choose Demo Account** screen. You can test every feature with these premade accounts, except the weekly emails and Google Calendar.
+
+The reminder emails and the Google Calendar tasks both work, but only for registered accounts for now, because the website isn't fully deployed yet.
+
 ## Architecture
 
 | Layer | Technology |
